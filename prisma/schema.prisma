@@ -1,0 +1,72 @@
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String            @id
+  email         String            @unique
+  name          String     
+  password      String
+  ownedEvents   Event[]
+  followedBy    Follows[]         @relation("followedBy")
+  following     Follows[]         @relation("following")
+  attendances   Attendance[]
+}
+
+model Follows {
+  followedBy    User              @relation("followedBy", fields: [followedById], references: [id])
+  followedById  String
+  following     User              @relation("following", fields: [followingId], references: [id])
+  followingId   String
+  pending       Boolean
+
+  @@id([followingId, followedById])
+}
+
+model Event {
+  id            String            @id
+  name          String            
+  description   String     
+  owner         User              @relation(fields: [ownerId], references: [id])
+  ownerId       String
+  alternatives  Alternative[]
+  attendances   Attendance[]
+}
+
+model Attendance {
+  attendee      User              @relation(fields: [attendeeId], references: [id])
+  attendeeId    String
+  event         Event             @relation(fields: [eventId], references: [id])
+  eventId       String
+  alternative   Alternative       @relation(fields: [alternativeId], references: [id])
+  alternativeId String
+  @@id([attendeeId, eventId])  
+}
+
+model Alternative {
+  id            String            @id
+  name          String            @unique
+  event         Event             @relation(fields: [eventId], references: [id])
+  eventId       String
+  sessions      Session[]
+  attendances   Attendance[]
+}
+
+model Session {
+  id            String            @id
+  place         String
+  timeZone      String
+  startTime     DateTime          @db.Time(3)
+  endTime       DateTime          @db.Time(3)
+  startDate     DateTime          @db.Date
+  endDate       DateTime          @db.Date
+  interval      Int
+  alternative   Alternative       @relation(fields: [alternativeId], references: [id])
+  alternativeId String
+}
