@@ -1,42 +1,42 @@
 export interface User {
-  id: String;
-  email: String;
-  name: String;
+  id: string;
+  email: string;
+  name: string;
 }
 
 export interface Session {
-  id: String;
-  place: String;
-  timeZone: String;
+  id: string;
+  place: string;
+  timeZone: string;
   startTime: Date;
   endTime: Date;
   startDate: Date;
   endDate: Date;
-  interval: Number;
-  alternativeId: String;
+  interval: number;
+  alternativeId: string;
 }
 
 export interface Alternative {
-  id: String;
-  name: String;
-  eventId: String;
+  id: string;
+  name: string;
+  eventId: string;
 }
 
 export interface Event {
-  id: String;
-  name: String;
-  description: String;
-  ownerId: String;
+  id: string;
+  name: string;
+  description: string;
+  ownerId: string;
 }
 
 export interface Attendance {
-  attendeeId: String;
-  eventId: String;
-  alternativeId: String;
+  attendeeId: string;
+  eventId: string;
+  alternativeId: string;
 }
 
 export interface Follows {
-  followedById: String;
-  followingId: String;
-  pending: Boolean;
+  followedById: string;
+  followingId: string;
+  pending: boolean;
 }
