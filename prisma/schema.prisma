@@ -51,11 +51,12 @@ model Attendance {
 
 model Alternative {
   id            String            @id
-  name          String            @unique
+  name          String            
   event         Event             @relation(fields: [eventId], references: [id])
   eventId       String
   sessions      Session[]
   attendances   Attendance[]
+  @@unique([eventId,name])
 }
 
 model Session {

@@ -2,7 +2,7 @@ import NextAuth, { DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { signInSchema } from "@/app/lib/zod";
 import { getUser } from "@/app/lib/actions";
-import { User } from "./app/lib/types";
+import { User } from "@/app/lib/types";
 import { ZodError } from "zod";
 
 declare module "next-auth" {
