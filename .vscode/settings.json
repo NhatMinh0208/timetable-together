@@ -1,5 +1,7 @@
 {
   "files.watcherExclude": {
     "**/target": true
-  }
+  },
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2
 }
