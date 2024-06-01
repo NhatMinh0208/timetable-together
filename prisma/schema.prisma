@@ -24,7 +24,7 @@ model Follows {
   followedById  String
   following     User              @relation("following", fields: [followingId], references: [id])
   followingId   String
-  pending       Boolean
+  status        String            @default("pending")
 
   @@id([followingId, followedById])
 }
