@@ -1,11 +1,14 @@
 import { auth } from "@/auth";
 import { Logout } from "@/app/components/logout";
-
+import { Timetable } from "@/app/components/timetable";
 export default async function Page() {
   const session = await auth();
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <p>Welcome, {session?.user.name}</p>
+    <main>
+      <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        Welcome, {session?.user.name}
+      </p>
+      <Timetable />
       <Logout />
     </main>
   );
