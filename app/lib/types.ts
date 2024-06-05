@@ -13,10 +13,10 @@ export interface Session {
   startDate: Date;
   endDate: Date;
   interval: number;
-  alternativeId: string;
+  scheduleId: string;
 }
 
-export interface Alternative {
+export interface Schedule {
   id: string;
   name: string;
   eventId: string;
@@ -32,7 +32,7 @@ export interface Event {
 export interface Attendance {
   attendeeId: string;
   eventId: string;
-  alternativeId: string;
+  scheduleId: string;
 }
 
 export interface Follows {

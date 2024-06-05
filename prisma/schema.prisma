@@ -35,7 +35,7 @@ model Event {
   description   String     
   owner         User              @relation(fields: [ownerId], references: [id])
   ownerId       String
-  alternatives  Alternative[]
+  schedules     Schedule[]
   attendances   Attendance[]
 }
 
@@ -44,12 +44,12 @@ model Attendance {
   attendeeId    String
   event         Event             @relation(fields: [eventId], references: [id])
   eventId       String
-  alternative   Alternative       @relation(fields: [alternativeId], references: [id])
-  alternativeId String
+  schedule      Schedule          @relation(fields: [scheduleId], references: [id])
+  scheduleId    String
   @@id([attendeeId, eventId])  
 }
 
-model Alternative {
+model Schedule {
   id            String            @id
   name          String            
   event         Event             @relation(fields: [eventId], references: [id])
@@ -68,6 +68,6 @@ model Session {
   startDate     DateTime          @db.Date
   endDate       DateTime          @db.Date
   interval      Int
-  alternative   Alternative       @relation(fields: [alternativeId], references: [id])
-  alternativeId String
+  schedule      Schedule          @relation(fields: [scheduleId], references: [id])
+  scheduleId    String
 }

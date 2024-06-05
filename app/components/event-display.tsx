@@ -1,12 +1,12 @@
 "use client";
-import { Session, Alternative, Event } from "@/app/lib/placeholder-data";
+import { Session, Schedule, Event } from "@/app/lib/placeholder-data";
 import { clsx } from "clsx";
-export function AlternativeCard({
-  alternative,
+export function ScheduleCard({
+  schedule,
   isActive,
   onClick,
 }: {
-  alternative: Alternative;
+  schedule: Schedule;
   isActive: boolean;
   onClick: () => void;
 }) {
@@ -24,8 +24,8 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
       )}
       onClick={onClick}
     >
-      <div>{alternative.name + "|"}</div>
-      {alternative.sessions.map((session) => {
+      <div>{schedule.name + "|"}</div>
+      {schedule.sessions.map((session) => {
         return (
           <p key={session.id}>
             {
@@ -49,44 +49,44 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
 
 export function EventDisplay({
   event,
-  attendingAlternative,
+  attendingSchedule,
   isActive,
   onClick,
 }: {
   event: Event;
-  attendingAlternative: string;
+  attendingSchedule: string;
   isActive: boolean;
-  onClick: (alternativeId: string) => void;
+  onClick: (scheduleId: string) => void;
 }) {
-  event.alternatives.map;
-  const alternativeCards = event.alternatives.map((alternative) => {
+  event.schedules.map;
+  const scheduleCards = event.schedules.map((schedule) => {
     return (
-      <AlternativeCard
-        key={alternative.id}
-        alternative={alternative}
-        isActive={attendingAlternative == alternative.id}
-        onClick={() => onClick(alternative.id)}
+      <ScheduleCard
+        key={schedule.id}
+        schedule={schedule}
+        isActive={attendingSchedule == schedule.id}
+        onClick={() => onClick(schedule.id)}
       />
     );
   });
-  const inactiveCard = event.alternatives
+  const inactiveCard = event.schedules
     .filter((alt) => {
-      return alt.id === attendingAlternative;
+      return alt.id === attendingSchedule;
     })
-    .map((alternative) => {
+    .map((schedule) => {
       return (
-        <AlternativeCard
-          key={alternative.id}
-          alternative={alternative}
-          isActive={attendingAlternative == alternative.id}
-          onClick={() => onClick(alternative.id)}
+        <ScheduleCard
+          key={schedule.id}
+          schedule={schedule}
+          isActive={attendingSchedule == schedule.id}
+          onClick={() => onClick(schedule.id)}
         />
       );
     });
   return (
     <div>
       <div>{event.name}</div>
-      {isActive ? alternativeCards : inactiveCard}
+      {isActive ? scheduleCards : inactiveCard}
     </div>
   );
 }

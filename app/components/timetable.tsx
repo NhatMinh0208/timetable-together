@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 export function Timetable() {
   const attendanceMap: { [eventId: string]: string } = {};
   placeholder.sampleAttendances.forEach((attendance) => {
-    attendanceMap[attendance.eventId] = attendance.alternativeId;
+    attendanceMap[attendance.eventId] = attendance.scheduleId;
   });
   const [attendance, setAttendance] = useState(attendanceMap);
   const [activeEvent, setActiveEvent] = useState("");
@@ -13,10 +13,10 @@ export function Timetable() {
   console.log(attendance);
   console.log(activeEvent);
   const handleClick = useCallback(
-    (eventId: string, alternativeId: string) => {
+    (eventId: string, scheduleId: string) => {
       if (activeEvent == eventId) {
         setAttendance((att) => {
-          att[eventId] = alternativeId;
+          att[eventId] = scheduleId;
           return att;
         });
         setActiveEvent("");
@@ -32,7 +32,7 @@ export function Timetable() {
         <EventDisplay
           key={event.id}
           event={event}
-          attendingAlternative={attendance[event.id]}
+          attendingSchedule={attendance[event.id]}
           isActive={activeEvent === event.id}
           onClick={(altId) => handleClick(event.id, altId)}
         />

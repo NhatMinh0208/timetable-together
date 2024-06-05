@@ -8,7 +8,7 @@ export interface Session {
   interval: number;
 }
 
-export interface Alternative {
+export interface Schedule {
   id: string;
   name: string;
   sessions: Session[];
@@ -18,7 +18,7 @@ export interface Event {
   id: string;
   name: string;
   description: string;
-  alternatives: Alternative[];
+  schedules: Schedule[];
 }
 
 const sample_session_1: Session = {
@@ -58,13 +58,13 @@ const sample_session_4: Session = {
   interval: 7,
 };
 
-const sample_alternative_1: Alternative = {
+const sample_schedule_1: Schedule = {
   id: "ufr304f",
   name: "01",
   sessions: [sample_session_1, sample_session_2],
 };
 
-const sample_alternative_2: Alternative = {
+const sample_schedule_2: Schedule = {
   id: "m324cf",
   name: "02",
   sessions: [sample_session_3, sample_session_4],
@@ -79,7 +79,7 @@ and implementation of fundamental data structures and algorithms. \
 The course covers basic data structures (linked lists, stacks, queues, \
 hash tables, binary heaps, trees, and graphs), searching and sorting \
 algorithms, and basic analysis of algorithms.",
-  alternatives: [sample_alternative_1, sample_alternative_2],
+  schedules: [sample_schedule_1, sample_schedule_2],
 };
 
 const sample_session_5: Session = {
@@ -112,18 +112,18 @@ const sample_session_7: Session = {
   interval: 7,
 };
 
-const sample_alternative_3: Alternative = {
+const sample_schedule_3: Schedule = {
   id: "hd0vcx0",
   name: "01",
   sessions: [sample_session_5],
 };
 
-const sample_alternative_4: Alternative = {
+const sample_schedule_4: Schedule = {
   id: "9f08dfb",
   name: "02",
   sessions: [sample_session_6],
 };
-const sample_alternative_5: Alternative = {
+const sample_schedule_5: Schedule = {
   id: "zxzc87",
   name: "03",
   sessions: [sample_session_7],
@@ -142,11 +142,7 @@ issues affect the implementation of solutions. Topics covered include \
 data representation systems, combinational and sequential circuit design \
 techniques, assembly language, processor execution cycles, pipelining, memory \
 hierarchy and input/output systems.",
-  alternatives: [
-    sample_alternative_3,
-    sample_alternative_4,
-    sample_alternative_5,
-  ],
+  schedules: [sample_schedule_3, sample_schedule_4, sample_schedule_5],
 };
 
 export const sampleEvents = [sample_event_1, sample_event_2];
@@ -154,12 +150,12 @@ export const sampleEvents = [sample_event_1, sample_event_2];
 const sample_attendance_1 = {
   attendeeId: "1",
   eventId: "d9120d12d",
-  alternativeId: "ufr304f",
+  scheduleId: "ufr304f",
 };
 const sample_attendance_2 = {
   attendeeId: "1",
   eventId: "fgnfgn0",
-  alternativeId: "9f08dfb",
+  scheduleId: "9f08dfb",
 };
 
 export const sampleAttendances = [sample_attendance_1, sample_attendance_2];
