@@ -4,7 +4,7 @@ import Logo from "@/public/tt_logo.png";
 import { userSchema } from "@/app/lib/zod";
 import { createUser } from "@/app/lib/actions";
 import { redirect } from "next/navigation";
-import Input from "../components/form/input";
+import Form from "../components/form/form";
 
 async function handleRegister(formData: FormData) {
   "use server";
@@ -42,28 +42,19 @@ export default function Page() {
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action={handleRegister}>
-            <Input label="Name" type="name" />
-
-            <Input label="Email address" type="email" />
-
-            <Input
-              label="Password"
-              type="password"
-              autoComplete="current-password"
-            />
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-amber-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Register
-              </button>
-            </div>
-          </form>
-        </div>
+        <Form
+          action={handleRegister}
+          inputs={[
+            { label: "Name", type: "name" },
+            { label: "Email address", type: "email" },
+            {
+              label: "Password",
+              type: "password",
+              autoComplete: "current-password",
+            },
+          ]}
+          submit="Register"
+        />
       </div>
     </>
   );
