@@ -63,10 +63,10 @@ model Session {
   id            String            @id
   place         String
   timeZone      String
-  startTime     DateTime          @db.Time(3)
-  endTime       DateTime          @db.Time(3)
-  startDate     DateTime          @db.Date
-  endDate       DateTime          @db.Date
+  startTime     DateTime          
+  endTime       DateTime          
+  startDate     DateTime          
+  endDate       DateTime          
   interval      Int
   schedule      Schedule          @relation(fields: [scheduleId], references: [id])
   scheduleId    String
