@@ -75,6 +75,24 @@ export async function insertAttendance(
   });
 }
 
+export async function updateAttedance(
+  userId: string,
+  eventId: string,
+  scheduleId: string,
+) {
+  return await prisma.attendance.update({
+    where: {
+      attendeeId_eventId: {
+        attendeeId: userId,
+        eventId: eventId,
+      },
+    },
+    data: {
+      scheduleId: scheduleId,
+    },
+  });
+}
+
 export async function removeAttendance(userId: string, eventId: string) {
   return await prisma.attendance.delete({
     where: {

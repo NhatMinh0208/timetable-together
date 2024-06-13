@@ -1,43 +1,28 @@
 "use client";
 import { AttendanceComponent } from "@/app/components/attendance-component";
 import { useCallback, useState } from "react";
-import { ExtendedAttendance } from "@/app/lib/types";
+import { ExtendedAttendanceEvent } from "@/app/lib/types";
+import { updateUserAttendance } from "../lib/actions";
 export function AttendanceManager({
-  attendances,
+  events,
+  attendanceMap,
+  activeEvent,
+  handleAttendanceUpdate,
 }: {
-  attendances: ExtendedAttendance[];
+  events: ExtendedAttendanceEvent[];
+  attendanceMap: { [eventId: string]: string };
+  activeEvent: string;
+  handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {
-  const attendanceMapInit: { [eventId: string]: string } = {};
-  attendances.forEach((attendance) => {
-    attendanceMapInit[attendance.event.id] = attendance.scheduleId;
-  });
-
-  const [attendanceMap, setAttendanceMap] = useState(attendanceMapInit);
-  const [activeEvent, setActiveEvent] = useState("");
-
-  const handleClick = useCallback(
-    (eventId: string, scheduleId: string) => {
-      if (activeEvent == eventId) {
-        setAttendanceMap((att) => {
-          att[eventId] = scheduleId;
-          return att;
-        });
-        setActiveEvent("");
-      } else {
-        setActiveEvent(eventId);
-      }
-    },
-    [activeEvent],
-  );
   return (
-    <div className={""}>
-      {attendances.map((attendance) => (
+    <div className={"overflow-auto space-y-2"}>
+      {events.map((event) => (
         <AttendanceComponent
-          key={attendance.attendeeId + " " + attendance.event.id}
-          event={attendance.event}
-          attendingSchedule={attendanceMap[attendance.event.id]}
-          isActive={activeEvent === attendance.event.id}
-          onClick={(scheduleId) => handleClick(attendance.event.id, scheduleId)}
+          key={event.id}
+          event={event}
+          attendingSchedule={attendanceMap[event.id]}
+          isActive={activeEvent === event.id}
+          onClick={(scheduleId) => handleAttendanceUpdate(event.id, scheduleId)}
         />
       ))}
     </div>

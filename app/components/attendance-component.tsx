@@ -4,6 +4,9 @@ import {
   ExtendedAttendanceEvent,
   ExtendedAttendanceSchedule,
 } from "@/app/lib/types";
+
+const ticksInDay = 24 * 60 * 60 * 1000;
+
 export function ScheduleCard({
   schedule,
   isActive,
@@ -16,7 +19,7 @@ export function ScheduleCard({
   return (
     <button
       className={clsx(
-        "flex w-500 justify-center rounded-md px-2 py-1 \
+        "flex flex-col grow justify-center rounded-md px-2 py-1 \
 font-semibold leading-6 text-white shadow-sm \
 focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
@@ -27,22 +30,29 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
       )}
       onClick={onClick}
     >
-      <div>{schedule.name + "|"}</div>
+      <p>{"Schedule " + schedule.name}</p>
       {schedule.sessions.map((session) => {
+        const originStartTime =
+          (((session.startTime.getTime() - session.startDate.getTime()) %
+            ticksInDay) +
+            ticksInDay) %
+          ticksInDay;
+        const fullStartDate = new Date(
+          session.startDate.getTime() + originStartTime,
+        );
         return (
           <p key={session.id}>
+            {fullStartDate.toString().match("^([a-zA-Z]*) ")?.[1]}{" "}
             {
               session.startTime
-                .toISOString()
-                .match("T([0-9][0-9]:[0-9][0-9])")?.[1]
+                .toString()
+                .match(" ([0-9][0-9]:[0-9][0-9])")?.[1]
             }
-            -
-            {
-              session.endTime
-                .toISOString()
-                .match("T([0-9][0-9]:[0-9][0-9])")?.[1]
-            }
-            {" -  " + session.place + ";"}
+            {" - "}
+            {session.endTime.toString().match(" ([0-9][0-9]:[0-9][0-9])")?.[1]}
+            {" - "}
+            {session.place}
+            {";"}
           </p>
         );
       })}
@@ -91,8 +101,22 @@ export function AttendanceComponent({
       );
     });
   return (
-    <div>
-      <div className="text-sm">{event.name}</div>
+    <div className="flex flex-col space-y-2">
+      <div className="text-sm flex flex-row">
+        <p className="grow">{event.name}</p>
+        <button
+          className={clsx(
+            "flex flex-col w-500 justify-center rounded-md px-2 py-1 \
+font-semibold leading-6 text-white shadow-sm \
+focus-visible:outline focus-visible:outline-2 \
+focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+            "bg-red-500 hover:bg-red-400",
+          )}
+          onClick={() => onClick("")}
+        >
+          Remove
+        </button>
+      </div>
       {isActive ? scheduleCards : inactiveCard}
     </div>
   );

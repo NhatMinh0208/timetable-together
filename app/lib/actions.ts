@@ -8,6 +8,8 @@ import {
   getAttendance,
   insertAttendance,
   getAttendancesByUserId,
+  updateAttedance,
+  removeAttendance,
 } from "@/app/lib/db";
 import { ExtendedAttendance, User } from "@/app/lib/types";
 import { auth } from "@/auth";
@@ -119,5 +121,39 @@ export async function getUserAttendances(): Promise<ExtendedAttendance[]> {
   } catch (error) {
     console.log(error);
     return [];
+  }
+}
+
+export async function updateUserAttendance(
+  eventId: string,
+  scheduleId: string,
+): Promise<void> {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    await updateAttedance(userId, eventId, scheduleId);
+    console.log("done");
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function removeUserAttendance(eventId: string): Promise<void> {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    await removeAttendance(userId, eventId);
+    console.log("done");
+    revalidatePath("/timetable");
+  } catch (error) {
+    console.log(error);
+    return;
   }
 }
