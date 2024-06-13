@@ -7,6 +7,7 @@ import { RightCard } from "@/app/components/right-card";
 import { removeUserAttendance, updateUserAttendance } from "@/app/lib/actions";
 import { ExtendedAttendance } from "@/app/lib/types";
 import { Timetable } from "@/app/components/timetable";
+import { REMOVE_CMD } from "@/app/lib/constants";
 export default function Render({
   attendances,
 }: {
@@ -22,17 +23,15 @@ export default function Render({
 
   const handleAttendanceUpdate = useCallback(
     async (eventId: string, scheduleId: string) => {
-      if (activeEvent == eventId) {
-        if (scheduleId === "") {
-          removeUserAttendance(eventId);
-        } else {
-          setAttendanceMap((att) => {
-            att[eventId] = scheduleId;
-            return att;
-          });
-          updateUserAttendance(eventId, scheduleId);
-          setActiveEvent("");
-        }
+      if (scheduleId === REMOVE_CMD) {
+        removeUserAttendance(eventId);
+      } else if (activeEvent == eventId) {
+        setAttendanceMap((att) => {
+          att[eventId] = scheduleId;
+          return att;
+        });
+        updateUserAttendance(eventId, scheduleId);
+        setActiveEvent("");
       } else {
         setActiveEvent(eventId);
       }

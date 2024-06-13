@@ -101,6 +101,7 @@ export async function addAttendance(
           "Failed to add event to timetable: Event is already in timetable",
       };
     await insertAttendance(userId, event.id, event.schedules[0].id);
+
     revalidatePath("/timetable");
   } catch (error) {
     console.log(error);

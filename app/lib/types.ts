@@ -58,3 +58,15 @@ export type ExtendedAttendance = {
   attendeeId: string;
   event: ExtendedAttendanceEvent;
 };
+
+export type TimetableBlock = {
+  eventId: string;
+  scheduleId: string;
+  eventName: string;
+  scheduleName: string;
+  startTime: Date;
+  endTime: Date;
+  place: string;
+  isUser: boolean;
+  isCurrent: boolean;
+};

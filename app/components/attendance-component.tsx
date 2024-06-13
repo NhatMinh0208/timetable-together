@@ -5,9 +5,9 @@ import {
   ExtendedAttendanceSchedule,
 } from "@/app/lib/types";
 
-const ticksInDay = 24 * 60 * 60 * 1000;
+import { REMOVE_CMD, TICKS_IN_DAY } from "@/app/lib/constants";
 
-export function ScheduleCard({
+export function ScheduleButton({
   schedule,
   isActive,
   onClick,
@@ -20,7 +20,7 @@ export function ScheduleCard({
     <button
       className={clsx(
         "flex flex-col grow justify-center rounded-md px-2 py-1 \
-font-semibold leading-6 text-white shadow-sm \
+font-semibold leading-6 text-white shadow-sm text-left \
 focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
         {
@@ -34,11 +34,14 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
       {schedule.sessions.map((session) => {
         const originStartTime =
           (((session.startTime.getTime() - session.startDate.getTime()) %
-            ticksInDay) +
-            ticksInDay) %
-          ticksInDay;
+            TICKS_IN_DAY) +
+            TICKS_IN_DAY) %
+          TICKS_IN_DAY;
         const fullStartDate = new Date(
           session.startDate.getTime() + originStartTime,
+        );
+        const fullEndDate = new Date(
+          session.endDate.getTime() + originStartTime,
         );
         return (
           <p key={session.id}>
@@ -50,9 +53,21 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
             }
             {" - "}
             {session.endTime.toString().match(" ([0-9][0-9]:[0-9][0-9])")?.[1]}
-            {" - "}
+            {" @ "}
             {session.place}
-            {";"}
+            {" ("}
+            {
+              fullStartDate
+                .toString()
+                .match("^[a-zA-Z]* ([a-zA-Z]* [0-9]*) ")?.[1]
+            }
+            {" - "}
+            {
+              fullEndDate
+                .toString()
+                .match("^[a-zA-Z]* ([a-zA-Z]* [0-9]*) ")?.[1]
+            }
+            {")"}
           </p>
         );
       })}
@@ -78,7 +93,7 @@ export function AttendanceComponent({
     })
     .map((schedule) => {
       return (
-        <ScheduleCard
+        <ScheduleButton
           key={schedule.id}
           schedule={schedule}
           isActive={attendingSchedule == schedule.id}
@@ -92,7 +107,7 @@ export function AttendanceComponent({
     })
     .map((schedule) => {
       return (
-        <ScheduleCard
+        <ScheduleButton
           key={schedule.id}
           schedule={schedule}
           isActive={attendingSchedule == schedule.id}
@@ -112,7 +127,7 @@ focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
             "bg-red-500 hover:bg-red-400",
           )}
-          onClick={() => onClick("")}
+          onClick={() => onClick(REMOVE_CMD)}
         >
           Remove
         </button>

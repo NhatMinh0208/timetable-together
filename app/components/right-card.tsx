@@ -16,7 +16,7 @@ export function RightCard({
   return (
     <div
       className={
-        "flex flex-col w-1/5 mx-auto px-2 py-2 space-y-2 rounded-lg bg-slate-200 text-xs"
+        "flex flex-col h-full w-1/6 grow-0 mx-auto px-2 py-2 space-y-2 rounded-lg bg-slate-200 text-xs"
       }
     >
       <SearchBar />
