@@ -1,13 +1,15 @@
 "use client";
 
 import clsx from "clsx";
-import { TimetableBlock } from "../lib/types";
-import { weekdays } from "../lib/constants";
-
+import { TimetableBlock } from "@/app/lib/types";
+import { TICKS_IN_DAY, weekdays } from "@/app/lib/constants";
+import { TimetableDay } from "@/app/components/timetable-day";
 export function TimetableWindow({
+  window,
   blocks,
   handleAttendanceUpdate,
 }: {
+  window: Date;
   blocks: TimetableBlock[];
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {
@@ -27,25 +29,77 @@ export function TimetableWindow({
   }
   for (const day of blocksByDay) while (day.length < 2) day.push([]);
   return (
-    <div className="flex flex-row h-full w-full bg-slate-400 text-xs space-x-1 space-y-1 overflow-auto">
-      <div className="flex flex-col w-16 bg-slate-600">
+    <div className="flex flex-row text-xs overflow-auto">
+      <div className="flex flex-col w-16 shrink-0">
+        <div className={clsx("h-12 shrink-0")}></div>
         {blocksByDay.map((day, i) => {
           return (
             <div
               key={i}
-              className={clsx("bg-slate-100", {
-                "h-24": day.length === 2,
-                "h-36": day.length === 3,
-                "h-48": day.length === 4,
-                "h-60": day.length === 5,
-                "h-72": day.length === 6,
-                "h-84": day.length === 7,
-                "h-96": day.length >= 8,
-              })}
+              style={{
+                height: day.length * 72,
+              }}
+              className={clsx(
+                "border-slate-600 border-t-2 flex flex-col place-content-center text-center shrink-0",
+              )}
             >
-              {weekdays[i]}
-              {" - "}
-              {day.length}
+              <div className="text-sm">{weekdays[i]}</div>
+              <div className="text-xl">
+                {new Date(window.getTime() + TICKS_IN_DAY * i).getDate()}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex flex-col">
+        <div className={clsx("flex flex-row h-12 shrink-0")}>
+          {(() => {
+            const HOURS = [
+              "12AM",
+              "1AM",
+              "2AM",
+              "3AM",
+              "4AM",
+              "5AM",
+              "6AM",
+              "7AM",
+              "8AM",
+              "9AM",
+              "10AM",
+              "11AM",
+              "12PM",
+              "1PM",
+              "2PM",
+              "3PM",
+              "4PM",
+              "5PM",
+              "6PM",
+              "7PM",
+              "8PM",
+              "9PM",
+              "10PM",
+              "11PM",
+            ];
+            return HOURS.map((x) => {
+              return (
+                <div
+                  key={x}
+                  className="w-40 border-l-2 border-slate-300 align-bottom shrink-0"
+                >
+                  {x}
+                </div>
+              );
+            });
+          })()}
+        </div>
+
+        {blocksByDay.map((day, i) => {
+          return (
+            <div key={i}>
+              <TimetableDay
+                dayBlocks={day}
+                handleAttendanceUpdate={handleAttendanceUpdate}
+              />
             </div>
           );
         })}

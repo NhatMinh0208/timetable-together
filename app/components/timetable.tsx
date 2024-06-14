@@ -94,8 +94,6 @@ export function Timetable({
                   1 -
                   start.getTime()) %
                   (session.interval * TICKS_IN_DAY));
-          console.log(start);
-          console.log(end);
           for (
             blockTime;
             blockTime < end.getTime() &&
@@ -138,6 +136,7 @@ export function Timetable({
         handleRightArrow={setNextWeek}
       />
       <TimetableWindow
+        window={window}
         blocks={blocks}
         handleAttendanceUpdate={handleAttendanceUpdate}
       />
