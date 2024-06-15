@@ -27,11 +27,8 @@ export function TimetableDay({
         )}
       ></div>,
     );
-  console.log(dayBlocks);
   const blocks = dayBlocks.map((row, i) =>
     row.map((block, j) => {
-      console.log(block);
-
       return (
         <button
           key={i.toString() + " " + j.toString()}

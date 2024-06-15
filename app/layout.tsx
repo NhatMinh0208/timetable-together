@@ -4,10 +4,13 @@ import "./globals.css";
 import clsx from "clsx";
 import Image from "next/image";
 import Icon from "@/app/icon.svg";
-import { Logout } from "./components/logout";
+import {
+  Login,
+  Logout,
+  Register,
+  Timetable,
+} from "@/app/components/link-buttons";
 import { auth } from "@/auth";
-import { Login } from "@/app/components/login";
-import { Register } from "@/app/components/register";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,13 +42,15 @@ export default async function RootLayout({
               <>
                 <span className="text-2xl">{session?.user?.name}</span>
                 <span className="w-2"></span>
-                <Logout />
+                <Timetable labl="Timetable" />
+                <span className="w-2"></span>
+                <Logout labl="Sign out" />
               </>
             ) : (
               <>
-                <Login text={"Sign in"} />
+                <Login labl={"Sign in"} />
                 <span className="w-2"></span>
-                <Register text={"Register"} />
+                <Register labl={"Register"} />
               </>
             )}
           </div>
