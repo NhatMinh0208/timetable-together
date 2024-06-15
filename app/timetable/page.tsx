@@ -1,15 +1,14 @@
-import { auth } from "@/auth";
-import { Logout } from "@/app/components/logout";
-import { Timetable } from "@/app/components/timetable";
+// For some reason we cannot use Server Actions to fetch data from Client Components.
+// This is pretty stupid, but I guess we have to make-do with it.
+// The page component will be for fetching data only.
+// It will pass fetched data to the render component, which does the actual rendering of things.
+import { getUserAttendances } from "@/app/lib/actions";
+import Render from "./render";
 export default async function Page() {
-  const session = await auth();
-  return (
-    <main>
-      <p className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        Welcome, {session?.user.name}
-      </p>
-      <Timetable />
-      <Logout />
-    </main>
-  );
+  const attendances = await getUserAttendances();
+  return <Render attendances={attendances} />;
 }
+// 3:50
+// 2:00
+// 2:50
+// 3:00
