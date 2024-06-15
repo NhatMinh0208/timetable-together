@@ -1,13 +1,15 @@
 import Image from "next/image";
 import { signIn } from "@/auth";
 import Link from "next/link";
+import { Login } from "@/app/components/login";
+import { Register } from "@/app/components/register";
 
 export default function Page() {
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
-      <p>Welcome to Timetable Together</p>
-      <Link href="/login"> Login </Link>
-      <Link href="/register"> Register </Link>
+      <p className="text-2xl font-bold">Welcome to Timetable Together</p>
+      <Login text={"Sign in"} />
+      <Register text={"Create a new account"} />
       {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;

@@ -40,7 +40,7 @@ export default function Render({
   );
 
   return (
-    <main className="flex h-dvh w-dvw flex-row space-x-2 px-2 py-2">
+    <main className="flex h-full w-dvw flex-row space-x-2 px-2 py-2">
       <Timetable
         events={attendances.map((attendance) => attendance.event)}
         attendanceMap={attendanceMap}
