@@ -2,33 +2,41 @@
 
 import { passwordMatch, saltAndHashPassword } from "@/app/lib/password";
 import {
-  insertUserToDb,
-  getUserFromDb,
+  insertUser,
+  getUserFromEmail,
   getEventFromName,
   getAttendance,
   insertAttendance,
   getAttendancesByUserId,
   updateAttedance,
   removeAttendance,
+  getFollowsByFollowerId,
+  getUserFromNameOrEmail,
+  getFollow,
+  insertFollow,
+  getFollowsByFollowedId,
+  removeFollow,
+  updateFollowStatus,
 } from "@/app/lib/db";
-import { ExtendedAttendance, User } from "@/app/lib/types";
-import { auth } from "@/auth";
+import { ExtendedAttendance, FollowStatus, User } from "@/app/lib/types";
+import { auth, signOut } from "@/auth";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { STATUS_ACTIVE, STATUS_PENDING } from "./constants";
 export async function createUser(
   email: string,
   name: string,
   password: string,
 ) {
   const pwHash = await saltAndHashPassword(password);
-  await insertUserToDb(email, name, pwHash);
+  await insertUser(email, name, pwHash);
 }
 
 export async function authUser(
   email: string,
   password: string,
 ): Promise<User | null> {
-  const user = await getUserFromDb(email);
+  const user = await getUserFromEmail(email);
   if (user == null) throw new Error("User not found");
   if (await passwordMatch(password, user.password)) {
     return {
@@ -42,7 +50,7 @@ export async function authUser(
 }
 
 export async function getUser(email: string): Promise<User | null> {
-  const user = await getUserFromDb(email);
+  const user = await getUserFromEmail(email);
   if (user == null) throw new Error("User not found");
   return {
     id: user.id,
@@ -54,6 +62,19 @@ export async function getUser(email: string): Promise<User | null> {
 const AddAttendanceSchema = z.object({
   eventName: z.string(),
 });
+
+const AddFollowSchema = z.object({
+  user: z.string(),
+});
+
+export type AddFollowState =
+  | {
+      errors?: {
+        user?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
 
 export type AddAttendanceState =
   | {
@@ -75,7 +96,6 @@ export async function addAttendance(
         message: "Failed to add event to timetable: User is not logged in",
       };
     const userId = session?.user?.id ? session.user.id : "";
-    const eventName = formData.get("eventName");
     const fields = AddAttendanceSchema.safeParse({
       eventName: formData.get("eventName"),
     });
@@ -111,10 +131,57 @@ export async function addAttendance(
   }
 }
 
+export async function addFollowRequest(
+  prevState: AddFollowState,
+  formData: FormData,
+) {
+  try {
+    const session = await auth();
+    if (!session)
+      return {
+        message: "Failed to make follow request: User is not logged in",
+      };
+    const userId = session?.user?.id ? session.user.id : "";
+    const fields = AddFollowSchema.safeParse({
+      user: formData.get("user"),
+    });
+    if (!fields.success) {
+      return {
+        errors: fields.error.flatten().fieldErrors,
+        message: "Failed to make follow request: Form Error",
+      };
+    }
+    const followTarget = await getUserFromNameOrEmail(fields.data.user);
+    if (!followTarget)
+      return {
+        message: "Failed to make follow request: No such user exists",
+      };
+
+    const follow = await getFollow(userId, followTarget.id);
+    if (follow)
+      return {
+        message:
+          follow.status === STATUS_ACTIVE
+            ? "Failed to make follow request: Already following user"
+            : follow.status === STATUS_PENDING
+              ? "Failed to make follow request: Already made follow request to user"
+              : "Failed to make follow request: Follow in database (unknown status type)",
+      };
+    await insertFollow(userId, followTarget.id);
+
+    revalidatePath("/timetable");
+  } catch (error) {
+    console.log(error);
+    return {
+      message: "Failed to make follow request: Database Error",
+    };
+  }
+}
+
 export async function getUserAttendances(): Promise<ExtendedAttendance[]> {
   try {
     const session = await auth();
-    if (!session) {
+    if (!session?.user?.id) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
@@ -131,7 +198,7 @@ export async function updateUserAttendance(
 ): Promise<void> {
   try {
     const session = await auth();
-    if (!session) {
+    if (!session?.user?.id) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
@@ -146,7 +213,7 @@ export async function updateUserAttendance(
 export async function removeUserAttendance(eventId: string): Promise<void> {
   try {
     const session = await auth();
-    if (!session) {
+    if (!session?.user?.id) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
@@ -157,4 +224,81 @@ export async function removeUserAttendance(eventId: string): Promise<void> {
     console.log(error);
     return;
   }
+}
+
+export async function getUserFollows() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id;
+    return await getFollowsByFollowerId(userId);
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function getUserFollowers() {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    return await getFollowsByFollowedId(userId);
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function removeUserFollow(followerId: string, followedId: string) {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    if (followerId === userId || followedId === userId) {
+      await removeFollow(followerId, followedId);
+      revalidatePath("/timetable");
+      return;
+    } else {
+      throw new Error("User not authorized to remove follow");
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function updateUserFollowStatus(
+  followerId: string,
+  followedId: string,
+  status: FollowStatus,
+) {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    if (followerId === userId || followedId === userId) {
+      await updateFollowStatus(followerId, followedId, status);
+      revalidatePath("/timetable");
+      return;
+    } else {
+      throw new Error("User not authorized to update follow status");
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function signOutProper(formData: FormData) {
+  "use server";
+  await signOut({ redirectTo: "/login" });
 }

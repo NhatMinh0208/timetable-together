@@ -1,18 +1,16 @@
 "use client";
 import { clsx } from "clsx";
-import {
-  ExtendedAttendanceEvent,
-  ExtendedAttendanceSchedule,
-} from "@/app/lib/types";
+import { ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
 
-import { REMOVE_CMD, TICKS_IN_DAY } from "@/app/lib/constants";
+import { TICKS_IN_DAY } from "@/app/lib/constants";
+import { removeUserAttendance } from "../lib/actions";
 
 export function ScheduleButton({
   schedule,
   isActive,
   onClick,
 }: {
-  schedule: ExtendedAttendanceSchedule;
+  schedule: ExtendedSchedule;
   isActive: boolean;
   onClick: () => void;
 }) {
@@ -81,7 +79,7 @@ export function AttendanceComponent({
   isActive,
   onClick,
 }: {
-  event: ExtendedAttendanceEvent;
+  event: ExtendedEvent;
   attendingSchedule: string;
   isActive: boolean;
   onClick: (scheduleId: string) => void;
@@ -127,7 +125,7 @@ focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
             "bg-red-500 hover:bg-red-400",
           )}
-          onClick={() => onClick(REMOVE_CMD)}
+          onClick={() => removeUserAttendance(event.id)}
         >
           Remove
         </button>

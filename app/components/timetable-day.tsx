@@ -32,8 +32,10 @@ export function TimetableDay({
       return (
         <button
           key={i.toString() + " " + j.toString()}
-          onClick={() =>
-            handleAttendanceUpdate(block.eventId, block.scheduleId)
+          onClick={
+            block.isCurrentUser || block.eventIsActive
+              ? () => handleAttendanceUpdate(block.eventId, block.scheduleId)
+              : () => {}
           }
           style={{
             gridRowStart: i + 1,
@@ -53,12 +55,15 @@ font-semibold leading-1 text-white shadow-sm text-left \
 focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
             {
-              "bg-sky-300 hover:bg-sky-200": !block.isCurrent,
-              "bg-sky-500 hover:bg-sky-400": block.isCurrent,
+              "bg-sky-300 hover:bg-sky-200":
+                !block.isCurrentUser && block.eventIsActive,
+              "bg-sky-500 hover:bg-sky-400": !(
+                !block.isCurrentUser && block.eventIsActive
+              ),
             },
           )}
         >
-          <div>{block.eventName}</div>
+          <div className="truncate">{block.eventName}</div>
           <div>
             {"[" + block.scheduleName + "]"}{" "}
             {block.startTime.toString().match(" ([0-9][0-9]:[0-9][0-9])")?.[1]}
@@ -66,6 +71,7 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
             {block.endTime.toString().match(" ([0-9][0-9]:[0-9][0-9])")?.[1]}
           </div>
           <div>{block.place}</div>
+          <div className="text-wrap">{block.users.join(", ")}</div>
         </button>
       );
     }),
@@ -73,8 +79,8 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
   return (
     <div
       style={{
-        gridTemplateColumns: "repeat(96,40px)",
-        gridTemplateRows: "repeat(" + dayBlocks.length.toString() + ",72px)",
+        gridTemplateColumns: "repeat(96,60px)",
+        gridTemplateRows: "repeat(" + dayBlocks.length.toString() + ",80px)",
       }}
       className={clsx("grid")}
     >
