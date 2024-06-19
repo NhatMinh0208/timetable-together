@@ -3,5 +3,10 @@
     "**/target": true
   },
   "editor.detectIndentation": false,
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "search.exclude": {
+    "**/node_modules": false,
+    "**/node_modules/**": true
+  },
+  "search.useIgnoreFiles": true
 }

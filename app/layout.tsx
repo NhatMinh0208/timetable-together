@@ -5,6 +5,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Icon from "@/app/icon.svg";
 import {
+  Export,
   Login,
   Logout,
   Register,

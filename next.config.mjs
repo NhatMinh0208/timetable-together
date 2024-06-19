@@ -5,10 +5,9 @@
 const nextConfig = {
   webpack: (config, options) => {
     // console.log(options)
-    console.log(config.resolve.conditionNames);
-    // if (!config.resolve.conditionNames) config.resolve.conditionNames = []
-    // config.resolve.conditionNames.push('node')
-    console.log(config.resolve.conditionNames);
+    if (options.isServer) {
+      console.log(config.resolve.conditionNames);
+    }
     return config;
   },
 };
