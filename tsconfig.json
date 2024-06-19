@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
+    "customConditions": ["node"], // or "node"
+    "target": "ESNext",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

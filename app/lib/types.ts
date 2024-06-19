@@ -1,7 +1,13 @@
+import { STATUS_ACTIVE, STATUS_PENDING } from "@/app/lib/constants";
+
 export type User = {
   id: string;
   email: string;
   name: string;
+};
+
+export type UserWithStatus = User & {
+  status: FollowStatus;
 };
 
 export type Session = {
@@ -41,22 +47,22 @@ export type Follows = {
   pending: boolean;
 };
 
-export type ExtendedAttendanceSchedule = {
+export type ExtendedSchedule = {
   id: string;
   name: string;
   sessions: Session[];
 };
 
-export type ExtendedAttendanceEvent = {
+export type ExtendedEvent = {
   id: string;
   name: string;
-  schedules: ExtendedAttendanceSchedule[];
+  schedules: ExtendedSchedule[];
 };
 
 export type ExtendedAttendance = {
   scheduleId: string;
   attendeeId: string;
-  event: ExtendedAttendanceEvent;
+  event: ExtendedEvent;
 };
 
 export type TimetableBlock = {
@@ -67,6 +73,12 @@ export type TimetableBlock = {
   startTime: Date;
   endTime: Date;
   place: string;
-  isUser: boolean;
-  isCurrent: boolean;
+  isCurrentUser: boolean;
+  eventIsActive: boolean;
+  users: string[];
 };
+
+export type EventId = string;
+export type ScheduleId = string;
+export type UserId = string;
+export type FollowStatus = "pending" | "active";

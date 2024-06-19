@@ -31,13 +31,13 @@ export function TimetableWindow({
   return (
     <div className="flex flex-row text-xs overflow-auto">
       <div className="flex flex-col w-16 shrink-0">
-        <div className={clsx("h-12 shrink-0")}></div>
+        <div className={clsx("h-6 shrink-0")}></div>
         {blocksByDay.map((day, i) => {
           return (
             <div
               key={i}
               style={{
-                height: day.length * 72,
+                height: day.length * 80,
               }}
               className={clsx(
                 "border-slate-600 border-t-2 flex flex-col place-content-center text-center shrink-0",
@@ -52,7 +52,7 @@ export function TimetableWindow({
         })}
       </div>
       <div className="flex flex-col">
-        <div className={clsx("flex flex-row h-12 shrink-0")}>
+        <div className={clsx("flex flex-row h-6 shrink-0")}>
           {(() => {
             const HOURS = [
               "12AM",
@@ -84,7 +84,7 @@ export function TimetableWindow({
               return (
                 <div
                   key={x}
-                  className="w-40 border-l-2 border-slate-300 align-bottom shrink-0"
+                  className="w-60 border-l-2 border-slate-300 align-bottom shrink-0"
                 >
                   {x}
                 </div>

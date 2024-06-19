@@ -1,15 +1,13 @@
 "use client";
 import { AttendanceComponent } from "@/app/components/attendance-component";
-import { useCallback, useState } from "react";
-import { ExtendedAttendanceEvent } from "@/app/lib/types";
-import { updateUserAttendance } from "../lib/actions";
+import { ExtendedEvent } from "@/app/lib/types";
 export function AttendanceManager({
   events,
   attendanceMap,
   activeEvent,
   handleAttendanceUpdate,
 }: {
-  events: ExtendedAttendanceEvent[];
+  events: ExtendedEvent[];
   attendanceMap: { [eventId: string]: string };
   activeEvent: string;
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
