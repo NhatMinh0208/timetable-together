@@ -1,14 +1,14 @@
 "use server";
 
-import { PrismaClient, Prisma, Attendance } from "@prisma/client";
+import { Attendance } from "@prisma/client";
 import { createId10 } from "@/app/lib/cuid2";
 import {
   ExtendedAttendance,
   FollowStatus,
-  User,
   UserWithStatus,
 } from "@/app/lib/types";
-const prisma = new PrismaClient();
+
+import { prisma } from "@/app/lib/prisma";
 
 export async function getUserFromEmail(email: string) {
   return await prisma.user.findUnique({

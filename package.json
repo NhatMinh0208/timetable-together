@@ -12,6 +12,7 @@
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^5.15.0",
+    "@prisma/extension-pulse": "^1.1.0",
     "@tailwindcss/forms": "^0.5.7",
     "clsx": "^2.1.1",
     "next": "14.2.3",

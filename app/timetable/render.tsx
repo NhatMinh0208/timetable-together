@@ -2,7 +2,7 @@
 // This is pretty stupid, but I guess we have to make-do with it.
 // The page component will be for fetching data only.
 "use client";
-import { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { OverviewCard } from "@/app/components/overview-card";
 import { removeUserAttendance, updateUserAttendance } from "@/app/lib/actions";
 import {
@@ -16,6 +16,24 @@ import {
 } from "@/app/lib/types";
 import { Timetable } from "@/app/components/timetable";
 import { FollowCard } from "@/app/components/follow-card";
+
+function createInitialAttendanceMap(
+  attendanceLookup: Map<EventId, Map<ScheduleId, UserId[]>>,
+  currentUser: User,
+): { [eventId: EventId]: ScheduleId } {
+  const attendanceMapInit: { [eventId: EventId]: ScheduleId } = {};
+
+  for (const [eventId, eventMap] of attendanceLookup.entries()) {
+    for (const [scheduleId, users] of eventMap.entries()) {
+      for (const userId of users)
+        if (userId === currentUser.id) {
+          attendanceMapInit[eventId] = scheduleId;
+        }
+    }
+  }
+  return attendanceMapInit;
+}
+
 export default function Render({
   currentUser,
   userFollows,
@@ -33,13 +51,11 @@ export default function Render({
   scheduleLookup: Map<ScheduleId, ExtendedSchedule>;
   userLookup: Map<UserId, User>;
 }) {
-  const attendanceMapInit: { [eventId: EventId]: ScheduleId } = {};
   const userEvents: ExtendedEvent[] = [];
   for (const [eventId, eventMap] of attendanceLookup.entries()) {
     for (const [scheduleId, users] of eventMap.entries()) {
       for (const userId of users)
         if (userId === currentUser.id) {
-          attendanceMapInit[eventId] = scheduleId;
           const event = eventLookup.get(eventId);
           if (event) {
             userEvents.push(event);
@@ -48,7 +64,9 @@ export default function Render({
     }
   }
 
-  const [attendanceMap, setAttendanceMap] = useState(attendanceMapInit);
+  const [attendanceMap, setAttendanceMap] = useState(
+    createInitialAttendanceMap(attendanceLookup, currentUser),
+  );
   const [activeEvent, setActiveEvent] = useState("");
 
   const handleAttendanceUpdate = useCallback(
@@ -71,7 +89,6 @@ export default function Render({
     EventId,
     Map<ScheduleId, UserId[]>
   > = new Map();
-
   for (const [eventId, eventMap] of attendanceLookup.entries()) {
     for (const [scheduleId, users] of eventMap.entries()) {
       for (const userId of users)

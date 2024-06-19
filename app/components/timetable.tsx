@@ -83,7 +83,6 @@ export function Timetable({
   }, []);
 
   const blocks: TimetableBlock[] = [];
-
   for (const [eventId, eventMap] of attendanceLookup.entries()) {
     const event = eventLookup.get(eventId);
     if (!event)
