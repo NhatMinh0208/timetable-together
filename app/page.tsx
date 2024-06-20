@@ -5,25 +5,30 @@ import {
   Logout,
   Register,
 } from "@/app/components/link-buttons";
+import Icon from "@/app/icon.svg";
+import Image from "next/image";
 
 export default async function Page() {
   const session = await auth();
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
+    // <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <main className="flex min-h-full flex-col justify-center items-center p-24 space-y-5">
+      <Image src={Icon} alt="Logo" width={150} height={150}></Image>
       <p className="text-2xl font-bold">Welcome to Timetable Together</p>
       {session ? (
         <>
           <span className="text-2xl">{session?.user?.name}</span>
-          <span className="w-2"></span>
-          <Timetable labl="Go to timetable" />
-          <span className="w-2"></span>
-          <Logout labl="Sign out" />
+          <div className="flex flex-row space-x-2">
+            <Timetable labl="Go to timetable" />
+            <Logout labl="Sign out" />
+          </div>
         </>
       ) : (
         <>
-          <Login labl={"Sign in"} />
-          <span className="w-2"></span>
-          <Register labl={"Create a new account"} />
+          <div className="flex flex-row space-x-2">
+            <Login labl={"Sign in"} />
+            <Register labl={"Create a new account"} />
+          </div>
         </>
       )}
       {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">

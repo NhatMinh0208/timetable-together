@@ -12,6 +12,7 @@ import {
   Timetable,
 } from "@/app/components/link-buttons";
 import { auth } from "@/auth";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,9 +36,14 @@ export default async function RootLayout({
               "h-full px-2 py-2 space-y-2 rounded-lg bg-slate-200 flex flex-row align-middle"
             }
           >
-            <Image src={Icon} alt="Logo" width={50} height={50}></Image>
-            <span className="w-2"></span>
-            <span className="text-2xl">Timetable Together</span>
+            <Link
+              href="/"
+              className="h-full space-y-2 rounded-lg bg-slate-200 flex flex-row align-middle"
+            >
+              <Image src={Icon} alt="Logo" width={50} height={50}></Image>
+              <span className="w-2"></span>
+              <span className="text-2xl">Timetable Together</span>
+            </Link>
             <span className="grow"></span>
             {session ? (
               <>
