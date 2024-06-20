@@ -2,6 +2,7 @@
 import { EventSearchBar } from "@/app/components/search-bar";
 import { AttendanceManager } from "@/app/components/attendance-manager";
 import { ExtendedEvent } from "@/app/lib/types";
+import { Export } from "@/app/components/link-buttons";
 export function OverviewCard({
   events,
   attendanceMap,
@@ -26,6 +27,8 @@ export function OverviewCard({
         activeEvent={activeEvent}
         handleAttendanceUpdate={handleAttendanceUpdate}
       />
+
+      <Export labl="Export timetable" />
     </div>
   );
 }

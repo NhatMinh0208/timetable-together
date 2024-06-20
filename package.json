@@ -15,6 +15,7 @@
     "@prisma/extension-pulse": "^1.1.0",
     "@tailwindcss/forms": "^0.5.7",
     "clsx": "^2.1.1",
+    "ical-generator": "^7.1.0",
     "next": "14.2.3",
     "next-auth": "^5.0.0-beta.18",
     "react": "^18",

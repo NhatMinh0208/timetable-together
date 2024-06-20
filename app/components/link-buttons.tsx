@@ -46,7 +46,19 @@ export function Timetable({ labl }: { labl: string }) {
   return (
     <Link
       href={"/timetable"}
-      className="flex justify-center rounded-md bg-slate-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      className="flex mx-auto justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {labl}
+    </Link>
+  );
+}
+
+export function Export({ labl }: { labl: string }) {
+  return (
+    <Link
+      href={"/export"}
+      download={"timetable.ics"}
+      className="flex justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
     >
       {labl}
     </Link>
