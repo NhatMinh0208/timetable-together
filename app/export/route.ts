@@ -1,30 +1,16 @@
 import { auth } from "@/auth";
-import ical, { ICalCalendarMethod } from "ical-generator";
-import { Session } from "next-auth";
-import { getUserAttendances } from "../lib/actions";
-import { TICKS_IN_DAY } from "../lib/constants";
+import ical from "ical-generator";
+import { getUserAttendances } from "@/app/lib/actions";
+import { TICKS_IN_DAY } from "@/app/lib/constants";
 
-const calendar = ical({ name: "my first iCal" });
-
-// A method is required for outlook to display event as an invitation
-calendar.method(ICalCalendarMethod.REQUEST);
-
-const startTime = new Date();
-const endTime = new Date();
-endTime.setHours(startTime.getHours() + 1);
-calendar.createEvent({
-  start: startTime,
-  end: endTime,
-  summary: "Example Event",
-  description: "It works ;)",
-  location: "my room",
-  url: "http://sebbo.net/",
-});
-
-export async function GET() {
+export async function GET(req: Request) {
   const session = await auth();
-  if (!session) throw new Error("User is not logged in");
-  else {
+  if (!session) {
+    console.log("User is not logged in");
+    return new Response(null, {
+      status: 401,
+    });
+  } else {
     const calendar = ical({ name: session.user?.name + "'s Timetable" });
     const attendances = await getUserAttendances();
     for (const att of attendances) {

@@ -5,7 +5,12 @@
 import { getUserFollowers, getUserFollows } from "@/app/lib/actions";
 import Render from "./render";
 import { auth } from "@/auth";
-import { getAttendancesByUserIdMany, getEventMany } from "@/app/lib/db";
+import {
+  getAttendancesByUserIdMany,
+  getEventsFromName,
+  getEventMany,
+  getUsersFromNameOrEmail,
+} from "@/app/lib/db";
 import {
   EventId,
   ExtendedEvent,
@@ -14,6 +19,8 @@ import {
   User,
   UserId,
 } from "@/app/lib/types";
+import { GET } from "../api/event/route";
+import { NextRequest } from "next/server";
 
 const hashCode = (str: string, seed = 0) => {
   let h1 = 0xdeadbeef ^ seed,
@@ -31,7 +38,14 @@ const hashCode = (str: string, seed = 0) => {
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    eventQuery?: string;
+    userQuery?: string;
+  };
+}) {
   const attendanceLookup: Map<EventId, Map<ScheduleId, UserId[]>> = new Map();
   const eventLookup: Map<EventId, ExtendedEvent> = new Map();
   const scheduleLookup: Map<ScheduleId, ExtendedSchedule> = new Map();
@@ -74,9 +88,6 @@ export default async function Page() {
       .get(att.eventId)
       ?.get(att.scheduleId)
       ?.push(att.attendeeId);
-
-    console.log(att);
-    console.log(attendanceLookup.get(att.eventId)?.get(att.scheduleId));
   }
 
   const eventsToFetch: EventId[] = [];
@@ -86,12 +97,16 @@ export default async function Page() {
   for (const event of events) {
     eventLookup.set(event.id, event);
     for (const schedule of event.schedules) {
-      console.log(event);
-      console.log(schedule);
       scheduleLookup.set(schedule.id, schedule);
     }
   }
 
+  const eventSearchResults = searchParams?.eventQuery
+    ? await getEventsFromName(searchParams?.eventQuery, 5, false)
+    : [];
+  const userSearchResults = searchParams?.userQuery
+    ? await getUsersFromNameOrEmail(searchParams?.userQuery, 5, false)
+    : [];
   return (
     <Render
       currentUser={currentUser}
@@ -101,8 +116,10 @@ export default async function Page() {
       eventLookup={eventLookup}
       scheduleLookup={scheduleLookup}
       userLookup={userLookup}
+      eventSearchResults={eventSearchResults}
+      userSearchResults={userSearchResults}
       key={hashCode(attendances.join(" "))}
     />
   );
 }
-// 1:00
+// 1:40

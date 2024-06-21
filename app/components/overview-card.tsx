@@ -7,11 +7,15 @@ export function OverviewCard({
   events,
   attendanceMap,
   activeEvent,
+  eventSearchResults,
   handleAttendanceUpdate,
 }: {
   events: ExtendedEvent[];
   attendanceMap: { [eventId: string]: string };
   activeEvent: string;
+  eventSearchResults: {
+    name: string;
+  }[];
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {
   return (
@@ -20,7 +24,7 @@ export function OverviewCard({
         "flex flex-col h-full w-1/6 grow-0 mx-auto px-2 py-2 space-y-2 rounded-lg bg-slate-200 text-xs"
       }
     >
-      <EventSearchBar />
+      <EventSearchBar eventSearchResults={eventSearchResults} />
       <AttendanceManager
         events={events}
         attendanceMap={attendanceMap}

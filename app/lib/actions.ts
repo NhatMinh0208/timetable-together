@@ -4,14 +4,14 @@ import { passwordMatch, saltAndHashPassword } from "@/app/lib/password";
 import {
   insertUser,
   getUserFromEmail,
-  getEventFromName,
+  getEventsFromName,
   getAttendance,
   insertAttendance,
   getAttendancesByUserId,
   updateAttedance,
   removeAttendance,
   getFollowsByFollowerId,
-  getUserFromNameOrEmail,
+  getUsersFromNameOrEmail,
   getFollow,
   insertFollow,
   getFollowsByFollowedId,
@@ -105,11 +105,13 @@ export async function addAttendance(
         message: "Failed to add event to timetable: Form Error",
       };
     }
-    const event = await getEventFromName(fields.data.eventName);
+    const result = await getEventsFromName(fields.data.eventName, 1, true);
+    const event = result[0];
     if (!event)
       return {
         message: "Failed to add event to timetable: No such event exists",
       };
+
     if (event.schedules.length === 0)
       return {
         message: "Failed to add event to timetable: Event has no schedules",
@@ -151,12 +153,18 @@ export async function addFollowRequest(
         message: "Failed to make follow request: Form Error",
       };
     }
-    const followTarget = await getUserFromNameOrEmail(fields.data.user);
+
+    const result = await getUsersFromNameOrEmail(fields.data.user, 1, true);
+    const followTarget = result[0];
     if (!followTarget)
       return {
         message: "Failed to make follow request: No such user exists",
       };
-
+    if (userId == followTarget.id) {
+      return {
+        message: "Failed to make follow request: Cannot follow self",
+      };
+    }
     const follow = await getFollow(userId, followTarget.id);
     if (follow)
       return {

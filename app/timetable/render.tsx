@@ -42,6 +42,8 @@ export default function Render({
   eventLookup,
   scheduleLookup,
   userLookup,
+  eventSearchResults,
+  userSearchResults,
 }: {
   currentUser: User;
   userFollows: UserWithStatus[] | undefined;
@@ -50,6 +52,13 @@ export default function Render({
   eventLookup: Map<EventId, ExtendedEvent>;
   scheduleLookup: Map<ScheduleId, ExtendedSchedule>;
   userLookup: Map<UserId, User>;
+  eventSearchResults: {
+    name: string;
+  }[];
+  userSearchResults: {
+    name: string;
+    email: string;
+  }[];
 }) {
   const userEvents: ExtendedEvent[] = [];
   for (const [eventId, eventMap] of attendanceLookup.entries()) {
@@ -118,6 +127,7 @@ export default function Render({
         currentUser={currentUser}
         userFollows={userFollows}
         userFollowers={userFollowers}
+        userSearchResults={userSearchResults}
       />
       <Timetable
         currentUser={currentUser}
@@ -132,6 +142,7 @@ export default function Render({
         events={userEvents}
         attendanceMap={attendanceMap}
         activeEvent={activeEvent}
+        eventSearchResults={eventSearchResults}
         handleAttendanceUpdate={handleAttendanceUpdate}
       />
     </main>
