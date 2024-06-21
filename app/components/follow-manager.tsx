@@ -16,7 +16,7 @@ export function FollowComponent({
   key: number;
 }) {
   return (
-    <div className="text-sm" key={key}>
+    <div className="text-sm">
       <div>{otherUser.name}</div>
       <div>{otherUser.status}</div>
       <div className="flex flex-row w-4">

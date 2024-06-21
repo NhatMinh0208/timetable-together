@@ -17,18 +17,39 @@ export async function getUserFromEmail(email: string) {
     },
   });
 }
-export async function getUserFromNameOrEmail(user: string) {
-  return await prisma.user.findFirst({
+export async function getUsersFromNameOrEmail(
+  query: string,
+  limit: number,
+  exact: boolean,
+) {
+  const filterName = exact
+    ? {
+        name: query,
+      }
+    : {
+        name: {
+          contains: query,
+        },
+      };
+  const filterEmail = exact
+    ? {
+        email: query,
+      }
+    : {
+        email: {
+          contains: query,
+        },
+      };
+  return await prisma.user.findMany({
     where: {
-      OR: [
-        {
-          name: user,
-        },
-        {
-          email: user,
-        },
-      ],
+      OR: [filterName, filterEmail],
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+    take: limit,
   });
 }
 
@@ -52,20 +73,28 @@ export async function insertUser(
   }
 }
 
-export async function getEventFromName(name: string) {
-  return await prisma.event.findFirst({
-    where: {
-      name: name,
-    },
+export async function getEventsFromName(
+  name: string,
+  limit: number,
+  exact: boolean,
+) {
+  const filter = exact
+    ? {
+        name: name,
+      }
+    : {
+        name: {
+          contains: name,
+        },
+      };
+  return await prisma.event.findMany({
+    where: filter,
     select: {
       id: true,
       name: true,
-      schedules: {
-        select: {
-          id: true,
-        },
-      },
+      schedules: true,
     },
+    take: limit,
   });
 }
 export async function getEventMany(eventIds: string[]) {
