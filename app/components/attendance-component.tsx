@@ -43,7 +43,9 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
         );
         return (
           <p key={session.id}>
-            {fullStartDate.toString().match("^([a-zA-Z]*) ")?.[1]}{" "}
+            {session.interval % 7 === 0
+              ? fullStartDate.toString().match("^([a-zA-Z]*) ")?.[1] + " "
+              : " "}
             {
               session.startTime
                 .toString()
@@ -65,6 +67,11 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
                 .toString()
                 .match("^[a-zA-Z]* ([a-zA-Z]* [0-9]*) ")?.[1]
             }
+            {session.interval === 7 || session.interval === 1
+              ? ""
+              : session.interval % 7 === 0
+                ? ", every " + session.interval / 7 + " weeks"
+                : ", every " + session.interval + " days"}
             {")"}
           </p>
         );
