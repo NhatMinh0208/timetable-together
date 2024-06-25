@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Database fetches multiple events with prefix 1`] = `
+[
+  {
+    "id": "lhjy49xf7k",
+    "name": "CS2100 Computer Organisation - Lecture (Sem 1)",
+    "schedules": [
+      {
+        "eventId": "lhjy49xf7k",
+        "id": "u00qs9ozpsicmyfo",
+        "name": "1",
+      },
+      {
+        "eventId": "lhjy49xf7k",
+        "id": "i8q5b9om9ru7pg06",
+        "name": "2",
+      },
+    ],
+  },
+  {
+    "id": "owzbqvx5d6",
+    "name": "CS2100 Computer Organisation - Lecture (Sem 2)",
+    "schedules": [
+      {
+        "eventId": "owzbqvx5d6",
+        "id": "pcal9cps7owoyoqn",
+        "name": "1",
+      },
+      {
+        "eventId": "owzbqvx5d6",
+        "id": "ws8jf5oakb53l6gs",
+        "name": "2",
+      },
+    ],
+  },
+]
+`;

@@ -73,6 +73,19 @@ export async function insertUser(
   }
 }
 
+export async function removeUser(id: string) {
+  try {
+    await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    console.log("Database error!");
+    console.log(error);
+  }
+}
+
 export async function getEventsFromName(
   name: string,
   limit: number,
