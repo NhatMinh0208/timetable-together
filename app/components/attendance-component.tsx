@@ -4,6 +4,7 @@ import { ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
 
 import { TICKS_IN_DAY } from "@/app/lib/constants";
 import { removeUserAttendance } from "../lib/actions";
+import { hashCode } from "../lib/password";
 
 export function ScheduleButton({
   schedule,
@@ -14,6 +15,8 @@ export function ScheduleButton({
   isActive: boolean;
   onClick: () => void;
 }) {
+  const backgroundColor =
+    "#" + hashCode(schedule.id).toString(16).padStart(6, "0").slice(-6);
   return (
     <button
       className={clsx(
@@ -26,6 +29,7 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
           "bg-sky-500 hover:bg-sky-400": isActive,
         },
       )}
+      style={{ backgroundColor }}
       onClick={onClick}
     >
       <p>{"Schedule " + schedule.name}</p>
