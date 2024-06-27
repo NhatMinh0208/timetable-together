@@ -86,7 +86,7 @@ export async function getEventsFromName(
         AND: name.split(/\s+/).map((word) => ({
           name: {
             contains: word,
-            mode: "insensitive",
+            mode: "insensitive" as "default" | "insensitive",
           },
         })),
       };
