@@ -83,9 +83,12 @@ export async function getEventsFromName(
         name: name,
       }
     : {
-        name: {
-          contains: name,
-        },
+        AND: name.split(/\s+/).map((word) => ({
+          name: {
+            contains: word,
+            mode: "insensitive" as "default" | "insensitive",
+          },
+        })),
       };
   return await prisma.event.findMany({
     where: filter,
