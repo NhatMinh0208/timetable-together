@@ -78,19 +78,20 @@ export async function getEventsFromName(
   limit: number,
   exact: boolean,
 ) {
+  const filter = exact
+    ? {
+        name: name,
+      }
+    : {
+        AND: name.split(/\s+/).map((word) => ({
+          name: {
+            contains: word,
+            mode: "insensitive",
+          },
+        })),
+      };
   return await prisma.event.findMany({
-    where: exact
-      ? {
-          name: name,
-        }
-      : {
-          AND: name.split(/\s+/).map((word) => ({
-            name: {
-              contains: word,
-              mode: "insensitive",
-            },
-          })),
-        },
+    where: filter,
     select: {
       id: true,
       name: true,
