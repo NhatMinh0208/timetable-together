@@ -31,9 +31,16 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
           "bg-sky-500 hover:bg-sky-400": isActive,
         },
       )}
-      style={{ backgroundColor }}
       onClick={onClick}
     >
+      <style jsx>{`
+        button {
+          background-color: ${backgroundColor};
+        }
+        button:hover {
+          background-color: red;
+        }
+      `}</style>
       <p>{"Schedule " + schedule.name}</p>
       {schedule.sessions.map((session) => {
         const originStartTime =
