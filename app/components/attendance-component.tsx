@@ -27,8 +27,8 @@ font-semibold leading-6 text-white shadow-sm text-left \
 focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
         {
-          "bg-sky-300 hover:bg-sky-200": !isActive,
-          "bg-sky-500 hover:bg-sky-400": isActive,
+          "opacity-50 hover:opacity-75": !isActive,
+          "opacity-100 hover:opacity-90": isActive,
         },
       )}
       style={{ backgroundColor }}
