@@ -123,8 +123,15 @@ describe("Database events", () => {
     expect(res.length).toBe(1);
     expect(res[0].name).toBe(eventName);
   });
+
   it("fetches multiple events with prefix", async () => {
     const eventName = "CS9999 Introduction to Testing - Tutorial";
+    const res = await db.getEventsFromName(eventName, 5, false);
+    expect(res).toMatchSnapshot();
+  });
+
+  it("fetches multiple events with case insensitive words", async () => {
+    const eventName = "cs9999 sem 1";
     const res = await db.getEventsFromName(eventName, 5, false);
     expect(res).toMatchSnapshot();
   });
