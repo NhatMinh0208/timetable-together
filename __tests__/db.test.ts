@@ -35,6 +35,51 @@ describe("Database", () => {
   });
 });
 
+it("fetches users from name or email", async () => {
+  const testUsers = [
+    {
+      name: "user",
+      email: "user@test.example.com",
+      password: "password",
+    },
+    {
+      name: "用户",
+      email: "yonghu@test.example.org",
+      password: "mima1234",
+    },
+    {
+      name: "người dùng",
+      email: "nguoidung@test.example.org",
+      password: "matkhau1",
+    },
+  ];
+  testUsers.forEach(
+    async (user) => await db.insertUser(user.email, user.name, user.password),
+  );
+
+  const exactUsers = await db.getUsersFromNameOrEmail(
+    testUsers[0].name,
+    5,
+    true,
+  );
+  expect(exactUsers[0].email).toBe(testUsers[0].email);
+
+  const nonExactUsers = await db.getUsersFromNameOrEmail(
+    "@test.example.org",
+    5,
+    false,
+  );
+  expect(nonExactUsers.map((user) => user.name).sort()).toEqual(
+    testUsers
+      .slice(1)
+      .map((user) => user.name)
+      .sort(),
+  );
+
+  exactUsers.forEach((user) => db.removeUser(user.id));
+  nonExactUsers.forEach((user) => db.removeUser(user.id));
+});
+
 it("inserts, fetches and deletes an attendance", async () => {
   const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
   const testUser = (await db.getUserFromEmail("person1@gmail.com")) as User;
