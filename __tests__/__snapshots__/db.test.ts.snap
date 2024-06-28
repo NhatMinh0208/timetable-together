@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Database fetches multiple events with prefix 1`] = `
+exports[`Database events fetches multiple events with prefix 1`] = `
 [
   {
     "id": "lhjy49xf7k",

@@ -79,7 +79,7 @@ describe("Database users", () => {
   });
 });
 
-describe("Database", () => {
+describe("Database events", () => {
   it("fetches an event with exact name", async () => {
     const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
     const res = await db.getEventsFromName(eventName, 1, true);
@@ -93,22 +93,24 @@ describe("Database", () => {
   });
 });
 
-it("inserts, fetches and deletes an attendance", async () => {
-  const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
-  const testUser = (await db.getUserFromEmail("person1@gmail.com")) as User;
-  const event = (await db.getEventsFromName(eventName, 1, true))[0];
-  await db.insertAttendance(testUser.id, event.id, event.schedules[0]?.id);
-  const attendances = await db.getAttendancesByUserIdMany([testUser.id]);
-  expect(attendances).toContainEqual({
-    attendeeId: testUser.id,
-    eventId: event.id,
-    scheduleId: event.schedules[0]?.id,
-  });
-  await db.removeAttendance(testUser.id, event.id);
-  const newAttendances = await db.getAttendancesByUserIdMany([testUser.id]);
-  expect(newAttendances).not.toContainEqual({
-    attendeeId: testUser.id,
-    eventId: event.id,
-    scheduleId: event.schedules[0]?.id,
+describe("Database attendances", () => {
+  it("inserts, fetches and deletes an attendance", async () => {
+    const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
+    const testUser = (await db.getUserFromEmail("person1@gmail.com")) as User;
+    const event = (await db.getEventsFromName(eventName, 1, true))[0];
+    await db.insertAttendance(testUser.id, event.id, event.schedules[0]?.id);
+    const attendances = await db.getAttendancesByUserIdMany([testUser.id]);
+    expect(attendances).toContainEqual({
+      attendeeId: testUser.id,
+      eventId: event.id,
+      scheduleId: event.schedules[0]?.id,
+    });
+    await db.removeAttendance(testUser.id, event.id);
+    const newAttendances = await db.getAttendancesByUserIdMany([testUser.id]);
+    expect(newAttendances).not.toContainEqual({
+      attendeeId: testUser.id,
+      eventId: event.id,
+      scheduleId: event.schedules[0]?.id,
+    });
   });
 });
