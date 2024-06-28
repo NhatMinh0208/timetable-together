@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import * as db from "@/app/lib/db";
-import { User } from "@prisma/client";
+import { Event, User } from "@prisma/client";
+import { prisma } from "@/app/lib/prisma";
 
 const testUsers: User[] = [
   {
@@ -23,16 +24,52 @@ const testUsers: User[] = [
   },
 ];
 
+const testEventsOwner: User = {
+  id: "azp3d9mvgp",
+  name: "test events owner",
+  email: "testeventsowner@test.example.net",
+  password: "testeventsownerpassword",
+};
+
+const testEvents: Event[] = [
+  {
+    id: "lqjhl4j7ef",
+    name: "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    description: "A test case for fetching an event with an exact name",
+    ownerId: testEventsOwner.id,
+  },
+  {
+    id: "a96f907elk",
+    name: "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    description: "A test case for fetching multiple events with a prefix",
+    ownerId: testEventsOwner.id,
+  },
+  {
+    id: "ldz47asavc",
+    name: "CS9999 Introduction to Testing - Tutorial (Sem 2)",
+    description: "A test case for fetching multiple events with a prefix",
+    ownerId: testEventsOwner.id,
+  },
+];
+
 beforeAll(() => {
   testUsers.forEach((user) =>
     db
       .insertUser(user.email, user.name, user.password)
       .then((returnedUser) => (user.id = returnedUser?.id ?? user.id)),
   );
+
+  prisma.user
+    .create({ data: testEventsOwner })
+    .then(() => prisma.event.createMany({ data: testEvents }));
 });
 
 afterAll(() => {
   testUsers.forEach((user) => db.removeUser(user.id));
+
+  prisma.event
+    .deleteMany({ where: { id: { in: testEvents.map((event) => event.id) } } })
+    .then(() => prisma.user.delete({ where: testEventsOwner }));
 });
 
 describe("Database users", () => {
