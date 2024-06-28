@@ -68,14 +68,16 @@ describe("Database", () => {
   });
 });
 
-it("fetches users from name or email", async () => {
+it("fetches users based on exact name", async () => {
   const exactUsers = await db.getUsersFromNameOrEmail(
     testUsers[0].name,
     5,
     true,
   );
   expect(exactUsers[0].email).toBe(testUsers[0].email);
+});
 
+it("fetches users based on non-exact email", async () => {
   const nonExactUsers = await db.getUsersFromNameOrEmail(
     "@test.example.org",
     5,
