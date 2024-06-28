@@ -2,6 +2,39 @@ import "@testing-library/jest-dom";
 import * as db from "@/app/lib/db";
 import { User } from "@prisma/client";
 
+const testUsers: User[] = [
+  {
+    id: "",
+    name: "user",
+    email: "user@test.example.com",
+    password: "password",
+  },
+  {
+    id: "",
+    name: "用户",
+    email: "yonghu@test.example.org",
+    password: "mima1234",
+  },
+  {
+    id: "",
+    name: "người dùng",
+    email: "nguoidung@test.example.org",
+    password: "matkhau1",
+  },
+];
+
+beforeAll(() => {
+  testUsers.forEach((user) =>
+    db
+      .insertUser(user.email, user.name, user.password)
+      .then((returnedUser) => (user.id = returnedUser?.id ?? user.id)),
+  );
+});
+
+afterAll(() => {
+  testUsers.forEach((user) => db.removeUser(user.id));
+});
+
 describe("Database", () => {
   it("fetches an event with exact name", async () => {
     const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
@@ -36,32 +69,6 @@ describe("Database", () => {
 });
 
 it("fetches users from name or email", async () => {
-  const testUsers: User[] = [
-    {
-      id: "",
-      name: "user",
-      email: "user@test.example.com",
-      password: "password",
-    },
-    {
-      id: "",
-      name: "用户",
-      email: "yonghu@test.example.org",
-      password: "mima1234",
-    },
-    {
-      id: "",
-      name: "người dùng",
-      email: "nguoidung@test.example.org",
-      password: "matkhau1",
-    },
-  ];
-  testUsers.forEach((user) =>
-    db
-      .insertUser(user.email, user.name, user.password)
-      .then((returnedUser) => (user.id = returnedUser?.id ?? user.id)),
-  );
-
   const exactUsers = await db.getUsersFromNameOrEmail(
     testUsers[0].name,
     5,
@@ -80,8 +87,6 @@ it("fetches users from name or email", async () => {
       .map((user) => user.name)
       .sort(),
   );
-
-  testUsers.forEach((user) => db.removeUser(user.id));
 });
 
 it("inserts, fetches and deletes an attendance", async () => {
