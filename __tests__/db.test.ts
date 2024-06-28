@@ -35,20 +35,8 @@ afterAll(() => {
   testUsers.forEach((user) => db.removeUser(user.id));
 });
 
-describe("Database", () => {
-  it("fetches an event with exact name", async () => {
-    const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
-    const res = await db.getEventsFromName(eventName, 1, true);
-    expect(res.length).toBe(1);
-    expect(res[0].name).toBe(eventName);
-  });
-  it("fetches multiple events with prefix", async () => {
-    const eventName = "CS2100 Computer Organisation - Lecture";
-    const res = await db.getEventsFromName(eventName, 5, false);
-    expect(res).toMatchSnapshot();
-  });
-
-  it("inserts, fetches and deletes an user", async () => {
+describe("Database users", () => {
+  it("inserts, fetches and deletes a user", async () => {
     const testUser: User = {
       id: "",
       name: "TestUser123",
@@ -66,29 +54,43 @@ describe("Database", () => {
     const removedUser = await db.getUserFromEmail(testUser.email);
     expect(removedUser).toBeFalsy();
   });
+
+  it("fetches users based on exact name", async () => {
+    const exactUsers = await db.getUsersFromNameOrEmail(
+      testUsers[0].name,
+      5,
+      true,
+    );
+    expect(exactUsers[0].email).toBe(testUsers[0].email);
+  });
+
+  it("fetches users based on non-exact email", async () => {
+    const nonExactUsers = await db.getUsersFromNameOrEmail(
+      "@test.example.org",
+      5,
+      false,
+    );
+    expect(nonExactUsers.map((user) => user.name).sort()).toEqual(
+      testUsers
+        .slice(1)
+        .map((user) => user.name)
+        .sort(),
+    );
+  });
 });
 
-it("fetches users based on exact name", async () => {
-  const exactUsers = await db.getUsersFromNameOrEmail(
-    testUsers[0].name,
-    5,
-    true,
-  );
-  expect(exactUsers[0].email).toBe(testUsers[0].email);
-});
-
-it("fetches users based on non-exact email", async () => {
-  const nonExactUsers = await db.getUsersFromNameOrEmail(
-    "@test.example.org",
-    5,
-    false,
-  );
-  expect(nonExactUsers.map((user) => user.name).sort()).toEqual(
-    testUsers
-      .slice(1)
-      .map((user) => user.name)
-      .sort(),
-  );
+describe("Database", () => {
+  it("fetches an event with exact name", async () => {
+    const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
+    const res = await db.getEventsFromName(eventName, 1, true);
+    expect(res.length).toBe(1);
+    expect(res[0].name).toBe(eventName);
+  });
+  it("fetches multiple events with prefix", async () => {
+    const eventName = "CS2100 Computer Organisation - Lecture";
+    const res = await db.getEventsFromName(eventName, 5, false);
+    expect(res).toMatchSnapshot();
+  });
 });
 
 it("inserts, fetches and deletes an attendance", async () => {
