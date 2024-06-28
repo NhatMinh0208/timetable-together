@@ -36,25 +36,30 @@ describe("Database", () => {
 });
 
 it("fetches users from name or email", async () => {
-  const testUsers = [
+  const testUsers: User[] = [
     {
+      id: "",
       name: "user",
       email: "user@test.example.com",
       password: "password",
     },
     {
+      id: "",
       name: "用户",
       email: "yonghu@test.example.org",
       password: "mima1234",
     },
     {
+      id: "",
       name: "người dùng",
       email: "nguoidung@test.example.org",
       password: "matkhau1",
     },
   ];
-  testUsers.forEach(
-    async (user) => await db.insertUser(user.email, user.name, user.password),
+  testUsers.forEach((user) =>
+    db
+      .insertUser(user.email, user.name, user.password)
+      .then((returnedUser) => (user.id = returnedUser?.id ?? user.id)),
   );
 
   const exactUsers = await db.getUsersFromNameOrEmail(
@@ -76,8 +81,7 @@ it("fetches users from name or email", async () => {
       .sort(),
   );
 
-  exactUsers.forEach((user) => db.removeUser(user.id));
-  nonExactUsers.forEach((user) => db.removeUser(user.id));
+  testUsers.forEach((user) => db.removeUser(user.id));
 });
 
 it("inserts, fetches and deletes an attendance", async () => {

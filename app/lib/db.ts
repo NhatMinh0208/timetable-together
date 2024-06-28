@@ -59,7 +59,7 @@ export async function insertUser(
   password: string,
 ) {
   try {
-    await prisma.user.create({
+    return await prisma.user.create({
       data: {
         id: createId10(),
         email: email,
