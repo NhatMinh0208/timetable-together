@@ -118,13 +118,13 @@ describe("Database users", () => {
 
 describe("Database events", () => {
   it("fetches an event with exact name", async () => {
-    const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
+    const eventName = testEvents[0].name;
     const res = await db.getEventsFromName(eventName, 1, true);
     expect(res.length).toBe(1);
     expect(res[0].name).toBe(eventName);
   });
   it("fetches multiple events with prefix", async () => {
-    const eventName = "CS2100 Computer Organisation - Lecture";
+    const eventName = "CS9999 Introduction to Testing - Tutorial";
     const res = await db.getEventsFromName(eventName, 5, false);
     expect(res).toMatchSnapshot();
   });
