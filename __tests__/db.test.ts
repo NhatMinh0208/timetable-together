@@ -3,6 +3,8 @@ import * as db from "@/app/lib/db";
 import { Event, User } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
 
+// test data
+
 const testUsers: User[] = [
   {
     id: "",
@@ -52,24 +54,39 @@ const testEvents: Event[] = [
   },
 ];
 
+// initialization and cleanup for this suite
+
 beforeAll(() => {
+  const jobs: Promise<any>[] = [];
   testUsers.forEach((user) =>
-    db
-      .insertUser(user.email, user.name, user.password)
-      .then((returnedUser) => (user.id = returnedUser?.id ?? user.id)),
+    jobs.push(
+      db
+        .insertUser(user.email, user.name, user.password)
+        .then((returnedUser) => (user.id = returnedUser?.id ?? user.id)),
+    ),
   );
 
-  prisma.user
-    .create({ data: testEventsOwner })
-    .then(() => prisma.event.createMany({ data: testEvents }));
+  jobs.push(
+    prisma.user
+      .create({ data: testEventsOwner })
+      .then(async () => prisma.event.createMany({ data: testEvents })),
+  );
+
+  return Promise.all(jobs);
 });
 
 afterAll(() => {
-  testUsers.forEach((user) => db.removeUser(user.id));
+  const jobs: Promise<any>[] = [];
+  testUsers.forEach((user) => jobs.push(db.removeUser(user.id)));
 
-  prisma.event
-    .deleteMany({ where: { id: { in: testEvents.map((event) => event.id) } } })
-    .then(() => prisma.user.delete({ where: testEventsOwner }));
+  jobs.push(
+    prisma.event
+      .deleteMany({
+        where: { id: { in: testEvents.map((event) => event.id) } },
+      })
+      .then(() => prisma.user.delete({ where: testEventsOwner })),
+  );
+  return Promise.all(jobs);
 });
 
 describe("Database users", () => {
