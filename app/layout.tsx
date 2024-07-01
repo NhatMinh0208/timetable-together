@@ -30,7 +30,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={clsx(inter.className, "h-dvh w-dvw")}>
-        <div className="w-dvw h-[8dvh] px-2 pt-2 pb-0 grow-0">
+        <div className="w-dvw px-2 pt-2 pb-0 grow-0">
           <div
             className={
               "h-full px-2 py-2 space-y-2 rounded-lg bg-slate-200 flex flex-row align-middle"
