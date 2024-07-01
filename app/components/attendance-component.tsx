@@ -1,19 +1,24 @@
 "use client";
 import { clsx } from "clsx";
-import { ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
+import { EventId, ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
 
 import { TICKS_IN_DAY } from "@/app/lib/constants";
 import { removeUserAttendance } from "../lib/actions";
+import { hashCode } from "../lib/password";
 
 export function ScheduleButton({
   schedule,
+  eventId,
   isActive,
   onClick,
 }: {
   schedule: ExtendedSchedule;
+  eventId: EventId;
   isActive: boolean;
   onClick: () => void;
 }) {
+  const backgroundColor =
+    "#" + hashCode(eventId).toString(16).padStart(6, "0").slice(-6);
   return (
     <button
       className={clsx(
@@ -22,10 +27,11 @@ font-semibold leading-6 text-white shadow-sm text-left \
 focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
         {
-          "bg-sky-300 hover:bg-sky-200": !isActive,
-          "bg-sky-500 hover:bg-sky-400": isActive,
+          "opacity-50 hover:opacity-75": !isActive,
+          "opacity-100 hover:opacity-90": isActive,
         },
       )}
+      style={{ backgroundColor }}
       onClick={onClick}
     >
       <p>{"Schedule " + schedule.name}</p>
@@ -101,6 +107,7 @@ export function AttendanceComponent({
         <ScheduleButton
           key={schedule.id}
           schedule={schedule}
+          eventId={event.id}
           isActive={attendingSchedule == schedule.id}
           onClick={() => onClick(schedule.id)}
         />
@@ -115,6 +122,7 @@ export function AttendanceComponent({
         <ScheduleButton
           key={schedule.id}
           schedule={schedule}
+          eventId={event.id}
           isActive={attendingSchedule == schedule.id}
           onClick={() => onClick(schedule.id)}
         />
