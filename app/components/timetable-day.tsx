@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { TimetableBlock } from "@/app/lib/types";
 import { TICKS_IN_DAY, weekdays } from "@/app/lib/constants";
+import { hashCode } from "../lib/password";
 
 export function TimetableDay({
   startRow,
@@ -31,6 +32,8 @@ export function TimetableDay({
     );
   const blocks = dayBlocks.map((row, i) =>
     row.map((block, j) => {
+      const backgroundColor =
+        "#" + hashCode(block.eventId).toString(16).padStart(6, "0").slice(-6);
       return (
         <button
           key={i.toString() + " " + j.toString()}
@@ -50,6 +53,8 @@ export function TimetableDay({
               block.endTime.getHours() * 4 +
               block.endTime.getMinutes() / 15 +
               1,
+            backgroundColor,
+            zIndex: 1,
           }}
           className={clsx(
             "truncate justify-center rounded-md px-1 \
@@ -57,9 +62,9 @@ font-semibold leading-1 text-white shadow-sm text-left \
 focus-visible:outline focus-visible:outline-2 \
 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
             {
-              "bg-sky-300 hover:bg-sky-200":
+              "opacity-50 hover:opacity-75":
                 !block.isCurrentUser && block.eventIsActive,
-              "bg-sky-500 hover:bg-sky-400": !(
+              "opacity-100 hover:opacity-90": !(
                 !block.isCurrentUser && block.eventIsActive
               ),
             },
