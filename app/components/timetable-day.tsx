@@ -6,9 +6,11 @@ import { TICKS_IN_DAY, weekdays } from "@/app/lib/constants";
 import { hashCode } from "../lib/password";
 
 export function TimetableDay({
+  startRow,
   dayBlocks,
   handleAttendanceUpdate,
 }: {
+  startRow: number;
   dayBlocks: TimetableBlock[][];
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {
@@ -24,7 +26,7 @@ export function TimetableDay({
           gridColumnEnd: j * 4 + 5,
         }}
         className={clsx(
-          "border-t-2 border-l-2 border-l-slate-300 border-t-slate-600",
+          "border-t-2 border-l-2 border-l-slate-300 border-t-slate-300",
         )}
       ></div>,
     );
@@ -83,6 +85,10 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
   return (
     <div
       style={{
+        gridRowStart: startRow + 2,
+        gridColumnStart: 2,
+        gridRowEnd: startRow + dayBlocks.length + 2,
+        gridColumnEnd: 98,
         gridTemplateColumns: "repeat(96,60px)",
         gridTemplateRows: "repeat(" + dayBlocks.length.toString() + ",80px)",
       }}
