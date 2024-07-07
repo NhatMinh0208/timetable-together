@@ -58,6 +58,7 @@ export function TimetableWindow({
               gridColumnStart: 1,
               gridRowEnd: cnt1 + 2,
               gridColumnEnd: 2,
+              zIndex: 100,
             }}
             className={clsx(
               "bg-slate-200 border-t-slate-600 border-t-2 border-r-slate-600 border-r-2 place-content-center text-center shrink-0 sticky left-0",
@@ -105,6 +106,7 @@ export function TimetableWindow({
                 gridColumnStart: i * 4 + 2,
                 gridRowEnd: 2,
                 gridColumnEnd: i * 4 + 3,
+                zIndex: 100,
               }}
               key={x}
               className="bg-slate-200 w-60 border-l-2 border-l-slate-600 border-b-2 border-b-slate-600 align-bottom shrink-0 sticky top-0"

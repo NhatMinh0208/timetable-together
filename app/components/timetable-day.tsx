@@ -54,6 +54,7 @@ export function TimetableDay({
               block.endTime.getMinutes() / 15 +
               1,
             backgroundColor,
+            zIndex: 1,
           }}
           className={clsx(
             "truncate justify-center rounded-md px-1 \
