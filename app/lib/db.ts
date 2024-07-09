@@ -59,12 +59,25 @@ export async function insertUser(
   password: string,
 ) {
   try {
-    await prisma.user.create({
+    return await prisma.user.create({
       data: {
         id: createId10(),
         email: email,
         name: name,
         password: password,
+      },
+    });
+  } catch (error) {
+    console.log("Database error!");
+    console.log(error);
+  }
+}
+
+export async function removeUser(id: string) {
+  try {
+    await prisma.user.delete({
+      where: {
+        id: id,
       },
     });
   } catch (error) {
@@ -83,9 +96,12 @@ export async function getEventsFromName(
         name: name,
       }
     : {
-        name: {
-          contains: name,
-        },
+        AND: name.split(/\s+/).map((word) => ({
+          name: {
+            contains: word,
+            mode: "insensitive" as "default" | "insensitive",
+          },
+        })),
       };
   return await prisma.event.findMany({
     where: filter,

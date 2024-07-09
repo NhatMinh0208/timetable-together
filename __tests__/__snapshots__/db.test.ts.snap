@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Database events fetches multiple events with case insensitive words 1`] = `
+[
+  {
+    "id": "a96f907elk",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "schedules": [],
+  },
+  {
+    "id": "lqjhl4j7ef",
+    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    "schedules": [],
+  },
+]
+`;
+
+exports[`Database events fetches multiple events with prefix 1`] = `
+[
+  {
+    "id": "a96f907elk",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "schedules": [],
+  },
+  {
+    "id": "ldz47asavc",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 2)",
+    "schedules": [],
+  },
+]
+`;

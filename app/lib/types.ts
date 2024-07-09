@@ -1,11 +1,6 @@
 import { STATUS_ACTIVE, STATUS_PENDING } from "@/app/lib/constants";
-
-export type User = {
-  id: string;
-  email: string;
-  name: string;
-};
-
+import { User as PrismaUser } from "@prisma/client";
+export type User = Omit<PrismaUser, "password">;
 export type UserWithStatus = User & {
   status: FollowStatus;
 };
