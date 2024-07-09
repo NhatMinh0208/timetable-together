@@ -29,7 +29,7 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <body className={clsx(inter.className, "h-dvh w-dvw")}>
+      <body className={clsx(inter.className, "h-dvh w-dvw flex flex-col")}>
         <div className="w-dvw px-2 pt-2 pb-0 grow-0">
           <div
             className={
@@ -62,7 +62,7 @@ export default async function RootLayout({
             )}
           </div>
         </div>
-        <div className="w-dvw h-[92dvh]  grow-0">{children}</div>
+        <div className="w-dvw min-h-0 grow">{children}</div>
       </body>
     </html>
   );
