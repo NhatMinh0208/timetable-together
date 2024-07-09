@@ -57,7 +57,6 @@ export default function Render({
   }[];
   userSearchResults: {
     name: string;
-    email: string;
   }[];
 }) {
   const userEvents: ExtendedEvent[] = [];

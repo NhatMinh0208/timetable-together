@@ -41,7 +41,6 @@ export async function getUsersFromNameOrEmail(
     select: {
       id: true,
       name: true,
-      email: true,
     },
     take: limit,
   });
