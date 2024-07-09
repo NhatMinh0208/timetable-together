@@ -31,15 +31,9 @@ export async function getUsersFromNameOrEmail(
           contains: query,
         },
       };
-  const filterEmail = exact
-    ? {
-        email: query,
-      }
-    : {
-        email: {
-          contains: query,
-        },
-      };
+  const filterEmail = {
+    email: query,
+  };
   return await prisma.user.findMany({
     where: {
       OR: [filterName, filterEmail],
@@ -47,7 +41,6 @@ export async function getUsersFromNameOrEmail(
     select: {
       id: true,
       name: true,
-      email: true,
     },
     take: limit,
   });
