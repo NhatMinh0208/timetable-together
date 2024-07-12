@@ -30,11 +30,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={clsx(inter.className, "flex h-dvh flex-col")}>
-        <div className="flex rounded-lg bg-slate-200">
+        <header className="mx-2 mt-2 flex items-center rounded-lg bg-slate-200 p-2">
           <Link
-              href="/"
+            href="/"
               className="h-full space-y-2 rounded-lg bg-slate-200 flex flex-row align-middle"
-            >
+          >
             <Image src={Icon} alt="Logo" width={50} height={50}></Image>
             <span className="w-2"></span>
             <span className="text-2xl">Timetable Together</span>
@@ -55,7 +55,7 @@ export default async function RootLayout({
               <Register labl={"Register"} />
             </>
           )}
-        </div>
+        </header>
         <div className="w-dvw min-h-0 grow">{children}</div>
       </body>
     </html>
