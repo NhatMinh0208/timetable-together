@@ -31,11 +31,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={clsx(inter.className, "flex h-dvh flex-col")}>
         <header className="mx-2 mt-2 flex items-center gap-2 rounded-lg bg-slate-200 p-2">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="mr-auto flex items-center gap-2">
             <Image src={Icon} alt="Logo" width={50} height={50}></Image>
             <span className="text-2xl">Timetable Together</span>
           </Link>
-          <span className="grow"></span>
           {session ? (
             <>
               <span className="text-2xl">{session?.user?.name}</span>
