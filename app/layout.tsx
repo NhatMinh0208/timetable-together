@@ -30,42 +30,27 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <body className={clsx(inter.className, "h-dvh w-dvw flex flex-col")}>
-        <div className="w-dvw px-2 pt-2 pb-0 grow-0">
-          <div
-            className={
-              "h-full px-2 py-2 space-y-2 rounded-lg bg-slate-200 flex flex-row align-middle"
-            }
-          >
-            <Link
-              href="/"
-              className="h-full space-y-2 rounded-lg bg-slate-200 flex flex-row align-middle"
-            >
-              <Image src={Icon} alt="Logo" width={50} height={50}></Image>
-              <span className="w-2"></span>
-              <span className="text-2xl">Timetable Together</span>
-            </Link>
-            <span className="grow"></span>
-            {session ? (
-              <>
-                <span className="text-2xl">{session?.user?.name}</span>
-                <span className="w-2"></span>
-                <Timetable labl="Timetable" />
-                <span className="w-2"></span>
-                <MyEvents labl="Manage events" />
-                <span className="w-2"></span>
-                <Logout labl="Sign out" />
-              </>
-            ) : (
-              <>
-                <Login labl={"Sign in"} />
-                <span className="w-2"></span>
-                <Register labl={"Register"} />
-              </>
-            )}
-          </div>
-        </div>
-        <div className="w-dvw min-h-0 grow">{children}</div>
+      <body className={clsx(inter.className, "flex h-dvh flex-col")}>
+        <header className="mx-2 mt-2 flex items-center gap-2 rounded-lg bg-slate-200 p-2">
+          <Link href="/" className="mr-auto flex items-center gap-2">
+            <Image src={Icon} alt="Logo" width={50} height={50}></Image>
+            <h1 className="text-2xl">Timetable Together</h1>
+          </Link>
+          {session ? (
+            <>
+              <h2 className="text-2xl">{session?.user?.name}</h2>
+              <Timetable labl="Timetable" />
+              <MyEvents labl="Manage events" />
+              <Logout labl="Sign out" />
+            </>
+          ) : (
+            <>
+              <Login labl={"Sign in"} />
+              <Register labl={"Register"} />
+            </>
+          )}
+        </header>
+        <main className="min-h-0 grow">{children}</main>
       </body>
     </html>
   );
