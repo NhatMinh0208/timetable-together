@@ -13,7 +13,6 @@ export function FollowCard({
   userFollowers: UserWithStatus[] | undefined;
   userSearchResults: {
     name: string;
-    email: string;
   }[];
 }) {
   return (

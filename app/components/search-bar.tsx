@@ -87,7 +87,6 @@ export function UserSearchBar({
 }: {
   userSearchResults: {
     name: string;
-    email: string;
   }[];
 }) {
   const initialState: AddFollowState = {};
@@ -142,7 +141,6 @@ export function UserSearchBar({
           }}
         >
           <div>{result.name}</div>
-          <div>{result.email}</div>
         </button>
       ))}
 
