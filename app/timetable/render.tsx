@@ -54,6 +54,9 @@ export default function Render({
   userLookup: Map<UserId, User>;
   eventSearchResults: {
     name: string;
+    owner: {
+      name: string;
+    }
   }[];
   userSearchResults: {
     name: string;

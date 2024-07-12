@@ -14,6 +14,9 @@ export function EventSearchBar({
 }: {
   eventSearchResults: {
     name: string;
+    owner: {
+      name: string;
+    }
   }[];
 }) {
   const initialState: AddAttendanceState = {};
@@ -57,7 +60,7 @@ export function EventSearchBar({
       </div>
       {eventSearchResults.map((result, i) => (
         <button
-          className="rounded-md border-2 w-full h-10 border-slate-400 bg-slate-200 hover:bg-slate-300"
+          className="rounded-md border-2 w-full h-15 border-slate-400 bg-slate-200 hover:bg-slate-300"
           key={i}
           formAction={() => {
             const payload = new FormData();
@@ -66,7 +69,12 @@ export function EventSearchBar({
             handleSearch("");
           }}
         >
-          {result.name}
+          <div className="font-semibold">
+            {result.name}
+          </div>
+          <div>
+            {result.owner.name}
+          </div>
         </button>
       ))}
       <div>
@@ -140,7 +148,7 @@ export function UserSearchBar({
             handleSearch("");
           }}
         >
-          <div>{result.name}</div>
+          <div className="font-semibold">{result.name}</div>
         </button>
       ))}
 

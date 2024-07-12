@@ -104,6 +104,11 @@ export async function getEventsFromName(
       id: true,
       name: true,
       schedules: true,
+      owner: {
+        select: {
+          name: true
+        }
+      }
     },
     take: limit,
   });

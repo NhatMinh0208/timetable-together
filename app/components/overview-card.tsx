@@ -15,6 +15,9 @@ export function OverviewCard({
   activeEvent: string;
   eventSearchResults: {
     name: string;
+    owner: {
+      name: string;
+    }
   }[];
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {
