@@ -33,11 +33,11 @@ export default async function RootLayout({
         <header className="mx-2 mt-2 flex items-center gap-2 rounded-lg bg-slate-200 p-2">
           <Link href="/" className="mr-auto flex items-center gap-2">
             <Image src={Icon} alt="Logo" width={50} height={50}></Image>
-            <span className="text-2xl">Timetable Together</span>
+            <h1 className="text-2xl">Timetable Together</h1>
           </Link>
           {session ? (
             <>
-              <span className="text-2xl">{session?.user?.name}</span>
+              <h2 className="text-2xl">{session?.user?.name}</h2>
               <Timetable labl="Timetable" />
               <Logout labl="Sign out" />
             </>
