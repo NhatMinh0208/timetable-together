@@ -2,7 +2,7 @@
 import { EventSearchBar } from "@/app/components/search-bar";
 import { AttendanceManager } from "@/app/components/attendance-manager";
 import { ExtendedEvent } from "@/app/lib/types";
-import { Export } from "@/app/components/link-buttons";
+import { Export } from "@/app/components/buttons";
 export function OverviewCard({
   events,
   attendanceMap,

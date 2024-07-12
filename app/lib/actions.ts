@@ -17,12 +17,25 @@ import {
   getFollowsByFollowedId,
   removeFollow,
   updateFollowStatus,
+  getOwnedEvents,
+  insertEvent,
+  insertSchedule,
+  insertSession,
+  removeEvent,
+  getEvent,
 } from "@/app/lib/db";
-import { ExtendedAttendance, FollowStatus, User } from "@/app/lib/types";
+import {
+  EventInput,
+  ExtendedAttendance,
+  ExtendedEvent,
+  FollowStatus,
+  User,
+} from "@/app/lib/types";
 import { auth, signOut } from "@/auth";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { STATUS_ACTIVE, STATUS_PENDING } from "./constants";
+import { convertEventInput } from "@/app/lib/input";
 export async function createUser(
   email: string,
   name: string,
@@ -84,6 +97,11 @@ export type AddAttendanceState =
       message?: string;
     }
   | undefined;
+
+export type CreateEventState = {
+  status: string;
+  errors: string[];
+};
 
 export async function addAttendance(
   prevState: AddAttendanceState,
@@ -262,6 +280,20 @@ export async function getUserFollowers() {
   }
 }
 
+export async function getUserOwnedEvents(count: number, page: number) {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    return await getOwnedEvents(userId, count, page);
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function removeUserFollow(followerId: string, followedId: string) {
   try {
     const session = await auth();
@@ -309,4 +341,111 @@ export async function updateUserFollowStatus(
 export async function signOutProper(formData: FormData) {
   "use server";
   await signOut({ redirectTo: "/login" });
+}
+
+export async function validateEvent(
+  state: CreateEventState,
+  event: ExtendedEvent,
+) {
+  if (event.schedules.length === 0) {
+    state.errors.push(
+      "There are no schedules in the event. Please make sure the event has at least one schedule.",
+    );
+  }
+  event.schedules.forEach((schedule, i) => {
+    if (schedule.name === "") {
+      state.errors.push(
+        "Schedule " +
+          (i + 1).toString() +
+          " has empty name. Please make sure each schedule has a name.",
+      );
+    }
+  });
+}
+
+export async function createEvent(state: CreateEventState, input: EventInput) {
+  const newState: CreateEventState = {
+    status: "",
+    errors: [],
+  };
+  try {
+    const session = await auth();
+    if (!session) {
+      newState.status =
+        "An error has occured while trying to create the event:";
+      newState.errors.push("User is not logged in");
+      return newState;
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const event = convertEventInput(input);
+    validateEvent(newState, event);
+
+    if (newState.errors.length > 0) {
+      newState.status =
+        "An error has occured while trying to create the event:";
+      return newState;
+    }
+
+    const insertedEvent = await insertEvent(
+      userId,
+      event.name,
+      event.description,
+    );
+    for (const schedule of event.schedules) {
+      const insertedSchedule = await insertSchedule(
+        insertedEvent.id,
+        schedule.name,
+      );
+      for (const session of schedule.sessions) {
+        await insertSession(
+          insertedSchedule.id,
+          session.place,
+          session.timeZone,
+          session.startTime,
+          session.endTime,
+          session.startDate,
+          session.endDate,
+          session.interval,
+        );
+      }
+    }
+    revalidatePath("/myevents");
+    newState.status =
+      'Success! Your new event can be found in "Manage Events".';
+    return newState;
+  } catch (error) {
+    console.log(error);
+    newState.status = "An error has occured while trying to create the event:";
+    newState.errors.push(
+      "Database error! Please submit an issue on our GitHub page at: github.com/NhatMinh0208/timetable-together",
+    );
+    return newState;
+  }
+}
+
+export async function removeUserEvent(eventId: string): Promise<void> {
+  console.log("remove");
+  console.log(eventId);
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const event = await getEvent(eventId);
+    if (!event?.ownerId) {
+      throw new Error("No event with matching ID");
+    }
+    if (event?.ownerId !== userId) {
+      throw new Error("User does not own event");
+    }
+
+    await removeEvent(eventId);
+    console.log("done");
+    revalidatePath("/myevents");
+    return;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
 }

@@ -1,6 +1,7 @@
 import { signOut } from "@/auth";
 import Link from "next/link";
 import {
+  removeUserEvent,
   removeUserFollow,
   signOutProper,
   updateUserFollowStatus,
@@ -20,8 +21,9 @@ export function Login({ labl }: { labl: string }) {
 
 export function Logout({ labl }: { labl: string }) {
   return (
-    <form action={signOutProper}>
+    <form>
       <button
+        formAction={signOutProper}
         className="flex mx-auto justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         type="submit"
       >
@@ -53,6 +55,38 @@ export function Timetable({ labl }: { labl: string }) {
   );
 }
 
+export function MyEvents({ labl }: { labl: string }) {
+  return (
+    <Link
+      href={"/myevents"}
+      className="flex mx-auto justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {labl}
+    </Link>
+  );
+}
+
+export function CreateEvent({ labl }: { labl: string }) {
+  return (
+    <Link
+      href={"/create"}
+      className="flex mx-auto justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {labl}
+    </Link>
+  );
+}
+
+export function DeleteEvent({ labl, id }: { labl: string; id: string }) {
+  return (
+    <button
+      className="flex mx-auto justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() => removeUserEvent(id)}
+    >
+      {labl}
+    </button>
+  );
+}
 export function Export({ labl }: { labl: string }) {
   return (
     <Link

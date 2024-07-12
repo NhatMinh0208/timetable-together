@@ -1,6 +1,6 @@
 "use client";
 import { User, UserWithStatus } from "@/app/lib/types";
-import { AcceptFollow, RemoveFollow } from "./link-buttons";
+import { AcceptFollow, RemoveFollow } from "./buttons";
 
 export function FollowComponent({
   currentUser,

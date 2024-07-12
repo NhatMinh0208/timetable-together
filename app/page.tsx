@@ -1,10 +1,5 @@
 import { auth } from "@/auth";
-import {
-  Timetable,
-  Login,
-  Logout,
-  Register,
-} from "@/app/components/link-buttons";
+import { Timetable, Login, Logout, Register } from "@/app/components/buttons";
 import Icon from "@/app/icon.svg";
 import Image from "next/image";
 

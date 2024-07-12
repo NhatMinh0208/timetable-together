@@ -1,14 +1,16 @@
 "use server";
 
 import { Attendance } from "@prisma/client";
-import { createId10 } from "@/app/lib/cuid2";
+import { createId10, createId16 } from "@/app/lib/cuid2";
 import {
   ExtendedAttendance,
+  ExtendedSchedule,
   FollowStatus,
   UserWithStatus,
 } from "@/app/lib/types";
 
 import { prisma } from "@/app/lib/prisma";
+import { string } from "zod";
 
 export async function getUserFromEmail(email: string) {
   return await prisma.user.findUnique({
@@ -106,6 +108,21 @@ export async function getEventsFromName(
     take: limit,
   });
 }
+
+export async function getEvent(id: string) {
+  return await prisma.event.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      ownerId: true,
+    },
+  });
+}
+
 export async function getEventMany(eventIds: string[]) {
   const criteria = eventIds.map((id) => ({
     id: id,
@@ -118,6 +135,7 @@ export async function getEventMany(eventIds: string[]) {
     select: {
       id: true,
       name: true,
+      description: true,
       schedules: {
         select: {
           id: true,
@@ -129,6 +147,31 @@ export async function getEventMany(eventIds: string[]) {
   });
 }
 
+export async function getOwnedEvents(
+  userId: string,
+  count: number,
+  page: number,
+) {
+  const res = (
+    await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        ownedEvents: {
+          orderBy: {
+            name: "asc",
+          },
+          take: count,
+          skip: (page - 1) * count,
+        },
+      },
+    })
+  )?.ownedEvents;
+  if (!res) throw new Error("User not found");
+  return res;
+}
+
 export async function getAttendance(userId: string, eventId: string) {
   return await prisma.attendance.findUnique({
     where: {
@@ -136,6 +179,67 @@ export async function getAttendance(userId: string, eventId: string) {
         attendeeId: userId,
         eventId: eventId,
       },
+    },
+  });
+}
+
+export async function insertEvent(
+  ownerId: string,
+  name: string,
+  description: string,
+) {
+  const id = await createId10();
+  return await prisma.event.create({
+    data: {
+      id: id,
+      name: name,
+      description: description,
+      ownerId: ownerId,
+    },
+  });
+}
+
+export async function insertSchedule(eventId: string, name: string) {
+  const id = await createId16();
+  return await prisma.schedule.create({
+    data: {
+      id: id,
+      name: name,
+      eventId: eventId,
+    },
+  });
+}
+
+export async function insertSession(
+  scheduleId: string,
+  place: string,
+  timeZone: string,
+  startTime: Date,
+  endTime: Date,
+  startDate: Date,
+  endDate: Date,
+  interval: number,
+) {
+  const id = await createId16();
+  return await prisma.session.create({
+    data: {
+      id: id,
+      place: place,
+      timeZone: timeZone,
+      startTime: startTime,
+      endTime: endTime,
+      startDate: startDate,
+      endDate: endDate,
+      interval: interval,
+      scheduleId: scheduleId,
+    },
+  });
+}
+
+export async function removeEvent(id: string) {
+  return await prisma.event.delete({
+    where: {
+      id: id,
     },
   });
 }
@@ -195,6 +299,7 @@ export async function getAttendancesByUserId(
         select: {
           id: true,
           name: true,
+          description: true,
           schedules: {
             select: {
               id: true,

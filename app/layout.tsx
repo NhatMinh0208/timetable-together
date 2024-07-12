@@ -8,9 +8,10 @@ import {
   Export,
   Login,
   Logout,
+  MyEvents,
   Register,
   Timetable,
-} from "@/app/components/link-buttons";
+} from "@/app/components/buttons";
 import { auth } from "@/auth";
 import Link from "next/link";
 
@@ -50,6 +51,8 @@ export default async function RootLayout({
                 <span className="text-2xl">{session?.user?.name}</span>
                 <span className="w-2"></span>
                 <Timetable labl="Timetable" />
+                <span className="w-2"></span>
+                <MyEvents labl="Manage events" />
                 <span className="w-2"></span>
                 <Logout labl="Sign out" />
               </>
