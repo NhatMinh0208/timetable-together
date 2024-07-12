@@ -48,7 +48,7 @@ export default async function RootLayout({
             </>
           )}
         </header>
-        <div className="w-dvw min-h-0 grow">{children}</div>
+        <main className="min-h-0 grow">{children}</main>
       </body>
     </html>
   );
