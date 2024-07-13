@@ -14,7 +14,6 @@ export type Session = {
   startDate: Date;
   endDate: Date;
   interval: number;
-  scheduleId: string;
 };
 
 export type Schedule = {
@@ -51,6 +50,7 @@ export type ExtendedSchedule = {
 export type ExtendedEvent = {
   id: string;
   name: string;
+  description: string;
   schedules: ExtendedSchedule[];
 };
 
@@ -58,6 +58,29 @@ export type ExtendedAttendance = {
   scheduleId: string;
   attendeeId: string;
   event: ExtendedEvent;
+};
+
+export type SessionInput = {
+  id: string;
+  place: string;
+  timeZone: string;
+  startTime: string;
+  endTime: string;
+  startDate: string;
+  endDate: string;
+  interval: string;
+};
+
+export type ScheduleInput = {
+  id: string;
+  name: string;
+  sessions: SessionInput[];
+};
+
+export type EventInput = {
+  name: string;
+  description: string;
+  schedules: ScheduleInput[];
 };
 
 export type TimetableBlock = {
