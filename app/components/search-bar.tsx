@@ -16,7 +16,7 @@ export function EventSearchBar({
     name: string;
     owner: {
       name: string;
-    }
+    };
   }[];
 }) {
   const initialState: AddAttendanceState = {};
@@ -69,12 +69,8 @@ export function EventSearchBar({
             handleSearch("");
           }}
         >
-          <div className="font-semibold">
-            {result.name}
-          </div>
-          <div>
-            {result.owner.name}
-          </div>
+          <div className="font-semibold">{result.name}</div>
+          <div>{result.owner.name}</div>
         </button>
       ))}
       <div>

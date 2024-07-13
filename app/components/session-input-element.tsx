@@ -11,11 +11,13 @@ export function SessionInputElement({
   session,
   changeSession,
   removeSession,
+  readOnly,
 }: {
   index: number;
   session: SessionInput;
   changeSession: (schedule: SessionInput) => void;
   removeSession: () => void;
+  readOnly: boolean;
 }) {
   const initialInput: SessionInput = session;
   const [input, setInput] = useState(initialInput);
@@ -40,13 +42,12 @@ export function SessionInputElement({
     });
   }
 
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(readOnly);
   const toggleHidden = () => setHidden((hidden) => !hidden);
   return (
     <div>
-      <button
+      <div
         className="w-full flex flex-row align-center rounded-md font-semibold bg-purple-300 px-1 h-10"
-        type="button"
         onClick={(e) => toggleHidden()}
       >
         {hidden ? (
@@ -58,11 +59,12 @@ export function SessionInputElement({
         <div className="py-1 h-full grow text-left">Session #{index + 1}</div>
         <button
           onClick={removeSession}
-          className="flex justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          hidden={readOnly}
+          className="justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Remove
         </button>
-      </button>
+      </div>
 
       <div className="px-6 space-y-2" hidden={hidden}>
         <div className="font-semibold">Session location</div>
@@ -71,6 +73,7 @@ export function SessionInputElement({
           value={input.place}
           placeholder="Enter session location..."
           handleChange={(e) => changeField("place", e.target.value)}
+          disabled={readOnly}
         />
         <div className="font-semibold">Start time</div>
         <TextInputElement
@@ -78,6 +81,7 @@ export function SessionInputElement({
           value={input.startTime}
           placeholder="Enter session start time (e.g. 08:00)..."
           handleChange={(e) => changeField("startTime", e.target.value)}
+          disabled={readOnly}
         />
         <div className="font-semibold">End time</div>
         <TextInputElement
@@ -85,6 +89,7 @@ export function SessionInputElement({
           value={input.endTime}
           placeholder="Enter session end time (e.g. 17:00)..."
           handleChange={(e) => changeField("endTime", e.target.value)}
+          disabled={readOnly}
         />
 
         <div className="font-semibold">Interval</div>
@@ -96,6 +101,7 @@ export function SessionInputElement({
           value={input.interval}
           placeholder="Enter session interval (in days)..."
           handleChange={(e) => changeField("interval", e.target.value)}
+          disabled={readOnly}
         />
 
         <div className="font-semibold">Start date</div>
@@ -107,6 +113,7 @@ export function SessionInputElement({
           value={input.startDate}
           placeholder="Enter session start date in dd/mm/yyyy format (e.g. 13/01/2024)..."
           handleChange={(e) => changeField("startDate", e.target.value)}
+          disabled={readOnly}
         />
         <div className="font-semibold">End date</div>
         <div className="text-sm">
@@ -117,6 +124,7 @@ export function SessionInputElement({
           value={input.endDate}
           placeholder="Enter session end date in dd/mm/yyyy format (e.g. 13/02/2024)..."
           handleChange={(e) => changeField("endDate", e.target.value)}
+          disabled={readOnly}
         />
       </div>
     </div>

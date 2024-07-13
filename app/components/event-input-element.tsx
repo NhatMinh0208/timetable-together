@@ -1,24 +1,17 @@
 import { TextInputElement } from "@/app/components/text-input-element";
-import {
-  EventInput,
-  ExtendedEvent,
-  ExtendedSchedule,
-  ScheduleInput,
-  Session,
-  SessionInput,
-} from "@/app/lib/types";
+import { EventInput, ScheduleInput } from "@/app/lib/types";
 import { useState } from "react";
-import { useFormState } from "react-dom";
 import { createEvent, CreateEventState } from "@/app/lib/actions";
 import { ScheduleInputElement } from "./schedule-input-element";
 import { createId10 } from "../lib/cuid2";
 
-export function EventInputElement() {
-  const initialInput: EventInput = {
-    name: "",
-    description: "",
-    schedules: [],
-  };
+export function EventInputElement({
+  initialInput,
+  readOnly,
+}: {
+  initialInput: EventInput;
+  readOnly: boolean;
+}) {
   const [state, setState] = useState<CreateEventState>({
     status: "",
     errors: [],
@@ -108,6 +101,7 @@ export function EventInputElement() {
           value={input.name}
           placeholder="Enter event name..."
           handleChange={(e) => changeName(e.target.value)}
+          disabled={readOnly}
         />
         <div className="font-semibold">Description</div>
         <TextInputElement
@@ -115,6 +109,7 @@ export function EventInputElement() {
           value={input.description}
           placeholder="Enter description..."
           handleChange={(e) => changeDescription(e.target.value)}
+          disabled={readOnly}
         />
         {input.schedules.map((schedule, i) => (
           <ScheduleInputElement
@@ -123,13 +118,15 @@ export function EventInputElement() {
             schedule={schedule}
             changeSchedule={(newSchedule) => changeSchedule(i, newSchedule)}
             removeSchedule={() => removeSchedule(i)}
+            readOnly={readOnly}
           />
         ))}
         <div className="flex flex-row justify-center">
           <button
-            className="flex w-1/3 justify-center rounded-md bg-blue-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="w-1/3 justify-center rounded-md bg-blue-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             type="button"
             onClick={addSchedule}
+            hidden={readOnly}
           >
             Add schedule
           </button>
@@ -138,6 +135,7 @@ export function EventInputElement() {
 
       <button
         onClick={submit}
+        hidden={readOnly}
         className="w-full justify-center rounded-md bg-amber-400 px-3 py-1.5 font-semibold leading-6 text-white shadow-sm hover:bg-amber-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
         Create event

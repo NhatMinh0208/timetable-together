@@ -56,7 +56,7 @@ export default function Render({
     name: string;
     owner: {
       name: string;
-    }
+    };
   }[];
   userSearchResults: {
     name: string;

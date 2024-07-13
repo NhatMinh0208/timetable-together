@@ -106,9 +106,9 @@ export async function getEventsFromName(
       schedules: true,
       owner: {
         select: {
-          name: true
-        }
-      }
+          name: true,
+        },
+      },
     },
     take: limit,
   });
@@ -124,6 +124,31 @@ export async function getEvent(id: string) {
       name: true,
       description: true,
       ownerId: true,
+    },
+  });
+}
+
+export async function getEventFull(id: string) {
+  return await prisma.event.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      schedules: {
+        select: {
+          id: true,
+          name: true,
+          sessions: true,
+        },
+      },
+      owner: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
 }

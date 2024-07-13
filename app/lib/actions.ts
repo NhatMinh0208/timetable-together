@@ -347,6 +347,11 @@ export async function validateEvent(
   state: CreateEventState,
   event: ExtendedEvent,
 ) {
+  if (event.name === "") {
+    state.errors.push(
+      "Event has empty name. Please make sure the event has a non-empty name.",
+    );
+  }
   if (event.schedules.length === 0) {
     state.errors.push(
       "There are no schedules in the event. Please make sure the event has at least one schedule.",
@@ -382,7 +387,7 @@ export async function createEvent(state: CreateEventState, input: EventInput) {
 
     if (newState.errors.length > 0) {
       newState.status =
-        "An error has occured while trying to create the event:";
+        "An error(s) has occured while trying to create the event:";
       return newState;
     }
 

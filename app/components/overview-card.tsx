@@ -17,7 +17,7 @@ export function OverviewCard({
     name: string;
     owner: {
       name: string;
-    }
+    };
   }[];
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {

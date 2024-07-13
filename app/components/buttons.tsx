@@ -87,6 +87,18 @@ export function DeleteEvent({ labl, id }: { labl: string; id: string }) {
     </button>
   );
 }
+
+export function ViewEvent({ labl, id }: { labl: string; id: string }) {
+  return (
+    <Link
+      href={"/event/" + id}
+      className="flex mx-auto justify-center rounded-md bg-blue-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {labl}
+    </Link>
+  );
+}
+
 export function Export({ labl }: { labl: string }) {
   return (
     <Link

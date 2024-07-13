@@ -1,5 +1,11 @@
 import { auth } from "@/auth";
-import { Timetable, Login, Logout, Register } from "@/app/components/buttons";
+import {
+  Timetable,
+  Login,
+  Logout,
+  Register,
+  MyEvents,
+} from "@/app/components/buttons";
 import Icon from "@/app/icon.svg";
 import Image from "next/image";
 
@@ -15,6 +21,7 @@ export default async function Page() {
           <span className="text-2xl">{session?.user?.name}</span>
           <div className="flex flex-row space-x-2">
             <Timetable labl="Go to timetable" />
+            <MyEvents labl="Manage events" />
             <Logout labl="Sign out" />
           </div>
         </>
