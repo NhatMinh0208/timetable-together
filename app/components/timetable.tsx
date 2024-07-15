@@ -7,6 +7,7 @@ import {
   ExtendedEvent,
   ExtendedSchedule,
   TimetableBlock,
+  Note,
 } from "@/app/lib/types";
 import Image from "next/image";
 import LeftArrow from "@/app/static/left-arrow.svg";
@@ -58,6 +59,7 @@ export function Timetable({
   eventLookup,
   scheduleLookup,
   userLookup,
+  recvNotes,
   handleAttendanceUpdate,
 }: {
   activeEvent: string;
@@ -66,6 +68,7 @@ export function Timetable({
   eventLookup: Map<EventId, ExtendedEvent>;
   scheduleLookup: Map<ScheduleId, ExtendedSchedule>;
   userLookup: Map<UserId, User>;
+  recvNotes: Note[];
   handleAttendanceUpdate: (eventId: string, scheduleId: string) => void;
 }) {
   let windowInit = new Date();
@@ -209,6 +212,13 @@ export function Timetable({
         : 1,
   );
 
+  const notesInView = recvNotes.filter((note) => {
+    return (
+      note.position.getTime() >= window.getTime() &&
+      note.position.getTime() < window.getTime() + TICKS_IN_WEEK
+    );
+  });
+
   return (
     <div
       className={
@@ -223,6 +233,7 @@ export function Timetable({
       <TimetableWindow
         window={window}
         blocks={blocks}
+        notes={notesInView}
         handleAttendanceUpdate={handleAttendanceUpdate}
       />
     </div>

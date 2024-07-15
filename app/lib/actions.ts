@@ -23,12 +23,14 @@ import {
   insertSession,
   removeEvent,
   getEvent,
+  getRecvNotes,
 } from "@/app/lib/db";
 import {
   EventInput,
   ExtendedAttendance,
   ExtendedEvent,
   FollowStatus,
+  Note,
   User,
 } from "@/app/lib/types";
 import { auth, signOut } from "@/auth";
@@ -452,5 +454,29 @@ export async function removeUserEvent(eventId: string): Promise<void> {
   } catch (error) {
     console.log(error);
     return;
+  }
+}
+
+export async function getUserRecvNotes(): Promise<Note[]> {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const res = await getRecvNotes(userId);
+    if (res) {
+      return res.map((data) => ({
+        id: data.note.id,
+        sender: data.note.sender,
+        content: data.note.content,
+        position: data.note.position,
+        timeSent: data.note.timeSent,
+        read: data.read,
+      }));
+    } else return [];
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 }

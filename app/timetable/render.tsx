@@ -9,6 +9,7 @@ import {
   EventId,
   ExtendedEvent,
   ExtendedSchedule,
+  Note,
   ScheduleId,
   User,
   UserId,
@@ -44,6 +45,7 @@ export default function Render({
   userLookup,
   eventSearchResults,
   userSearchResults,
+  recvNotes,
 }: {
   currentUser: User;
   userFollows: UserWithStatus[] | undefined;
@@ -61,6 +63,7 @@ export default function Render({
   userSearchResults: {
     name: string;
   }[];
+  recvNotes: Note[];
 }) {
   const userEvents: ExtendedEvent[] = [];
   for (const [eventId, eventMap] of attendanceLookup.entries()) {
@@ -138,6 +141,7 @@ export default function Render({
         scheduleLookup={scheduleLookup}
         userLookup={userLookup}
         activeEvent={activeEvent}
+        recvNotes={recvNotes}
         handleAttendanceUpdate={handleAttendanceUpdate}
       />
       <OverviewCard

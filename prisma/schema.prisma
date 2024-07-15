@@ -16,8 +16,8 @@ model User {
   ownedEvents   Event[]
   followedBy    Follows[]         @relation("followedBy")
   following     Follows[]         @relation("following")
-  sentMessages  Message[]         
-  recvMessages  Recipient[]       
+  sentNotes     Note[]         
+  recvNotes     Recipient[]       
   attendances   Attendance[]
 }
 
@@ -48,6 +48,7 @@ model Attendance {
   eventId       String
   schedule      Schedule          @relation(fields: [scheduleId], references: [id])
   scheduleId    String
+
   @@id([attendeeId, eventId])  
 }
 
@@ -58,6 +59,7 @@ model Schedule {
   eventId       String
   sessions      Session[]
   attendances   Attendance[]
+
   @@unique([eventId,name])
 }
 
@@ -74,21 +76,22 @@ model Session {
   scheduleId    String
 }
 
-model Message {
+model Note {
   id            String            @id
   sender        User              @relation(fields: [senderId], references: [id])
   senderId      String
-  receivers     Recipient[]
+  recipients    Recipient[]
   content       String
   position      DateTime
   timeSent      DateTime
 }
 
 model Recipient {
-  message       Message           @relation(fields: [messageId], references: [id])
-  messageId     String
+  note          Note              @relation(fields: [noteId], references: [id])
+  noteId        String
   user          User              @relation(fields: [userId], references: [id])
   userId        String
   read          Boolean
-  @@id([messageId, userId])  
+
+  @@id([noteId, userId])  
 }

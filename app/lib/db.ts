@@ -4,7 +4,6 @@ import { Attendance } from "@prisma/client";
 import { createId10, createId16 } from "@/app/lib/cuid2";
 import {
   ExtendedAttendance,
-  ExtendedSchedule,
   FollowStatus,
   UserWithStatus,
 } from "@/app/lib/types";
@@ -461,5 +460,99 @@ export async function updateFollowStatus(
     data: {
       status: status,
     },
+  });
+}
+
+export async function getRecvNotes(userId: string) {
+  const res = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      recvNotes: {
+        select: {
+          note: {
+            select: {
+              id: true,
+              sender: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              content: true,
+              position: true,
+              timeSent: true,
+            },
+          },
+          read: true,
+        },
+        orderBy: {
+          note: {
+            timeSent: "desc",
+          },
+        },
+      },
+    },
+  });
+  return res?.recvNotes;
+}
+
+export async function updateNoteRead(userId: string, noteId: string) {
+  const res = await prisma.recipient.update({
+    where: {
+      noteId_userId: {
+        userId: userId,
+        noteId: noteId,
+      },
+    },
+    data: {
+      read: true,
+    },
+  });
+  return res;
+}
+
+export async function removeNote(userId: string, noteId: string) {
+  const res = await prisma.recipient.delete({
+    where: {
+      noteId_userId: {
+        userId: userId,
+        noteId: noteId,
+      },
+    },
+  });
+  return res;
+}
+
+export async function insertNote(
+  senderId: string,
+  content: string,
+  position: Date,
+  timeSent: Date,
+) {
+  return await prisma.note.create({
+    data: {
+      id: createId16(),
+      senderId: senderId,
+      content: content,
+      position: position,
+      timeSent: timeSent,
+    },
+  });
+}
+
+export async function insertRecipients(
+  noteId: string,
+  userId: string,
+  recvIds: string[],
+) {
+  const recipients = recvIds.map((recvId) => ({
+    noteId: noteId,
+    userId: recvId,
+    read: recvId === userId,
+  }));
+  return await prisma.recipient.createMany({
+    data: recipients,
   });
 }
