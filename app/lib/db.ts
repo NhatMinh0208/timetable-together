@@ -19,32 +19,65 @@ export async function getUserFromEmail(email: string) {
   });
 }
 export async function getUsersFromNameOrEmail(
-  query: string,
+  query: string | string[],
   limit: number,
   exact: boolean,
 ) {
-  const filterName = exact
-    ? {
-        name: query,
-      }
-    : {
-        name: {
-          contains: query,
-        },
-      };
-  const filterEmail = {
-    email: query,
-  };
-  return await prisma.user.findMany({
-    where: {
-      OR: [filterName, filterEmail],
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-    take: limit,
-  });
+  if (typeof query == "string") {
+    const filterName = exact
+      ? {
+          name: query,
+        }
+      : {
+          name: {
+            contains: query,
+          },
+        };
+
+    const filterEmail = {
+      email: query,
+    };
+    return await prisma.user.findMany({
+      where: {
+        OR: [filterName, filterEmail],
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      take: limit,
+    });
+  } else {
+    const filterName = exact
+      ? {
+          OR: query.map((q) => ({
+            name: q,
+          })),
+        }
+      : {
+          OR: query.map((q) => ({
+            name: {
+              contains: q,
+            },
+          })),
+        };
+
+    const filterEmail = {
+      OR: query.map((q) => ({
+        email: q,
+      })),
+    };
+    return await prisma.user.findMany({
+      where: {
+        OR: [filterName, filterEmail],
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      take: limit,
+    });
+  }
 }
 
 export async function insertUser(
@@ -513,11 +546,11 @@ export async function updateNoteRead(userId: string, noteId: string) {
   return res;
 }
 
-export async function removeNote(userId: string, noteId: string) {
+export async function removeNote(recvId: string, noteId: string) {
   const res = await prisma.recipient.delete({
     where: {
       noteId_userId: {
-        userId: userId,
+        userId: recvId,
         noteId: noteId,
       },
     },
@@ -542,17 +575,44 @@ export async function insertNote(
   });
 }
 
-export async function insertRecipients(
-  noteId: string,
-  userId: string,
-  recvIds: string[],
-) {
+export async function insertRecipients(noteId: string, recvIds: string[]) {
+  const note = await prisma.note.findUnique({
+    where: {
+      id: noteId,
+    },
+  });
+  if (!note) {
+    throw new Error("Note not found");
+  }
   const recipients = recvIds.map((recvId) => ({
     noteId: noteId,
     userId: recvId,
-    read: recvId === userId,
+    read: recvId === note.senderId,
   }));
   return await prisma.recipient.createMany({
     data: recipients,
   });
+}
+
+export async function hasRelationship(userId1: string, userId2: string) {
+  const rel12 = await prisma.follows.findUnique({
+    where: {
+      followingId_followedById: {
+        followedById: userId1,
+        followingId: userId2,
+      },
+      status: "active",
+    },
+  });
+  const rel21 = await prisma.follows.findUnique({
+    where: {
+      followingId_followedById: {
+        followedById: userId2,
+        followingId: userId1,
+      },
+      status: "active",
+    },
+  });
+  if (rel12 || rel21) return true;
+  else return false;
 }

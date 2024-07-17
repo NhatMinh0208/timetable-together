@@ -36,6 +36,7 @@ export function TimetableWindow({
 
   let cnt1 = 0;
   let cnt2 = 0;
+  let cnt3 = 0;
 
   for (const note of notes) {
     const ind = (note.position.getDay() + 6) % 7;
@@ -132,56 +133,33 @@ export function TimetableWindow({
       {blocksByDay.map((day, i) => {
         cnt2 += day.length + 1;
         return (
-          <>
-            <NoteRow
-              startRow={cnt2 - day.length - 1}
-              window={new Date(window.getTime() + i * TICKS_IN_DAY)}
-              activeCell={activeNoteCell.day === i ? activeNoteCell.cell : -1}
-              changeActive={(cell) =>
-                setActiveNoteCell({
-                  day: i,
-                  cell: cell,
-                })
-              }
-              notes={notesByDay[i]}
-              key={i + 100}
-            />
-            <TimetableDay
-              startRow={cnt2 - day.length}
-              dayBlocks={day}
-              handleAttendanceUpdate={handleAttendanceUpdate}
-              key={i}
-            />
-          </>
+          <NoteRow
+            startRow={cnt2 - day.length - 1}
+            window={new Date(window.getTime() + i * TICKS_IN_DAY)}
+            activeCell={activeNoteCell.day === i ? activeNoteCell.cell : -1}
+            changeActive={(cell) =>
+              setActiveNoteCell({
+                day: i,
+                cell: cell,
+              })
+            }
+            notes={notesByDay[i]}
+            key={i + 100}
+          />
         );
       })}
-      {/* {blocks.map((block) => {
-    return (
-        <button className={clsx(
-          "flex flex-col grow justify-center rounded-md px-2 py-1 \
-    font-semibold leading-6 text-white shadow-sm text-left \
-    focus-visible:outline focus-visible:outline-2 \
-    focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
-          {
-            "bg-sky-300 hover:bg-sky-200": !block.isCurrent,
-            "bg-sky-500 hover:bg-sky-400": block.isCurrent,
-          },
-        )} onClick={() => handleAttendanceUpdate(block.eventId, block.scheduleId)}>
-          <p>
-            {block.eventName}
-            {' ['}
-            {block.scheduleName}
-            {'] '}
-          </p>
-          <p>
-            {block.startTime.toString().match(" ([0-9][0-9]:[0-9][0-9])")?.[1]}
-            {' - '}
-            {block.endTime.toString().match(" ([0-9][0-9]:[0-9][0-9])")?.[1]}
-            {' @ '}
-            {block.place}
-          </p>
-        </button>)
-      })} */}
+
+      {blocksByDay.map((day, i) => {
+        cnt3 += day.length + 1;
+        return (
+          <TimetableDay
+            startRow={cnt3 - day.length}
+            dayBlocks={day}
+            handleAttendanceUpdate={handleAttendanceUpdate}
+            key={i}
+          />
+        );
+      })}
     </div>
   );
 }

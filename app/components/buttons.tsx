@@ -1,9 +1,11 @@
 import { signOut } from "@/auth";
 import Link from "next/link";
 import {
+  createNote,
   removeUserAttendance,
   removeUserEvent,
   removeUserFollow,
+  removeUserNote,
   signOutProper,
   updateUserFollowStatus,
 } from "@/app/lib/actions";
@@ -161,6 +163,38 @@ export function AcceptFollow({
     <button
       className="flex mx-auto justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       onClick={() => updateUserFollowStatus(followerId, followedId, "active")}
+    >
+      {labl}
+    </button>
+  );
+}
+
+export function CreateNote({
+  labl,
+  content,
+  recipientList,
+  position,
+}: {
+  labl: string;
+  content: string;
+  recipientList: string;
+  position: Date;
+}) {
+  return (
+    <button
+      className="flex mx-auto justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() => createNote(content, position, recipientList.split(";"))}
+    >
+      {labl}
+    </button>
+  );
+}
+
+export function DeleteNote({ labl, noteId }: { labl: string; noteId: string }) {
+  return (
+    <button
+      className="flex mx-auto justify-center rounded-md bg-red-400 px-1 py-1 text-sm text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      onClick={() => removeUserNote(noteId)}
     >
       {labl}
     </button>

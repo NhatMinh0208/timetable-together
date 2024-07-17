@@ -24,6 +24,10 @@ import {
   removeEvent,
   getEvent,
   getRecvNotes,
+  insertNote,
+  insertRecipients,
+  removeNote,
+  hasRelationship,
 } from "@/app/lib/db";
 import {
   EventInput,
@@ -478,5 +482,48 @@ export async function getUserRecvNotes(): Promise<Note[]> {
   } catch (error) {
     console.log(error);
     return [];
+  }
+}
+
+export async function createNote(
+  content: string,
+  position: Date,
+  recipientList: string[],
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const note = await insertNote(userId, content, position, new Date());
+    const recipients = await getUsersFromNameOrEmail(recipientList, 1000, true);
+    const recipientIds: string[] = [];
+    for (const recp of recipients) {
+      if (await hasRelationship(userId, recp.id)) recipientIds.push(recp.id);
+    }
+    recipientIds.push(userId);
+    const res = await insertRecipients(note.id, recipientIds);
+    revalidatePath("timetable");
+    return note;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function removeUserNote(noteId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const res = await removeNote(userId, noteId);
+    revalidatePath("timetable");
+    return res;
+  } catch (error) {
+    console.log(error);
+    return;
   }
 }
