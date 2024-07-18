@@ -96,6 +96,18 @@ export type TimetableBlock = {
   users: string[];
 };
 
+export type Note = {
+  id: string;
+  sender: {
+    id: string;
+    name: string;
+  };
+  content: string;
+  position: Date;
+  timeSent: Date;
+  read: boolean;
+};
+
 export type EventId = string;
 export type ScheduleId = string;
 export type UserId = string;

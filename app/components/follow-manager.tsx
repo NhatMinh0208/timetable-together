@@ -7,13 +7,11 @@ export function FollowComponent({
   otherUser,
   isFollower,
   isFollowing,
-  key,
 }: {
   currentUser: User;
   otherUser: UserWithStatus;
   isFollower: boolean;
   isFollowing: boolean;
-  key: number;
 }) {
   return (
     <div className="text-sm">

@@ -4,7 +4,6 @@ import { Attendance } from "@prisma/client";
 import { createId10, createId16 } from "@/app/lib/cuid2";
 import {
   ExtendedAttendance,
-  ExtendedSchedule,
   FollowStatus,
   UserWithStatus,
 } from "@/app/lib/types";
@@ -20,32 +19,65 @@ export async function getUserFromEmail(email: string) {
   });
 }
 export async function getUsersFromNameOrEmail(
-  query: string,
+  query: string | string[],
   limit: number,
   exact: boolean,
 ) {
-  const filterName = exact
-    ? {
-        name: query,
-      }
-    : {
-        name: {
-          contains: query,
-        },
-      };
-  const filterEmail = {
-    email: query,
-  };
-  return await prisma.user.findMany({
-    where: {
-      OR: [filterName, filterEmail],
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-    take: limit,
-  });
+  if (typeof query == "string") {
+    const filterName = exact
+      ? {
+          name: query,
+        }
+      : {
+          name: {
+            contains: query,
+          },
+        };
+
+    const filterEmail = {
+      email: query,
+    };
+    return await prisma.user.findMany({
+      where: {
+        OR: [filterName, filterEmail],
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      take: limit,
+    });
+  } else {
+    const filterName = exact
+      ? {
+          OR: query.map((q) => ({
+            name: q,
+          })),
+        }
+      : {
+          OR: query.map((q) => ({
+            name: {
+              contains: q,
+            },
+          })),
+        };
+
+    const filterEmail = {
+      OR: query.map((q) => ({
+        email: q,
+      })),
+    };
+    return await prisma.user.findMany({
+      where: {
+        OR: [filterName, filterEmail],
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      take: limit,
+    });
+  }
 }
 
 export async function insertUser(
@@ -462,4 +494,125 @@ export async function updateFollowStatus(
       status: status,
     },
   });
+}
+
+export async function getRecvNotes(userId: string) {
+  const res = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      recvNotes: {
+        select: {
+          note: {
+            select: {
+              id: true,
+              sender: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              content: true,
+              position: true,
+              timeSent: true,
+            },
+          },
+          read: true,
+        },
+        orderBy: {
+          note: {
+            timeSent: "desc",
+          },
+        },
+      },
+    },
+  });
+  return res?.recvNotes;
+}
+
+export async function updateNoteRead(userId: string, noteId: string) {
+  const res = await prisma.recipient.update({
+    where: {
+      noteId_userId: {
+        userId: userId,
+        noteId: noteId,
+      },
+    },
+    data: {
+      read: true,
+    },
+  });
+  return res;
+}
+
+export async function removeNote(recvId: string, noteId: string) {
+  const res = await prisma.recipient.delete({
+    where: {
+      noteId_userId: {
+        userId: recvId,
+        noteId: noteId,
+      },
+    },
+  });
+  return res;
+}
+
+export async function insertNote(
+  senderId: string,
+  content: string,
+  position: Date,
+  timeSent: Date,
+) {
+  return await prisma.note.create({
+    data: {
+      id: createId16(),
+      senderId: senderId,
+      content: content,
+      position: position,
+      timeSent: timeSent,
+    },
+  });
+}
+
+export async function insertRecipients(noteId: string, recvIds: string[]) {
+  const note = await prisma.note.findUnique({
+    where: {
+      id: noteId,
+    },
+  });
+  if (!note) {
+    throw new Error("Note not found");
+  }
+  const recipients = recvIds.map((recvId) => ({
+    noteId: noteId,
+    userId: recvId,
+    read: recvId === note.senderId,
+  }));
+  return await prisma.recipient.createMany({
+    data: recipients,
+  });
+}
+
+export async function hasRelationship(userId1: string, userId2: string) {
+  const rel12 = await prisma.follows.findUnique({
+    where: {
+      followingId_followedById: {
+        followedById: userId1,
+        followingId: userId2,
+      },
+      status: "active",
+    },
+  });
+  const rel21 = await prisma.follows.findUnique({
+    where: {
+      followingId_followedById: {
+        followedById: userId2,
+        followingId: userId1,
+      },
+      status: "active",
+    },
+  });
+  if (rel12 || rel21) return true;
+  else return false;
 }

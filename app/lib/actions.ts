@@ -23,12 +23,19 @@ import {
   insertSession,
   removeEvent,
   getEvent,
+  getRecvNotes,
+  insertNote,
+  insertRecipients,
+  removeNote,
+  hasRelationship,
+  updateNoteRead,
 } from "@/app/lib/db";
 import {
   EventInput,
   ExtendedAttendance,
   ExtendedEvent,
   FollowStatus,
+  Note,
   User,
 } from "@/app/lib/types";
 import { auth, signOut } from "@/auth";
@@ -448,6 +455,88 @@ export async function removeUserEvent(eventId: string): Promise<void> {
     await removeEvent(eventId);
     console.log("done");
     revalidatePath("/myevents");
+    return;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function getUserRecvNotes(): Promise<Note[]> {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const res = await getRecvNotes(userId);
+    if (res) {
+      return res.map((data) => ({
+        id: data.note.id,
+        sender: data.note.sender,
+        content: data.note.content,
+        position: data.note.position,
+        timeSent: data.note.timeSent,
+        read: data.read,
+      }));
+    } else return [];
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export async function createNote(
+  content: string,
+  position: Date,
+  recipientList: string[],
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const note = await insertNote(userId, content, position, new Date());
+    const recipients = await getUsersFromNameOrEmail(recipientList, 1000, true);
+    const recipientIds: string[] = [];
+    for (const recp of recipients) {
+      if (await hasRelationship(userId, recp.id)) recipientIds.push(recp.id);
+    }
+    recipientIds.push(userId);
+    const res = await insertRecipients(note.id, recipientIds);
+    revalidatePath("timetable");
+    return note;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function removeUserNote(noteId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const res = await removeNote(userId, noteId);
+    revalidatePath("timetable");
+    return res;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function updateUserNoteRead(noteId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const res = await updateNoteRead(userId, noteId);
     return;
   } catch (error) {
     console.log(error);

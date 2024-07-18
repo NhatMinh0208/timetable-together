@@ -2,7 +2,11 @@
 // This is pretty stupid, but I guess we have to make-do with it.
 // The page component will be for fetching data only.
 // It will pass fetched data to the render component, which does the actual rendering of things.
-import { getUserFollowers, getUserFollows } from "@/app/lib/actions";
+import {
+  getUserFollowers,
+  getUserFollows,
+  getUserRecvNotes,
+} from "@/app/lib/actions";
 import Render from "./render";
 import { auth } from "@/auth";
 import {
@@ -90,6 +94,8 @@ export default async function Page({
   const userSearchResults = searchParams?.userQuery
     ? await getUsersFromNameOrEmail(searchParams?.userQuery, 5, false)
     : [];
+
+  const recvNotes = await getUserRecvNotes();
   return (
     <Render
       currentUser={currentUser}
@@ -101,6 +107,7 @@ export default async function Page({
       userLookup={userLookup}
       eventSearchResults={eventSearchResults}
       userSearchResults={userSearchResults}
+      recvNotes={recvNotes}
       key={hashCode(attendances.join(" "))}
     />
   );

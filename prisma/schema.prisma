@@ -1,6 +1,7 @@
 datasource db {
   provider = "postgresql"
   url = env("POSTGRES_URL")
+  directUrl = env("POSTGRES_DIRECT_URL")
 }
 
 generator client {
@@ -10,11 +11,13 @@ generator client {
 model User {
   id            String            @id
   email         String            @unique
-  name          String     
+  name          String            
   password      String
   ownedEvents   Event[]
   followedBy    Follows[]         @relation("followedBy")
   following     Follows[]         @relation("following")
+  sentNotes     Note[]         
+  recvNotes     Recipient[]       
   attendances   Attendance[]
 }
 
@@ -45,6 +48,7 @@ model Attendance {
   eventId       String
   schedule      Schedule          @relation(fields: [scheduleId], references: [id])
   scheduleId    String
+
   @@id([attendeeId, eventId])  
 }
 
@@ -55,6 +59,7 @@ model Schedule {
   eventId       String
   sessions      Session[]
   attendances   Attendance[]
+
   @@unique([eventId,name])
 }
 
@@ -69,4 +74,24 @@ model Session {
   interval      Int
   schedule      Schedule          @relation(fields: [scheduleId], references: [id])
   scheduleId    String
+}
+
+model Note {
+  id            String            @id
+  sender        User              @relation(fields: [senderId], references: [id])
+  senderId      String
+  recipients    Recipient[]
+  content       String
+  position      DateTime
+  timeSent      DateTime
+}
+
+model Recipient {
+  note          Note              @relation(fields: [noteId], references: [id])
+  noteId        String
+  user          User              @relation(fields: [userId], references: [id])
+  userId        String
+  read          Boolean
+
+  @@id([noteId, userId])  
 }

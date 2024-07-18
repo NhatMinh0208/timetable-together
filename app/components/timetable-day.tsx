@@ -24,10 +24,9 @@ export function TimetableDay({
           gridColumnStart: j * 4 + 1,
           gridRowEnd: dayBlocks.length + 1,
           gridColumnEnd: j * 4 + 5,
+          zIndex: 0,
         }}
-        className={clsx(
-          "border-t-2 border-l-2 border-l-slate-300 border-t-slate-300",
-        )}
+        className={clsx("border-t-2 border-l-2 border-l-slate-300")}
       ></div>,
     );
   const blocks = dayBlocks.map((row, i) =>
@@ -92,6 +91,7 @@ focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
         gridColumnEnd: 98,
         gridTemplateColumns: "repeat(96,60px)",
         gridTemplateRows: "repeat(" + dayBlocks.length.toString() + ",80px)",
+        zIndex: 0,
       }}
       className={clsx("grid")}
     >
