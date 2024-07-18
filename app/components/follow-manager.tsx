@@ -16,7 +16,9 @@ export function FollowComponent({
   return (
     <div className="text-sm">
       <div>{otherUser.name}</div>
-      <div>{otherUser.status}</div>
+      <div>
+        {otherUser.status === "pending" ? "Pending acceptance" : "Active"}
+      </div>
       <div className="flex flex-row w-4">
         {otherUser.status === "pending" && isFollower ? (
           <>

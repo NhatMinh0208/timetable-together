@@ -1,7 +1,6 @@
-
 ![Title](https://github.com/user-attachments/assets/820d5796-9b5f-469f-9b75-bf20f95edc8e)
 
-#  Timetable Together
+# Timetable Together
 
 Timetable Together is a collaborative scheduling web application for students and others alike.
 
