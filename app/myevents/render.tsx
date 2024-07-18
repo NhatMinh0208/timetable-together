@@ -11,10 +11,13 @@ export default function Render({ events }: { events: Event[] }) {
   return (
     <main className="flex h-full w-dvw space-x-2 px-2 py-2">
       <div className="bg-slate-300 w-dvw rounded-md px-2 py-2 space-y-2 ">
+        <div className="h-[4%] w-full text-2xl text-center font-semibold">
+          Your events
+        </div>
         <div className="h-[5%] w-full">
           <CreateEvent labl="Create event" />
         </div>
-        <div className=" w-full h-[95%] grid grid-cols-5 grid-rows-3">
+        <div className=" w-full h-[91%] grid grid-cols-5 grid-rows-3">
           {events.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
