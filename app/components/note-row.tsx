@@ -4,8 +4,11 @@ import clsx from "clsx";
 import Image from "next/image";
 
 import NoteIcon from "@/app/static/note.svg";
+import NoteIconUnread from "@/app/static/note-unread.svg";
 import { Note } from "@/app/lib/types";
 import { NoteCard } from "@/app/components/note-card";
+import { useState } from "react";
+import { updateUserNoteRead } from "../lib/actions";
 
 export function NoteRow({
   startRow,
@@ -21,12 +24,34 @@ export function NoteRow({
   changeActive: (cell: number) => void;
 }) {
   const cells = [];
-  const notesByHour: Note[][] = [];
 
+  const notesByHour: Note[][] = [];
   for (let j = 0; j < 24; j++) notesByHour.push([]);
   for (const note of notes) {
     const ind = note.position.getHours();
     notesByHour[ind].push(note);
+  }
+
+  const cellReadInit: boolean[] = [];
+  for (let j = 0; j < 24; j++) {
+    let readStatus = true;
+    for (const note of notesByHour[j]) if (!note.read) readStatus = false;
+    cellReadInit.push(readStatus);
+  }
+  const [cellRead, setCellRead] = useState(cellReadInit);
+
+  async function readCell(x: number) {
+    if (!cellRead[x]) {
+      setCellRead((c) => {
+        c[x] = true;
+        return c;
+      });
+      const tasks: Promise<void>[] = [];
+      for (const note of notesByHour[x]) {
+        tasks.push(updateUserNoteRead(note.id));
+      }
+      await Promise.all(tasks);
+    }
   }
 
   for (let j = 0; j < 24; j++)
@@ -45,10 +70,14 @@ export function NoteRow({
       >
         <Image
           className="relative"
-          src={NoteIcon}
+          src={cellRead[j] ? NoteIcon : NoteIconUnread}
           alt="Note icon"
           onClick={() => {
-            activeCell === j ? changeActive(-1) : changeActive(j);
+            if (activeCell === j) changeActive(-1);
+            else {
+              changeActive(j);
+              readCell(j);
+            }
           }}
         />
         <NoteCard

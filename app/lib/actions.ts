@@ -28,6 +28,7 @@ import {
   insertRecipients,
   removeNote,
   hasRelationship,
+  updateNoteRead,
 } from "@/app/lib/db";
 import {
   EventInput,
@@ -522,6 +523,21 @@ export async function removeUserNote(noteId: string) {
     const res = await removeNote(userId, noteId);
     revalidatePath("timetable");
     return res;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+}
+
+export async function updateUserNoteRead(noteId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("User is not logged in");
+    }
+    const userId = session?.user?.id ? session.user.id : "";
+    const res = await updateNoteRead(userId, noteId);
+    return;
   } catch (error) {
     console.log(error);
     return;

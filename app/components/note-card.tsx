@@ -25,6 +25,9 @@ export function NoteCard({
           <div key={note.id}>
             <div className="flex flex-row place-content-center space-x-1">
               <div className="grow font-semibold">{note.sender.name}</div>
+              <div className="grow font-semibold">
+                {note.read ? "" : "*NEW*"}
+              </div>
               <div className="">Sent at {note.timeSent.toLocaleString()}</div>
               <DeleteNote labl="Delete" noteId={note.id} />
             </div>
