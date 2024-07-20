@@ -17,7 +17,11 @@ export default function Render() {
         <div className="h-full w-1/5"> </div>
         <div className="h-full w-3/5 text-xl">
           <div className="text-2xl text-center font-semibold">
-            Create a private session
+            Add a private session
+          </div>
+          <div className="text-md text-center">
+            This session`&apos;`s name, description and location can only be
+            viewed by you.
           </div>
           <PrivateSessionInputElement readOnly={false} />
         </div>

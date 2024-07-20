@@ -1,36 +1,7 @@
 "use server";
 
 import { passwordMatch, saltAndHashPassword } from "@/app/lib/password";
-import {
-  insertUser,
-  getUserFromEmail,
-  getEventsFromName,
-  getAttendance,
-  insertAttendance,
-  getAttendancesByUserId,
-  updateAttedance,
-  removeAttendance,
-  getFollowsByFollowerId,
-  getUsersFromNameOrEmail,
-  getFollow,
-  insertFollow,
-  getFollowsByFollowedId,
-  removeFollow,
-  updateFollowStatus,
-  getOwnedEvents,
-  insertEvent,
-  insertSchedule,
-  insertSession,
-  removeEvent,
-  getEvent,
-  getRecvNotes,
-  insertNote,
-  insertRecipients,
-  removeNote,
-  hasRelationship,
-  updateNoteRead,
-  getEventFull,
-} from "@/app/lib/db";
+import * as db from "@/app/lib/db";
 import {
   EventInput,
   ExtendedAttendance,
@@ -41,26 +12,25 @@ import {
   User,
 } from "@/app/lib/types";
 import { auth, signIn, signOut } from "@/auth";
-import { object, z, ZodError } from "zod";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { STATUS_ACTIVE, STATUS_PENDING } from "./constants";
 import { convertEventInput, convertSessionInput } from "@/app/lib/input";
 import { AuthError } from "next-auth";
-import { redirect } from "next/dist/server/api-utils";
 export async function createUser(
   email: string,
   name: string,
   password: string,
 ) {
   const pwHash = await saltAndHashPassword(password);
-  await insertUser(email, name, pwHash);
+  await db.insertUser(email, name, pwHash);
 }
 
 export async function authUser(
   email: string,
   password: string,
 ): Promise<User | null> {
-  const user = await getUserFromEmail(email);
+  const user = await db.getUserFromEmail(email);
   if (user == null) throw new Error("User not found");
   if (await passwordMatch(password, user.password)) {
     return {
@@ -74,7 +44,7 @@ export async function authUser(
 }
 
 export async function getUser(email: string): Promise<User | null> {
-  const user = await getUserFromEmail(email);
+  const user = await db.getUserFromEmail(email);
   if (user == null) throw new Error("User not found");
   return {
     id: user.id,
@@ -134,7 +104,12 @@ export async function addAttendance(
         message: "Failed to add event to timetable: Form Error",
       };
     }
-    const result = await getEventsFromName(fields.data.eventName, 1, true);
+    const result = await db.getEventsFromName(
+      fields.data.eventName,
+      1,
+      true,
+      userId,
+    );
     const event = result[0];
     if (!event)
       return {
@@ -145,13 +120,13 @@ export async function addAttendance(
       return {
         message: "Failed to add event to timetable: Event has no schedules",
       };
-    const attendance = await getAttendance(userId, event.id);
+    const attendance = await db.getAttendance(userId, event.id);
     if (attendance)
       return {
         message:
           "Failed to add event to timetable: Event is already in timetable",
       };
-    await insertAttendance(userId, event.id, event.schedules[0].id);
+    await db.insertAttendance(userId, event.id, event.schedules[0].id);
 
     revalidatePath("/timetable");
   } catch (error) {
@@ -183,7 +158,7 @@ export async function addFollowRequest(
       };
     }
 
-    const result = await getUsersFromNameOrEmail(fields.data.user, 1, true);
+    const result = await db.getUsersFromNameOrEmail(fields.data.user, 1, true);
     const followTarget = result[0];
     if (!followTarget)
       return {
@@ -194,7 +169,7 @@ export async function addFollowRequest(
         message: "Failed to make follow request: Cannot follow self",
       };
     }
-    const follow = await getFollow(userId, followTarget.id);
+    const follow = await db.getFollow(userId, followTarget.id);
     if (follow)
       return {
         message:
@@ -204,7 +179,7 @@ export async function addFollowRequest(
               ? "Failed to make follow request: Already made follow request to user"
               : "Failed to make follow request: Follow in database (unknown status type)",
       };
-    await insertFollow(userId, followTarget.id);
+    await db.insertFollow(userId, followTarget.id);
 
     revalidatePath("/timetable");
   } catch (error) {
@@ -222,7 +197,7 @@ export async function getUserAttendances(): Promise<ExtendedAttendance[]> {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    return await getAttendancesByUserId(userId);
+    return await db.getAttendancesByUserId(userId);
   } catch (error) {
     console.log(error);
     return [];
@@ -239,7 +214,7 @@ export async function updateUserAttendance(
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    await updateAttedance(userId, eventId, scheduleId);
+    await db.updateAttedance(userId, eventId, scheduleId);
     console.log("done");
   } catch (error) {
     console.log(error);
@@ -254,7 +229,7 @@ export async function removeUserAttendance(eventId: string): Promise<void> {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    await removeAttendance(userId, eventId);
+    await db.removeAttendance(userId, eventId);
     console.log("done");
     revalidatePath("/timetable");
   } catch (error) {
@@ -270,7 +245,7 @@ export async function getUserFollows() {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id;
-    return await getFollowsByFollowerId(userId);
+    return await db.getFollowsByFollowerId(userId);
   } catch (error) {
     console.log(error);
     return;
@@ -284,7 +259,7 @@ export async function getUserFollowers() {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    return await getFollowsByFollowedId(userId);
+    return await db.getFollowsByFollowedId(userId);
   } catch (error) {
     console.log(error);
     return;
@@ -298,7 +273,7 @@ export async function getUserOwnedEvents(count: number, page: number) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    return await getOwnedEvents(userId, count, page);
+    return await db.getOwnedEvents(userId, count, page);
   } catch (error) {
     console.log(error);
     return [];
@@ -313,7 +288,7 @@ export async function removeUserFollow(followerId: string, followedId: string) {
     }
     const userId = session?.user?.id ? session.user.id : "";
     if (followerId === userId || followedId === userId) {
-      await removeFollow(followerId, followedId);
+      await db.removeFollow(followerId, followedId);
       revalidatePath("/timetable");
       return;
     } else {
@@ -337,7 +312,7 @@ export async function updateUserFollowStatus(
     }
     const userId = session?.user?.id ? session.user.id : "";
     if (followerId === userId || followedId === userId) {
-      await updateFollowStatus(followerId, followedId, status);
+      await db.updateFollowStatus(followerId, followedId, status);
       revalidatePath("/timetable");
       return;
     } else {
@@ -402,19 +377,19 @@ export async function createEvent(state: CreateEventState, input: EventInput) {
       return newState;
     }
 
-    const insertedEvent = await insertEvent(
+    const insertedEvent = await db.insertEvent(
       userId,
       event.name,
       event.description,
       false,
     );
     for (const schedule of event.schedules) {
-      const insertedSchedule = await insertSchedule(
+      const insertedSchedule = await db.insertSchedule(
         insertedEvent.id,
         schedule.name,
       );
       for (const session of schedule.sessions) {
-        await insertSession(
+        await db.insertSession(
           insertedSchedule.id,
           session.place,
           session.timeZone,
@@ -459,6 +434,7 @@ export async function createPrivateSession(
       return newState;
     }
     const userId = authSession?.user?.id ? authSession.user.id : "";
+    console.log(input);
     const session = convertSessionInput(state, input, "[none]", 1);
 
     if (newState.errors.length > 0) {
@@ -467,9 +443,9 @@ export async function createPrivateSession(
       return newState;
     }
 
-    const insertedEvent = await insertEvent(userId, name, description, true);
-    const insertedSchedule = await insertSchedule(insertedEvent.id, "1");
-    const insertedSession = await insertSession(
+    const insertedEvent = await db.insertEvent(userId, name, description, true);
+    const insertedSchedule = await db.insertSchedule(insertedEvent.id, "1");
+    const insertedSession = await db.insertSession(
       insertedSchedule.id,
       session.place,
       session.timeZone,
@@ -480,7 +456,7 @@ export async function createPrivateSession(
       session.interval,
     );
 
-    await insertAttendance(userId, insertedEvent.id, insertedSchedule.id);
+    await db.insertAttendance(userId, insertedEvent.id, insertedSchedule.id);
 
     revalidatePath("/myevents");
     newState.status =
@@ -506,7 +482,7 @@ export async function removeUserEvent(eventId: string): Promise<void> {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const event = await getEvent(eventId);
+    const event = await db.getEvent(eventId);
     if (!event?.ownerId) {
       throw new Error("No event with matching ID");
     }
@@ -514,7 +490,7 @@ export async function removeUserEvent(eventId: string): Promise<void> {
       throw new Error("User does not own event");
     }
 
-    await removeEvent(eventId);
+    await db.removeEvent(eventId);
     console.log("done");
     revalidatePath("/myevents");
     revalidatePath("/timetable");
@@ -532,7 +508,7 @@ export async function getUserRecvNotes(): Promise<Note[]> {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const res = await getRecvNotes(userId);
+    const res = await db.getRecvNotes(userId);
     if (res) {
       return res.map((data) => ({
         id: data.note.id,
@@ -560,14 +536,18 @@ export async function createNote(
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const note = await insertNote(userId, content, position, new Date());
-    const recipients = await getUsersFromNameOrEmail(recipientList, 1000, true);
+    const note = await db.insertNote(userId, content, position, new Date());
+    const recipients = await db.getUsersFromNameOrEmail(
+      recipientList,
+      1000,
+      true,
+    );
     const recipientIds: string[] = [];
     for (const recp of recipients) {
-      if (await hasRelationship(userId, recp.id)) recipientIds.push(recp.id);
+      if (await db.hasRelationship(userId, recp.id)) recipientIds.push(recp.id);
     }
     recipientIds.push(userId);
-    const res = await insertRecipients(note.id, recipientIds);
+    const res = await db.insertRecipients(note.id, recipientIds);
     revalidatePath("timetable");
     return note;
   } catch (error) {
@@ -583,7 +563,7 @@ export async function removeUserNote(noteId: string) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const res = await removeNote(userId, noteId);
+    const res = await db.removeNote(userId, noteId);
     revalidatePath("timetable");
     return res;
   } catch (error) {
@@ -599,7 +579,7 @@ export async function updateUserNoteRead(noteId: string) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const res = await updateNoteRead(userId, noteId);
+    const res = await db.updateNoteRead(userId, noteId);
     return;
   } catch (error) {
     console.log(error);
@@ -640,7 +620,7 @@ export async function signInFromForm(state: CreateEventState, input: FormData) {
 
 export async function getEventFullChecked(id: string) {
   try {
-    const res = await getEventFull(id);
+    const res = await db.getEventFull(id);
     if (res.private) {
       const session = await auth();
       if (!session?.user?.id || session?.user?.id !== res.owner.id) {
@@ -665,5 +645,28 @@ export async function getEventFullChecked(id: string) {
         status: "error" as "error",
         error: "Unknown error",
       };
+  }
+}
+
+export async function getEventManyChecked(ids: string[]) {
+  try {
+    const authSession = await auth();
+    const res = await db.getEventMany(ids);
+    for (const event of res) {
+      if (event.owner.id !== authSession?.user?.id && event.private) {
+        event.name = "[Private session]";
+        event.description = "";
+        for (const sch of event.schedules) {
+          sch.name = "";
+          for (const session of sch.sessions) {
+            session.place = "";
+          }
+        }
+      }
+    }
+    return res;
+  } catch (e) {
+    console.log(e);
+    return [];
   }
 }

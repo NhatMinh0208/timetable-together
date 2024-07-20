@@ -32,7 +32,10 @@ export function TimetableDay({
   const blocks = dayBlocks.map((row, i) =>
     row.map((block, j) => {
       const backgroundColor =
-        "#" + hashCode(block.eventId).toString(16).padStart(6, "0").slice(-6);
+        block.eventName === "[Private session]" && block.scheduleName === ""
+          ? "#9999A0"
+          : "#" +
+            hashCode(block.eventId).toString(16).padStart(6, "0").slice(-6);
       return (
         <button
           key={i.toString() + " " + j.toString()}

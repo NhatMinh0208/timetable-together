@@ -55,7 +55,7 @@ export function PrivateSessionInputElement({
         <TextInputElement
           name="name"
           value={name}
-          placeholder="Enter event name..."
+          placeholder="Enter session name..."
           handleChange={(e) => setName(e.target.value)}
           disabled={readOnly}
         />
@@ -70,7 +70,7 @@ export function PrivateSessionInputElement({
         <SessionInputElement
           index={0}
           session={input}
-          changeSession={(session) => {}}
+          changeSession={setInput}
           removeSession={() => {}}
           readOnly={readOnly}
         />

@@ -117,6 +117,7 @@ export async function getEventsFromName(
   name: string,
   limit: number,
   exact: boolean,
+  userId: string,
 ) {
   const filter = exact
     ? {
@@ -131,7 +132,21 @@ export async function getEventsFromName(
         })),
       };
   return await prisma.event.findMany({
-    where: filter,
+    where: {
+      AND: [
+        filter,
+        {
+          OR: [
+            {
+              private: false as boolean,
+            },
+            {
+              ownerId: userId,
+            },
+          ],
+        },
+      ],
+    },
     select: {
       id: true,
       name: true,
@@ -203,6 +218,12 @@ export async function getEventMany(eventIds: string[]) {
       name: true,
       private: true,
       description: true,
+      owner: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       schedules: {
         select: {
           id: true,

@@ -5,7 +5,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Icon from "@/app/icon.svg";
 import {
-  Export,
+  CreatePrivateSession,
   Login,
   Logout,
   MyEvents,
@@ -41,6 +41,7 @@ export default async function RootLayout({
               <h2 className="text-2xl">{session?.user?.name}</h2>
               <Timetable labl="Timetable" />
               <MyEvents labl="Manage events" />
+              <CreatePrivateSession labl="Add private session" />
               <Logout labl="Sign out" />
             </>
           ) : (

@@ -6,13 +6,13 @@ import {
   getUserFollowers,
   getUserFollows,
   getUserRecvNotes,
+  getEventManyChecked,
 } from "@/app/lib/actions";
 import Render from "./render";
 import { auth } from "@/auth";
 import {
   getAttendancesByUserIdMany,
   getEventsFromName,
-  getEventMany,
   getUsersFromNameOrEmail,
 } from "@/app/lib/db";
 import {
@@ -79,7 +79,7 @@ export default async function Page({
 
   const eventsToFetch: EventId[] = [];
   for (const eventId of attendanceLookup.keys()) eventsToFetch.push(eventId);
-  const events = await getEventMany(eventsToFetch);
+  const events = await getEventManyChecked(eventsToFetch);
 
   for (const event of events) {
     eventLookup.set(event.id, event);
@@ -89,7 +89,12 @@ export default async function Page({
   }
 
   const eventSearchResults = searchParams?.eventQuery
-    ? await getEventsFromName(searchParams?.eventQuery, 5, false)
+    ? await getEventsFromName(
+        searchParams?.eventQuery,
+        5,
+        false,
+        session.user.id,
+      )
     : [];
   const userSearchResults = searchParams?.userQuery
     ? await getUsersFromNameOrEmail(searchParams?.userQuery, 5, false)
