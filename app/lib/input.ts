@@ -11,7 +11,7 @@ import { CreateEventState } from "@/app/lib/actions";
 import { ZodError } from "zod";
 import { errorToJSON } from "next/dist/server/render";
 
-function convertSessionInput(
+export function convertSessionInput(
   state: CreateEventState,
   input: SessionInput,
   schedule: string,

@@ -459,7 +459,7 @@ export async function createPrivateSession(
       return newState;
     }
     const userId = authSession?.user?.id ? authSession.user.id : "";
-    const session = convertSessionInput(input);
+    const session = convertSessionInput(state, input, "[none]", 1);
 
     if (newState.errors.length > 0) {
       newState.status =
