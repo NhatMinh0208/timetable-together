@@ -32,13 +32,11 @@ async function handleRegister(
     }
   } catch (e) {
     if (e instanceof ZodError) {
-      console.log(e);
       res.status = "There was an error while trying to create the account:";
       for (const err of e.errors) {
         res.errors.push(err.message);
       }
     } else if (e instanceof Error) {
-      console.log(e);
       res.status = "There was an error while trying to create the account:";
       res.errors.push(e.message);
     }

@@ -393,7 +393,7 @@ export async function createEvent(state: CreateEventState, input: EventInput) {
       return newState;
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const event = convertEventInput(input);
+    const event = convertEventInput(newState, input);
     validateEvent(newState, event);
 
     if (newState.errors.length > 0) {
