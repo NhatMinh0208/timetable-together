@@ -299,6 +299,28 @@ export async function insertSession(
 }
 
 export async function removeEvent(id: string) {
+  await prisma.attendance.deleteMany({
+    where: {
+      eventId: id,
+    },
+  });
+  const schedules = await prisma.schedule.findMany({
+    where: {
+      eventId: id,
+    },
+  });
+  for (const schedule of schedules) {
+    await prisma.session.deleteMany({
+      where: {
+        scheduleId: schedule.id,
+      },
+    });
+  }
+  await prisma.schedule.deleteMany({
+    where: {
+      eventId: id,
+    },
+  });
   return await prisma.event.delete({
     where: {
       id: id,

@@ -455,6 +455,7 @@ export async function removeUserEvent(eventId: string): Promise<void> {
     await removeEvent(eventId);
     console.log("done");
     revalidatePath("/myevents");
+    revalidatePath("/timetable");
     return;
   } catch (error) {
     console.log(error);
