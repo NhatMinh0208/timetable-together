@@ -82,13 +82,16 @@ export default function Page() {
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col justify-between">
                 <label
                   htmlFor="password"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Password
                 </label>
+                <div className="block text-sm leading-6 text-gray-900">
+                  Your password should have at least 8 characters.
+                </div>
                 <div className="text-sm">
                   {/* <a
                     href="#"
