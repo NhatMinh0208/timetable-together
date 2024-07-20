@@ -1,8 +1,6 @@
 "use server";
 
 import { passwordMatch, saltAndHashPassword } from "@/app/lib/password";
-
-import CallbackRouteError from "@auth/core";
 import {
   insertUser,
   getUserFromEmail,
