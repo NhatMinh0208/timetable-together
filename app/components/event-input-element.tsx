@@ -86,7 +86,6 @@ export function EventInputElement({
 
   const submit = async () => {
     setWaiting(true);
-    await new Promise((r) => setTimeout(r, 2000));
     const newState = await createEvent(state, input);
     setState(newState);
     setWaiting(false);

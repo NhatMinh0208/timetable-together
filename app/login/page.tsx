@@ -1,18 +1,28 @@
-import { signIn } from "@/auth";
+"use client";
 import Image from "next/image";
 import Logo from "@/public/tt_logo.png";
+import { useState } from "react";
+import { CreateEventState, signInFromForm } from "../lib/actions";
 
 export default function Page() {
+  const [state, setState] = useState<CreateEventState>({
+    status: "",
+    errors: [],
+  });
+
+  const [waiting, setWaiting] = useState(false);
+
+  const submit = async (input: FormData) => {
+    setWaiting(true);
+    const newState = await signInFromForm(state, input);
+    if (newState) setState(newState);
+    setWaiting(false);
+  };
+
+  console.log(state);
+
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Image
@@ -28,14 +38,7 @@ export default function Page() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            className="space-y-6"
-            action={async (formData) => {
-              "use server";
-              formData.append("redirectTo", "/timetable");
-              await signIn("credentials", formData);
-            }}
-          >
+          <form className="space-y-6" action={submit}>
             <div>
               <label
                 htmlFor="email"
@@ -91,6 +94,20 @@ export default function Page() {
               >
                 Sign in
               </button>
+
+              <div className="font-semibold">
+                {waiting ? "Logging in..." : state.status}
+              </div>
+
+              <div className="max-h-[12dvh] overflow-auto">
+                <div className="overflow-hidden">
+                  {state.errors.map((error, i) => (
+                    <div key={i} hidden={waiting}>
+                      {error}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </form>
         </div>

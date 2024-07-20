@@ -108,6 +108,17 @@ export type Note = {
   read: boolean;
 };
 
+export type RegisterInput = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type LoginInput = {
+  email: string;
+  password: string;
+};
+
 export type EventId = string;
 export type ScheduleId = string;
 export type UserId = string;

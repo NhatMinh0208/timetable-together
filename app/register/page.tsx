@@ -1,22 +1,65 @@
+"use client";
 import { signIn } from "@/auth";
 import Image from "next/image";
 import Logo from "@/public/tt_logo.png";
 import { userSchema } from "@/app/lib/zod";
-import { createUser } from "@/app/lib/actions";
+import { CreateEventState, createUser } from "@/app/lib/actions";
 import { redirect } from "next/navigation";
+import { useState } from "react";
+import { ZodError } from "zod";
 
-async function handleRegister(formData: FormData) {
-  "use server";
-  const { email, name, password } = await userSchema.parseAsync({
-    email: formData.get("email"),
-    name: formData.get("name"),
-    password: formData.get("password"),
-  });
-  await createUser(email, name, password);
-  redirect("/login");
+async function handleRegister(
+  state: CreateEventState,
+  formData: FormData,
+): Promise<CreateEventState> {
+  const res: CreateEventState = {
+    status: "",
+    errors: [],
+  };
+  try {
+    ("use server");
+    const { email, name, password } = await userSchema.parseAsync({
+      email: formData.get("email"),
+      name: formData.get("name"),
+      password: formData.get("password"),
+    });
+
+    await createUser(email, name, password);
+    if (res.errors.length !== 0) {
+    } else {
+      res.status = "Success!";
+      redirect("/login");
+    }
+  } catch (e) {
+    if (e instanceof ZodError) {
+      res.status = "There was an error while trying to create the account:";
+      for (const err of e.errors) {
+        res.errors.push(err.message);
+      }
+    } else if (e instanceof Error) {
+      res.status = "There was an error while trying to create the account:";
+      res.errors.push(e.message);
+    }
+  }
+
+  return res;
 }
 
 export default function Page() {
+  const [state, setState] = useState<CreateEventState>({
+    status: "",
+    errors: [],
+  });
+
+  const [waiting, setWaiting] = useState(false);
+
+  const submit = async (input: FormData) => {
+    setWaiting(true);
+    const newState = await handleRegister(state, input);
+    setState(newState);
+    setWaiting(false);
+  };
+
   return (
     <>
       {/*
@@ -42,7 +85,7 @@ export default function Page() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action={handleRegister}>
+          <form className="space-y-6" action={submit}>
             <div>
               <label
                 htmlFor="name"
@@ -120,6 +163,20 @@ export default function Page() {
               >
                 Register
               </button>
+
+              <div className="font-semibold">
+                {waiting ? "Creating account..." : state.status}
+              </div>
+
+              <div className="max-h-[12dvh] overflow-auto">
+                <div className="overflow-hidden">
+                  {state.errors.map((error, i) => (
+                    <div key={i} hidden={waiting}>
+                      {error}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </form>
         </div>
