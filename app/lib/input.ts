@@ -6,8 +6,33 @@ import {
   Session,
   SessionInput,
 } from "@/app/lib/types";
+import { eventSchema, scheduleSchema, sessionSchema } from "@/app/lib/zod";
+import { CreateEventState } from "@/app/lib/actions";
+import { ZodError } from "zod";
+import { errorToJSON } from "next/dist/server/render";
 
-export function convertSessionInput(input: SessionInput): Session {
+function convertSessionInput(
+  state: CreateEventState,
+  input: SessionInput,
+  schedule: string,
+  session: number,
+): Session {
+  try {
+    const parseResult = sessionSchema.parse(input);
+  } catch (e) {
+    if (e instanceof ZodError) {
+      for (const err of e.errors) {
+        state.errors.push(
+          "Schedule " +
+            schedule +
+            ", session #" +
+            session.toString() +
+            ": " +
+            err.message,
+        );
+      }
+    }
+  }
   const [startDay, startMonth, startYear] = input.startDate
     .split("/")
     .map((s) => parseInt(s, 10));
@@ -26,22 +51,47 @@ export function convertSessionInput(input: SessionInput): Session {
   };
 }
 
-function convertScheduleInput(input: ScheduleInput): ExtendedSchedule {
+function convertScheduleInput(
+  state: CreateEventState,
+  input: ScheduleInput,
+): ExtendedSchedule {
+  try {
+    const parseResult = scheduleSchema.parse(input);
+  } catch (e) {
+    if (e instanceof ZodError) {
+      for (const err of e.errors) {
+        state.errors.push("Schedule " + input.name + ": " + err.message);
+      }
+    }
+  }
   return {
     id: "",
     name: input.name,
-    sessions: input.sessions.map(convertSessionInput),
+    sessions: input.sessions.map((x, i) =>
+      convertSessionInput(state, x, input.name, i + 1),
+    ),
   };
 }
 
-export function convertEventInput(input: EventInput): ExtendedEvent {
-  console.log(input);
+export function convertEventInput(
+  state: CreateEventState,
+  input: EventInput,
+): ExtendedEvent {
+  try {
+    const parseResult = eventSchema.parse(input);
+  } catch (e) {
+    if (e instanceof ZodError) {
+      for (const err of e.errors) {
+        state.errors.push(err.message);
+      }
+    }
+  }
   return {
     id: "",
     name: input.name,
     description: input.description,
     private: input.private,
-    schedules: input.schedules.map(convertScheduleInput),
+    schedules: input.schedules.map((x) => convertScheduleInput(state, x)),
   };
 }
 

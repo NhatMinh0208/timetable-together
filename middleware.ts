@@ -8,5 +8,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/(timetable.*)", "/(myevents.*)", "/(export.*)"],
+  matcher: ["/(timetable.*)", "/(myevents.*)", "/(create.*)", "/(export.*)"],
 };
