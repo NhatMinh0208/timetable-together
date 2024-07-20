@@ -29,6 +29,7 @@ import {
   removeNote,
   hasRelationship,
   updateNoteRead,
+  getEventFull,
 } from "@/app/lib/db";
 import {
   EventInput,
@@ -36,13 +37,14 @@ import {
   ExtendedEvent,
   FollowStatus,
   Note,
+  SessionInput,
   User,
 } from "@/app/lib/types";
 import { auth, signOut } from "@/auth";
-import { z } from "zod";
+import { object, z } from "zod";
 import { revalidatePath } from "next/cache";
 import { STATUS_ACTIVE, STATUS_PENDING } from "./constants";
-import { convertEventInput } from "@/app/lib/input";
+import { convertEventInput, convertSessionInput } from "@/app/lib/input";
 export async function createUser(
   email: string,
   name: string,
@@ -402,6 +404,7 @@ export async function createEvent(state: CreateEventState, input: EventInput) {
       userId,
       event.name,
       event.description,
+      false,
     );
     for (const schedule of event.schedules) {
       const insertedSchedule = await insertSchedule(
@@ -428,6 +431,63 @@ export async function createEvent(state: CreateEventState, input: EventInput) {
   } catch (error) {
     console.log(error);
     newState.status = "An error has occured while trying to create the event:";
+    newState.errors.push(
+      "Database error! Please submit an issue on our GitHub page at: github.com/NhatMinh0208/timetable-together",
+    );
+    return newState;
+  }
+}
+
+export async function createPrivateSession(
+  state: CreateEventState,
+  input: SessionInput,
+  name: string,
+  description: string,
+) {
+  const newState: CreateEventState = {
+    status: "",
+    errors: [],
+  };
+  try {
+    const authSession = await auth();
+    if (!authSession) {
+      newState.status =
+        "An error has occured while trying to create the session:";
+      newState.errors.push("User is not logged in");
+      return newState;
+    }
+    const userId = authSession?.user?.id ? authSession.user.id : "";
+    const session = convertSessionInput(input);
+
+    if (newState.errors.length > 0) {
+      newState.status =
+        "An error(s) has occured while trying to create the session:";
+      return newState;
+    }
+
+    const insertedEvent = await insertEvent(userId, name, description, true);
+    const insertedSchedule = await insertSchedule(insertedEvent.id, "1");
+    const insertedSession = await insertSession(
+      insertedSchedule.id,
+      session.place,
+      session.timeZone,
+      session.startTime,
+      session.endTime,
+      session.startDate,
+      session.endDate,
+      session.interval,
+    );
+
+    await insertAttendance(userId, insertedEvent.id, insertedSchedule.id);
+
+    revalidatePath("/myevents");
+    newState.status =
+      'Success! Your private session can also be found in "Manage Events".';
+    return newState;
+  } catch (error) {
+    console.log(error);
+    newState.status =
+      "An error has occured while trying to create the session:";
     newState.errors.push(
       "Database error! Please submit an issue on our GitHub page at: github.com/NhatMinh0208/timetable-together",
     );
@@ -541,5 +601,35 @@ export async function updateUserNoteRead(noteId: string) {
   } catch (error) {
     console.log(error);
     return;
+  }
+}
+
+export async function getEventFullChecked(id: string) {
+  try {
+    const res = await getEventFull(id);
+    if (res.private) {
+      const session = await auth();
+      if (!session?.user?.id || session?.user?.id !== res.owner.id) {
+        return {
+          status: "error" as "error",
+          error: "User not authorized to view event",
+        };
+      }
+    }
+    return {
+      status: "success" as "success",
+      data: res,
+    };
+  } catch (e) {
+    if (e instanceof Error) {
+      return {
+        status: "error" as "error",
+        error: e.message,
+      };
+    } else
+      return {
+        status: "error" as "error",
+        error: "Unknown error",
+      };
   }
 }

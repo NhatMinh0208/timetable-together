@@ -161,7 +161,7 @@ export async function getEvent(id: string) {
 }
 
 export async function getEventFull(id: string) {
-  return await prisma.event.findUnique({
+  const res = await prisma.event.findUnique({
     where: {
       id: id,
     },
@@ -178,11 +178,15 @@ export async function getEventFull(id: string) {
       },
       owner: {
         select: {
+          id: true,
           name: true,
         },
       },
+      private: true,
     },
   });
+  if (!res) throw new Error("Event not found");
+  return res;
 }
 
 export async function getEventMany(eventIds: string[]) {
@@ -197,6 +201,7 @@ export async function getEventMany(eventIds: string[]) {
     select: {
       id: true,
       name: true,
+      private: true,
       description: true,
       schedules: {
         select: {
@@ -249,6 +254,7 @@ export async function insertEvent(
   ownerId: string,
   name: string,
   description: string,
+  priv: boolean,
 ) {
   const id = await createId10();
   return await prisma.event.create({
@@ -257,6 +263,7 @@ export async function insertEvent(
       name: name,
       description: description,
       ownerId: ownerId,
+      private: priv,
     },
   });
 }
@@ -299,6 +306,28 @@ export async function insertSession(
 }
 
 export async function removeEvent(id: string) {
+  await prisma.attendance.deleteMany({
+    where: {
+      eventId: id,
+    },
+  });
+  const schedules = await prisma.schedule.findMany({
+    where: {
+      eventId: id,
+    },
+  });
+  for (const schedule of schedules) {
+    await prisma.session.deleteMany({
+      where: {
+        scheduleId: schedule.id,
+      },
+    });
+  }
+  await prisma.schedule.deleteMany({
+    where: {
+      eventId: id,
+    },
+  });
   return await prisma.event.delete({
     where: {
       id: id,
@@ -361,6 +390,7 @@ export async function getAttendancesByUserId(
         select: {
           id: true,
           name: true,
+          private: true,
           description: true,
           schedules: {
             select: {

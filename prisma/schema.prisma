@@ -39,6 +39,7 @@ model Event {
   ownerId       String
   schedules     Schedule[]
   attendances   Attendance[]
+  private       Boolean           @default(false)
 }
 
 model Attendance {

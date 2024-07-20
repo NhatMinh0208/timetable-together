@@ -7,7 +7,7 @@ import {
   SessionInput,
 } from "@/app/lib/types";
 
-function convertSessionInput(input: SessionInput): Session {
+export function convertSessionInput(input: SessionInput): Session {
   const [startDay, startMonth, startYear] = input.startDate
     .split("/")
     .map((s) => parseInt(s, 10));
@@ -40,6 +40,7 @@ export function convertEventInput(input: EventInput): ExtendedEvent {
     id: "",
     name: input.name,
     description: input.description,
+    private: input.private,
     schedules: input.schedules.map(convertScheduleInput),
   };
 }
@@ -93,6 +94,7 @@ export function convertEventToInput(event: ExtendedEvent): EventInput {
   return {
     name: event.name,
     description: event.description,
+    private: event.private,
     schedules: event.schedules.map(convertScheduleToInput),
   };
 }
