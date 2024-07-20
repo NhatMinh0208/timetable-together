@@ -1,6 +1,8 @@
 "use server";
 
 import { passwordMatch, saltAndHashPassword } from "@/app/lib/password";
+
+import CallbackRouteError from "@auth/core";
 import {
   insertUser,
   getUserFromEmail,
@@ -38,11 +40,13 @@ import {
   Note,
   User,
 } from "@/app/lib/types";
-import { auth, signOut } from "@/auth";
-import { z } from "zod";
+import { auth, signIn, signOut } from "@/auth";
+import { z, ZodError } from "zod";
 import { revalidatePath } from "next/cache";
 import { STATUS_ACTIVE, STATUS_PENDING } from "./constants";
 import { convertEventInput } from "@/app/lib/input";
+import { AuthError } from "next-auth";
+import { redirect } from "next/dist/server/api-utils";
 export async function createUser(
   email: string,
   name: string,
@@ -543,4 +547,35 @@ export async function updateUserNoteRead(noteId: string) {
     console.log(error);
     return;
   }
+}
+
+export async function signInFromForm(state: CreateEventState, input: FormData) {
+  const res: CreateEventState = {
+    status: "",
+    errors: [],
+  };
+  try {
+    input.append("redirectTo", "/timetable");
+    await signIn("credentials", input);
+    if (res.errors.length !== 0) {
+    } else {
+      res.status = "Success!";
+    }
+  } catch (e) {
+    console.log(e);
+    // console.log("SADDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+    // console.log(e instanceof AuthError)
+    if (e instanceof AuthError) {
+      // console.log(e.cause?.err)
+      res.status = "Login was unsuccessful. Check your email and/or password.";
+      if (e.cause?.err) {
+        // console.log(e.cause?.err.message)
+        res.errors.push(e.cause?.err.message);
+      }
+    } else {
+      throw e;
+    }
+  }
+
+  return res;
 }
