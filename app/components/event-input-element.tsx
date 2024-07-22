@@ -22,6 +22,7 @@ export function EventInputElement({
   function changeName(name: string) {
     setInput((input) => ({
       name: name,
+      private: input.private,
       description: input.description,
       schedules: input.schedules,
     }));
@@ -29,6 +30,7 @@ export function EventInputElement({
   function changeDescription(description: string) {
     setInput((input) => ({
       name: input.name,
+      private: input.private,
       description: description,
       schedules: input.schedules,
     }));
@@ -46,6 +48,7 @@ export function EventInputElement({
       });
       return {
         name: input.name,
+        private: input.private,
         description: input.description,
         schedules: newSchedules,
       };
@@ -62,6 +65,7 @@ export function EventInputElement({
 
       return {
         name: input.name,
+        private: input.private,
         description: input.description,
         schedules: newSchedules,
       };
@@ -78,6 +82,7 @@ export function EventInputElement({
 
       return {
         name: input.name,
+        private: input.private,
         description: input.description,
         schedules: newSchedules,
       };

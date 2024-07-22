@@ -51,6 +51,7 @@ export type ExtendedEvent = {
   id: string;
   name: string;
   description: string;
+  private: boolean;
   schedules: ExtendedSchedule[];
 };
 
@@ -80,6 +81,7 @@ export type ScheduleInput = {
 export type EventInput = {
   name: string;
   description: string;
+  private: boolean;
   schedules: ScheduleInput[];
 };
 
@@ -117,6 +119,10 @@ export type RegisterInput = {
 export type LoginInput = {
   email: string;
   password: string;
+};
+
+export type Failed = {
+  errors: string[];
 };
 
 export type EventId = string;

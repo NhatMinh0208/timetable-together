@@ -5,7 +5,7 @@ import { EventId, ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
 import { TICKS_IN_DAY } from "@/app/lib/constants";
 import { removeUserAttendance } from "../lib/actions";
 import { hashCode } from "../lib/password";
-import { RemoveAttendance, ViewEvent } from "./buttons";
+import { DeleteEvent, RemoveAttendance, ViewEvent } from "./buttons";
 
 export function ScheduleButton({
   schedule,
@@ -132,10 +132,22 @@ export function AttendanceComponent({
   return (
     <div className="flex flex-col space-y-2">
       <div className="text-sm flex flex-col">
-        <p className="grow">{event.name}</p>
+        <span className="font-semibold">
+          {event.private ? "[Private session]" : ""}
+        </span>
+        <span className="grow">{event.name}</span>
         <div className="flex flex-row place-content-center">
-          <ViewEvent id={event.id} labl="View event info" />
-          <RemoveAttendance eventId={event.id} labl="Remove" />
+          {event.private ? (
+            <>
+              <ViewEvent id={event.id} labl="View session info" />
+              <DeleteEvent id={event.id} labl="Delete session" />
+            </>
+          ) : (
+            <>
+              <ViewEvent id={event.id} labl="View event info" />
+              <RemoveAttendance eventId={event.id} labl="Remove attendance" />
+            </>
+          )}
         </div>
       </div>
       {isActive ? scheduleCards : inactiveCard}

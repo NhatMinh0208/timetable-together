@@ -11,7 +11,7 @@ import { CreateEventState } from "@/app/lib/actions";
 import { ZodError } from "zod";
 import { errorToJSON } from "next/dist/server/render";
 
-function convertSessionInput(
+export function convertSessionInput(
   state: CreateEventState,
   input: SessionInput,
   schedule: string,
@@ -90,6 +90,7 @@ export function convertEventInput(
     id: "",
     name: input.name,
     description: input.description,
+    private: input.private,
     schedules: input.schedules.map((x) => convertScheduleInput(state, x)),
   };
 }
@@ -143,6 +144,7 @@ export function convertEventToInput(event: ExtendedEvent): EventInput {
   return {
     name: event.name,
     description: event.description,
+    private: event.private,
     schedules: event.schedules.map(convertScheduleToInput),
   };
 }

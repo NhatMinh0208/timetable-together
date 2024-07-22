@@ -69,6 +69,17 @@ export function MyEvents({ labl }: { labl: string }) {
   );
 }
 
+export function CreatePrivateSession({ labl }: { labl: string }) {
+  return (
+    <Link
+      href={"/createprivate"}
+      className="flex justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {labl}
+    </Link>
+  );
+}
+
 export function CreateEvent({ labl }: { labl: string }) {
   return (
     <Link
@@ -83,7 +94,7 @@ export function CreateEvent({ labl }: { labl: string }) {
 export function DeleteEvent({ labl, id }: { labl: string; id: string }) {
   return (
     <button
-      className="flex mx-auto justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      className="flex mx-auto text-center justify-center rounded-md bg-red-400 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       onClick={() => removeUserEvent(id)}
     >
       {labl}
@@ -95,7 +106,7 @@ export function ViewEvent({ labl, id }: { labl: string; id: string }) {
   return (
     <Link
       href={"/event/" + id}
-      className="flex mx-auto justify-center rounded-md bg-blue-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      className="flex mx-auto text-center justify-center rounded-md bg-blue-400 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
     >
       {labl}
     </Link>
@@ -107,7 +118,7 @@ export function Export({ labl }: { labl: string }) {
     <Link
       href={"/export"}
       download={"timetable.ics"}
-      className="flex justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      className="flex justify-center rounded-md bg-orange-400 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
     >
       {labl}
     </Link>
@@ -123,7 +134,7 @@ export function RemoveAttendance({
 }) {
   return (
     <button
-      className="flex mx-auto justify-center rounded-md bg-red-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      className="flex mx-auto text-center justify-center rounded-md bg-red-400 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       onClick={() => removeUserAttendance(eventId)}
     >
       {labl}

@@ -117,6 +117,7 @@ export async function getEventsFromName(
   name: string,
   limit: number,
   exact: boolean,
+  userId: string,
 ) {
   const filter = exact
     ? {
@@ -131,7 +132,21 @@ export async function getEventsFromName(
         })),
       };
   return await prisma.event.findMany({
-    where: filter,
+    where: {
+      AND: [
+        filter,
+        {
+          OR: [
+            {
+              private: false as boolean,
+            },
+            {
+              ownerId: userId,
+            },
+          ],
+        },
+      ],
+    },
     select: {
       id: true,
       name: true,
@@ -161,7 +176,7 @@ export async function getEvent(id: string) {
 }
 
 export async function getEventFull(id: string) {
-  return await prisma.event.findUnique({
+  const res = await prisma.event.findUnique({
     where: {
       id: id,
     },
@@ -178,11 +193,15 @@ export async function getEventFull(id: string) {
       },
       owner: {
         select: {
+          id: true,
           name: true,
         },
       },
+      private: true,
     },
   });
+  if (!res) throw new Error("Event not found");
+  return res;
 }
 
 export async function getEventMany(eventIds: string[]) {
@@ -197,7 +216,14 @@ export async function getEventMany(eventIds: string[]) {
     select: {
       id: true,
       name: true,
+      private: true,
       description: true,
+      owner: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       schedules: {
         select: {
           id: true,
@@ -249,6 +275,7 @@ export async function insertEvent(
   ownerId: string,
   name: string,
   description: string,
+  priv: boolean,
 ) {
   const id = await createId10();
   return await prisma.event.create({
@@ -257,6 +284,7 @@ export async function insertEvent(
       name: name,
       description: description,
       ownerId: ownerId,
+      private: priv,
     },
   });
 }
@@ -383,6 +411,7 @@ export async function getAttendancesByUserId(
         select: {
           id: true,
           name: true,
+          private: true,
           description: true,
           schedules: {
             select: {

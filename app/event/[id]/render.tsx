@@ -19,7 +19,8 @@ export default function Render({
         <div className="h-full w-1/5"> </div>
         <div className="h-full w-3/5 text-xl">
           <div className="text-2xl text-center font-semibold">
-            Event {event.name} by {ownerName}
+            {event.private ? "Private session" : "Event"} {event.name} by{" "}
+            {ownerName}
           </div>
           <EventInputElement initialInput={convertedInput} readOnly={true} />
         </div>

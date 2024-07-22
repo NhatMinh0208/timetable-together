@@ -15,7 +15,7 @@ export function SessionInputElement({
 }: {
   index: number;
   session: SessionInput;
-  changeSession: (schedule: SessionInput) => void;
+  changeSession: (session: SessionInput) => void;
   removeSession: () => void;
   readOnly: boolean;
 }) {
