@@ -20,7 +20,7 @@ export default function Render() {
             Add a private session
           </div>
           <div className="text-md text-center">
-            This session`&apos;`s name, description and location can only be
+            This session&apos;s name, description and location can only be
             viewed by you.
           </div>
           <PrivateSessionInputElement readOnly={false} />
