@@ -670,3 +670,22 @@ export async function getEventManyChecked(ids: string[]) {
     return [];
   }
 }
+
+export async function getEventsFromNameChecked(
+  name: string,
+  limit: number,
+  exact: boolean,
+) {
+  try {
+    const authSession = await auth();
+    return await db.getEventsFromName(
+      name,
+      limit,
+      exact,
+      authSession?.user?.id ? authSession.user.id : "",
+    );
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+}

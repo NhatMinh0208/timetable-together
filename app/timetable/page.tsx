@@ -7,12 +7,12 @@ import {
   getUserFollows,
   getUserRecvNotes,
   getEventManyChecked,
+  getEventsFromNameChecked,
 } from "@/app/lib/actions";
 import Render from "./render";
 import { auth } from "@/auth";
 import {
   getAttendancesByUserIdMany,
-  getEventsFromName,
   getUsersFromNameOrEmail,
 } from "@/app/lib/db";
 import {
@@ -89,12 +89,7 @@ export default async function Page({
   }
 
   const eventSearchResults = searchParams?.eventQuery
-    ? await getEventsFromName(
-        searchParams?.eventQuery,
-        5,
-        false,
-        session.user.id,
-      )
+    ? await getEventsFromNameChecked(searchParams?.eventQuery, 5, false)
     : [];
   const userSearchResults = searchParams?.userQuery
     ? await getUsersFromNameOrEmail(searchParams?.userQuery, 5, false)
