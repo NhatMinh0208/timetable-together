@@ -111,13 +111,13 @@ function convertSessionToInput(session: Session): SessionInput {
     startDate:
       pad(session.startDate.getDate().toString(), 2) +
       "/" +
-      pad(session.startDate.getMonth().toString(), 2) +
+      pad((session.startDate.getMonth() + 1).toString(), 2) +
       "/" +
       session.startDate.getFullYear().toString(),
     endDate:
       pad(session.endDate.getDate().toString(), 2) +
       "/" +
-      pad(session.endDate.getMonth().toString(), 2) +
+      pad((session.endDate.getMonth() + 1).toString(), 2) +
       "/" +
       session.endDate.getFullYear().toString(),
     startTime:

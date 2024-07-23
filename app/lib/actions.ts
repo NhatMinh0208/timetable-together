@@ -354,7 +354,10 @@ export async function validateEvent(
   });
 }
 
-export async function createEvent(state: CreateEventState, input: EventInput) {
+export async function createEvent(
+  state: CreateEventState,
+  event: ExtendedEvent,
+) {
   const newState: CreateEventState = {
     status: "",
     errors: [],
@@ -368,7 +371,6 @@ export async function createEvent(state: CreateEventState, input: EventInput) {
       return newState;
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const event = convertEventInput(newState, input);
     validateEvent(newState, event);
 
     if (newState.errors.length > 0) {

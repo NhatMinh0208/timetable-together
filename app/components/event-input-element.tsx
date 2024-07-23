@@ -3,7 +3,8 @@ import { EventInput, ScheduleInput } from "@/app/lib/types";
 import { useState } from "react";
 import { createEvent, CreateEventState } from "@/app/lib/actions";
 import { ScheduleInputElement } from "./schedule-input-element";
-import { createId10 } from "../lib/cuid2";
+import { createId10 } from "@/app/lib/cuid2";
+import { convertEventInput } from "@/app/lib/input";
 
 export function EventInputElement({
   initialInput,
@@ -91,7 +92,17 @@ export function EventInputElement({
 
   const submit = async () => {
     setWaiting(true);
-    const newState = await createEvent(state, input);
+    const state1: CreateEventState = {
+      status: "",
+      errors: [],
+    };
+    const event = convertEventInput(state1, input);
+    if (state1.errors) {
+      setState(state1);
+      setWaiting(false);
+      return;
+    }
+    const newState = await createEvent(state, event);
     setState(newState);
     setWaiting(false);
   };
