@@ -150,7 +150,6 @@ export async function getEventsFromName(
     select: {
       id: true,
       name: true,
-      schedules: true,
       owner: {
         select: {
           name: true,
@@ -158,6 +157,9 @@ export async function getEventsFromName(
       },
     },
     take: limit,
+    orderBy: {
+      name: "asc",
+    },
   });
 }
 

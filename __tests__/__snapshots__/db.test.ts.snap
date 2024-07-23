@@ -3,14 +3,18 @@
 exports[`Database events fetches multiple events with case insensitive words 1`] = `
 [
   {
-    "id": "a96f907elk",
-    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
-    "schedules": [],
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    "owner": {
+      "name": "user",
+    },
   },
   {
-    "id": "lqjhl4j7ef",
-    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
-    "schedules": [],
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "owner": {
+      "name": "user",
+    },
   },
 ]
 `;
@@ -18,14 +22,18 @@ exports[`Database events fetches multiple events with case insensitive words 1`]
 exports[`Database events fetches multiple events with prefix 1`] = `
 [
   {
-    "id": "a96f907elk",
+    "id": "",
     "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
-    "schedules": [],
+    "owner": {
+      "name": "user",
+    },
   },
   {
-    "id": "ldz47asavc",
+    "id": "",
     "name": "CS9999 Introduction to Testing - Tutorial (Sem 2)",
-    "schedules": [],
+    "owner": {
+      "name": "user",
+    },
   },
 ]
 `;

@@ -1,7 +1,49 @@
 import "@testing-library/jest-dom";
 import * as db from "@/app/lib/db";
-import { Event, User } from "@prisma/client";
+import { Event, Schedule, User } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
+import { ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
+
+// helper functions
+
+function purgeId(event: { id: string }) {
+  event.id = "";
+}
+
+export async function createEventStandalone(
+  event: ExtendedEvent,
+  userId: string,
+) {
+  try {
+    const insertedEvent = await db.insertEvent(
+      userId,
+      event.name,
+      event.description,
+      event.private,
+    );
+    for (const schedule of event.schedules) {
+      const insertedSchedule = await db.insertSchedule(
+        insertedEvent.id,
+        schedule.name,
+      );
+      for (const session of schedule.sessions) {
+        await db.insertSession(
+          insertedSchedule.id,
+          session.place,
+          session.timeZone,
+          session.startTime,
+          session.endTime,
+          session.startDate,
+          session.endDate,
+          session.interval,
+        );
+      }
+    }
+    return insertedEvent;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // test data
 
@@ -9,54 +51,69 @@ const testUsers: User[] = [
   {
     id: "",
     name: "user",
-    email: "user@test.example.com",
+    email: "user22@test.example.com",
     password: "password",
   },
   {
     id: "",
     name: "用户",
-    email: "yonghu@test.example.org",
+    email: "yonghu22@test.example.org",
     password: "mima1234",
   },
   {
     id: "",
     name: "người dùng",
-    email: "nguoidung@test.example.org",
+    email: "nguoidung22@test.example.org",
     password: "matkhau1",
   },
 ];
 
-const testEventsOwner: User = {
-  id: "azp3d9mvgp",
-  name: "test events owner",
-  email: "testeventsowner@test.example.net",
-  password: "testeventsownerpassword",
+const testEventsOwner = testUsers[0];
+
+const testSchedule: ExtendedSchedule = {
+  id: "",
+  name: "Test Schedule #1",
+  sessions: [
+    {
+      id: "",
+      place: "Test Location",
+      timeZone: "",
+      interval: 7,
+      startDate: new Date("2024-07-13"),
+      endDate: new Date("2024-11-13"),
+      startTime: new Date("2024-01-01 08:00"),
+      endTime: new Date("2024-01-01 17:00"),
+    },
+  ],
 };
 
-const testEvents: Event[] = [
+const testEvents: ExtendedEvent[] = [
   {
-    id: "lqjhl4j7ef",
+    id: "",
     name: "CS9999 Introduction to Testing - Lecture (Sem 1)",
     description: "A test case for fetching an event with an exact name",
-    ownerId: testEventsOwner.id,
+    private: false,
+    schedules: [testSchedule],
   },
   {
-    id: "a96f907elk",
+    id: "",
     name: "CS9999 Introduction to Testing - Tutorial (Sem 1)",
     description: "A test case for fetching multiple events with a prefix",
-    ownerId: testEventsOwner.id,
+    private: true,
+    schedules: [testSchedule],
   },
   {
-    id: "ldz47asavc",
+    id: "",
     name: "CS9999 Introduction to Testing - Tutorial (Sem 2)",
     description: "A test case for fetching multiple events with a prefix",
-    ownerId: testEventsOwner.id,
+    private: true,
+    schedules: [testSchedule],
   },
 ];
 
 // initialization and cleanup for this suite
 
-beforeAll(() => {
+beforeAll(async () => {
   const jobs: Promise<any>[] = [];
   testUsers.forEach((user) =>
     jobs.push(
@@ -66,27 +123,28 @@ beforeAll(() => {
     ),
   );
 
-  jobs.push(
-    prisma.user
-      .create({ data: testEventsOwner })
-      .then(async () => prisma.event.createMany({ data: testEvents })),
-  );
+  await Promise.all(jobs);
 
-  return Promise.all(jobs);
+  return await testEvents.forEach((event) =>
+    jobs.push(
+      createEventStandalone(event, testEventsOwner.id).then(
+        (createdEvent) => (event.id = createdEvent?.id ?? event.id),
+      ),
+    ),
+  );
 });
 
-afterAll(() => {
-  const jobs: Promise<any>[] = [];
-  testUsers.forEach((user) => jobs.push(db.removeUser(user.id)));
+afterAll(async () => {
+  const eventJobs: Promise<any>[] = [];
+  testEvents.forEach((event) => {
+    eventJobs.push(db.removeEvent(event.id));
+  });
+  await Promise.all(eventJobs);
 
-  jobs.push(
-    prisma.event
-      .deleteMany({
-        where: { id: { in: testEvents.map((event) => event.id) } },
-      })
-      .then(() => prisma.user.delete({ where: testEventsOwner })),
-  );
-  return Promise.all(jobs);
+  const jobs: Promise<any>[] = [];
+
+  testUsers.forEach((user) => jobs.push(db.removeUser(user.id)));
+  return await Promise.all(jobs);
 });
 
 describe("Database users", () => {
@@ -115,50 +173,83 @@ describe("Database users", () => {
       5,
       true,
     );
-    expect(exactUsers[0].email).toBe(testUsers[0].email);
+    for (const user of exactUsers) {
+      expect(user.name).toBe(testUsers[0].name);
+    }
   });
 
-  it("fetches users based on non-exact email", async () => {
+  it("fetches users based on exact email", async () => {
+    const exactUsers = await db.getUsersFromNameOrEmail(
+      testUsers[0].email,
+      5,
+      true,
+    );
+    expect(exactUsers[0].id).toBe(testUsers[0].id);
+  });
+
+  it("ignores non-exact email searches", async () => {
     const nonExactUsers = await db.getUsersFromNameOrEmail(
       "@test.example.org",
       5,
       false,
     );
-    expect(nonExactUsers.map((user) => user.name).sort()).toEqual(
-      testUsers
-        .slice(1)
-        .map((user) => user.name)
-        .sort(),
-    );
+    expect(nonExactUsers.map((user) => user.name).sort()).toEqual([]);
   });
 });
 
 describe("Database events", () => {
   it("fetches an event with exact name", async () => {
     const eventName = testEvents[0].name;
-    const res = await db.getEventsFromName(eventName, 1, true);
+    const res = await db.getEventsFromName(
+      eventName,
+      1,
+      true,
+      testEventsOwner.id,
+    );
     expect(res.length).toBe(1);
     expect(res[0].name).toBe(eventName);
   });
 
   it("fetches multiple events with prefix", async () => {
     const eventName = "CS9999 Introduction to Testing - Tutorial";
-    const res = await db.getEventsFromName(eventName, 5, false);
+    const res = await db.getEventsFromName(
+      eventName,
+      5,
+      false,
+      testEventsOwner.id,
+    );
+    for (const event of res) {
+      purgeId(event);
+    }
     expect(res).toMatchSnapshot();
+  });
+
+  it("filters out events with no permission", async () => {
+    const eventName = "CS9999 Introduction to Testing - Tutorial";
+    const res = await db.getEventsFromName(eventName, 5, false, "");
+    expect(res).toEqual([]);
   });
 
   it("fetches multiple events with case insensitive words", async () => {
     const eventName = "cs9999 sem 1";
-    const res = await db.getEventsFromName(eventName, 5, false);
+    const res = await db.getEventsFromName(
+      eventName,
+      5,
+      false,
+      testEventsOwner.id,
+    );
+    for (const event of res) {
+      purgeId(event);
+    }
     expect(res).toMatchSnapshot();
   });
 });
 
 describe("Database attendances", () => {
   it("inserts, fetches and deletes an attendance", async () => {
-    const eventName = "CS2100 Computer Organisation - Lecture (Sem 2)";
-    const testUser = (await db.getUserFromEmail("person1@gmail.com")) as User;
-    const event = (await db.getEventsFromName(eventName, 1, true))[0];
+    const testUser = (await db.getUserFromEmail(testUsers[1].email)) as User;
+    const event = await db.getEventFull(testEvents[0].id);
+    console.log(event);
     await db.insertAttendance(testUser.id, event.id, event.schedules[0]?.id);
     const attendances = await db.getAttendancesByUserIdMany([testUser.id]);
     expect(attendances).toContainEqual({

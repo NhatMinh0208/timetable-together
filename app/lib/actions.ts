@@ -115,8 +115,8 @@ export async function addAttendance(
       return {
         message: "Failed to add event to timetable: No such event exists",
       };
-
-    if (event.schedules.length === 0)
+    const eventFull = await db.getEventFull(event.id);
+    if (eventFull.schedules.length === 0)
       return {
         message: "Failed to add event to timetable: Event has no schedules",
       };
@@ -126,7 +126,7 @@ export async function addAttendance(
         message:
           "Failed to add event to timetable: Event is already in timetable",
       };
-    await db.insertAttendance(userId, event.id, event.schedules[0].id);
+    await db.insertAttendance(userId, event.id, eventFull.schedules[0].id);
 
     revalidatePath("/timetable");
   } catch (error) {
