@@ -97,7 +97,7 @@ export function EventInputElement({
       errors: [],
     };
     const event = convertEventInput(state1, input);
-    if (state1.errors) {
+    if (state1.errors.length > 0) {
       setState(state1);
       setWaiting(false);
       return;
