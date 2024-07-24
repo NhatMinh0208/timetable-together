@@ -8,6 +8,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    
 
 jobs:
   build:
@@ -18,7 +19,7 @@ jobs:
       matrix:
         node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        
+    environment: preview    
     env:
       POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
       POSTGRES_DIRECT_URL: ${{ secrets.POSTGRES_DIRECT_URL }}
