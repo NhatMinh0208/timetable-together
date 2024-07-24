@@ -599,7 +599,17 @@ export async function updateNoteRead(userId: string, noteId: string) {
   return res;
 }
 
-export async function removeNote(recvId: string, noteId: string) {
+export async function removeNote(noteId: string) {
+  const res = await prisma.note.delete({
+    where: {
+      id: noteId
+    }
+  })
+  return res;
+}
+
+
+export async function removeRecv(recvId: string, noteId: string) {
   const res = await prisma.recipient.delete({
     where: {
       noteId_userId: {
@@ -608,6 +618,20 @@ export async function removeNote(recvId: string, noteId: string) {
       },
     },
   });
+  const note = await prisma.note.findUnique({
+    where: {
+      id: noteId
+    },
+    select: {
+      recipients: true
+    }
+  })
+  if (!note) {
+    console.log('Error: Note ' + noteId + 'not found')
+  }
+  else if (note.recipients.length === 0) {
+    await removeNote(noteId)
+  }
   return res;
 }
 

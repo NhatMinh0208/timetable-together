@@ -114,6 +114,21 @@ const testEvents: ExtendedEvent[] = [
 // initialization and cleanup for this suite
 
 beforeAll(async () => {
+  await prisma.user.deleteMany({
+    where: {
+      email: testUsers[0].email
+    }
+  })
+  await prisma.user.deleteMany({
+    where: {
+      email: testUsers[1].email
+    }
+  })
+  await prisma.user.deleteMany({
+    where: {
+      email: testUsers[2].email
+    }
+  })
   const jobs: Promise<any>[] = [];
   testUsers.forEach((user) =>
     jobs.push(
@@ -264,5 +279,56 @@ describe("Database attendances", () => {
       eventId: event.id,
       scheduleId: event.schedules[0]?.id,
     });
+  });
+});
+
+describe("Database follows", () => {
+  it("inserts, fetches and deletes a follow", async () => {
+    await db.insertFollow(testUsers[0].id, testUsers[1].id)
+    const res1 = await db.getFollowsByFollowerId(testUsers[0].id)
+    for (const follow of res1) follow.id = ""
+    expect(res1).toMatchSnapshot()
+    await db.updateFollowStatus(testUsers[0].id, testUsers[1].id, "active")
+    const res2 = await db.getFollowsByFollowedId(testUsers[1].id)
+    for (const follow of res2) follow.id = ""
+    expect(res2).toMatchSnapshot()
+    await db.removeFollow(testUsers[0].id, testUsers[1].id)
+    const res3 = await db.getFollowsByFollowerId(testUsers[0].id)
+    for (const follow of res3) follow.id = ""
+    expect(res3).toMatchSnapshot()
+  });
+});
+
+
+describe("Database notes", () => {
+  it("inserts, fetches and deletes a note", async () => {
+    const note = await db.insertNote(testUsers[0].id, "Test note", new Date("2024/01/01 12:00:00"), new Date("2024/01/01 11:00:00"))
+    await db.insertRecipients(note.id, [testUsers[0].id, testUsers[1].id])
+    const res1 = await db.getRecvNotes(testUsers[0].id)
+    for (const note of res1 ?? []) {
+      note.note.id = ""
+      note.note.sender.id = ""
+    }
+    const res2 = await db.getRecvNotes(testUsers[1].id)
+    for (const note of res2 ?? []) {
+      note.note.id = ""
+      note.note.sender.id = ""
+    }
+    expect(res1).toMatchSnapshot()
+    expect(res2).toMatchSnapshot()
+    await db.removeRecv(testUsers[0].id, note.id)
+    const res3 = await db.getRecvNotes(testUsers[0].id)
+    for (const note of res3 ?? []) {
+      note.note.id = ""
+      note.note.sender.id = ""
+    }
+    const res4 = await db.getRecvNotes(testUsers[1].id)
+    for (const note of res4 ?? []) {
+      note.note.id = ""
+      note.note.sender.id = ""
+    }
+    expect(res3).toMatchSnapshot()
+    expect(res4).toMatchSnapshot()
+    await db.removeRecv(testUsers[1].id, note.id)
   });
 });
