@@ -213,7 +213,7 @@ export async function updateUserAttendance(
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    await db.updateAttedance(userId, eventId, scheduleId);
+    await db.updateAttendance(userId, eventId, scheduleId);
     console.log("done");
   } catch (error) {
     console.log(error);

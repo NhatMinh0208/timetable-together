@@ -37,6 +37,52 @@ exports[`Database attendances inserts, fetches and deletes an attendance 1`] = `
 exports[`Database events fetches multiple events from id 1`] = `
 [
   {
+    "description": "A test case for updating attendance",
+    "id": "",
+    "name": "CS1244 Multi-Schedule test",
+    "owner": {
+      "id": "",
+      "name": "user_f8f8fsdf0",
+    },
+    "private": false,
+    "schedules": [
+      {
+        "id": "",
+        "name": "Test Schedule #1",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+      {
+        "id": "",
+        "name": "Test Schedule #2",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location B",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+    ],
+  },
+  {
     "description": "A test case for fetching an event with an exact name",
     "id": "",
     "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
@@ -166,6 +212,13 @@ exports[`Database events fetches multiple events with prefix 1`] = `
 
 exports[`Database events fetches owned events 1`] = `
 [
+  {
+    "description": "A test case for updating attendance",
+    "id": "",
+    "name": "CS1244 Multi-Schedule test",
+    "ownerId": "",
+    "private": false,
+  },
   {
     "description": "A test case for fetching an event with an exact name",
     "id": "",

@@ -124,6 +124,22 @@ const testSchedule: ExtendedSchedule = {
     },
   ],
 };
+const testScheduleB: ExtendedSchedule = {
+  id: "",
+  name: "Test Schedule #2",
+  sessions: [
+    {
+      id: "",
+      place: "Test Location B",
+      timeZone: "",
+      interval: 7,
+      startDate: new Date(1720803600000),
+      endDate: new Date(1731430800000),
+      startTime: new Date(1704070800000),
+      endTime: new Date(1704103200000),
+    },
+  ],
+};
 
 const testEvents: ExtendedEvent[] = [
   {
@@ -146,6 +162,13 @@ const testEvents: ExtendedEvent[] = [
     description: "A test case for fetching multiple events with a prefix",
     private: true,
     schedules: [testSchedule],
+  },
+  {
+    id: "",
+    name: "CS1244 Multi-Schedule test",
+    description: "A test case for updating attendance",
+    private: false,
+    schedules: [testSchedule, testScheduleB],
   },
 ];
 
@@ -385,6 +408,27 @@ describe("Database attendances", () => {
     ]);
     expect(attendances3).toEqual([]);
   }, 20000);
+
+  it("updates attendances", async () => {
+    const event3 = await db.getEventFull(testEvents[3].id);
+    await db.insertAttendance(
+      testUsers[0].id,
+      event3.id,
+      event3.schedules[0]?.id,
+    );
+    const attendances1 = await db.getAttendancesByUserId(testUsers[0].id);
+    for (const x of attendances1)
+      expect(x.scheduleId).toEqual(event3.schedules[0]?.id);
+    await db.updateAttendance(
+      testUsers[0].id,
+      event3.id,
+      event3.schedules[1]?.id,
+    );
+    const attendances2 = await db.getAttendancesByUserId(testUsers[0].id);
+    for (const x of attendances2)
+      expect(x.scheduleId).toEqual(event3.schedules[1]?.id);
+    await db.removeAttendance(testUsers[0].id, event3.id);
+  });
 });
 
 describe("Database follows", () => {

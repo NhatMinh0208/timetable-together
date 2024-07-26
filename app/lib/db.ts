@@ -378,7 +378,7 @@ export async function insertAttendance(
   });
 }
 
-export async function updateAttedance(
+export async function updateAttendance(
   userId: string,
   eventId: string,
   scheduleId: string,
