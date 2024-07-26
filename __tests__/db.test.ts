@@ -2,12 +2,13 @@ import "@testing-library/jest-dom";
 import * as db from "@/app/lib/db";
 import { Event, Schedule, User } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
-import { ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
+import { ExtendedAttendance, ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
 
 // helper functions
 
 function purgeId(
   event:
+    ExtendedEvent
     | (ExtendedEvent & {
         owner: {
           id: string;
@@ -23,7 +24,7 @@ function purgeId(
       },
 ) {
   event.id = "";
-  if ("id" in event.owner) {
+  if ("owner" in event && "id" in event.owner) {
     event.owner.id = "";
   }
   if ("schedules" in event) {
@@ -35,6 +36,14 @@ function purgeId(
       }
     }
   }
+}
+
+function purgeIdAttendance(
+  attendance: ExtendedAttendance
+) {
+  attendance.attendeeId = ""
+  purgeId(attendance.event)
+  attendance.scheduleId = ""
 }
 
 export async function createEventStandalone(
@@ -328,23 +337,28 @@ describe("Database events", () => {
 
 describe("Database attendances", () => {
   it("inserts, fetches and deletes an attendance", async () => {
-    const testUser = (await db.getUserFromEmail(testUsers[1].email)) as User;
-    const event = await db.getEventFull(testEvents[0].id);
-    console.log(event);
-    await db.insertAttendance(testUser.id, event.id, event.schedules[0]?.id);
-    const attendances = await db.getAttendancesByUserIdMany([testUser.id]);
-    expect(attendances).toContainEqual({
-      attendeeId: testUser.id,
-      eventId: event.id,
-      scheduleId: event.schedules[0]?.id,
+    const event0 = await db.getEventFull(testEvents[0].id);
+    const event1 = await db.getEventFull(testEvents[1].id);
+    await db.insertAttendance(testUsers[0].id, event0.id, event0.schedules[0]?.id);
+    await db.insertAttendance(testUsers[1].id, event1.id, event0.schedules[0]?.id);
+    const attendances1 = await db.getAttendancesByUserId(testUsers[0].id);
+    for (const x of attendances1) purgeIdAttendance(x)
+    expect(attendances1).toMatchSnapshot();
+    const attendances2 = await db.getAttendancesByUserIdMany([testUsers[0].id, testUsers[1].id]);
+    expect(attendances2).toContainEqual({
+      attendeeId: testUsers[0].id,
+      eventId: event0.id,
+      scheduleId: event0.schedules[0]?.id,
     });
-    await db.removeAttendance(testUser.id, event.id);
-    const newAttendances = await db.getAttendancesByUserIdMany([testUser.id]);
-    expect(newAttendances).not.toContainEqual({
-      attendeeId: testUser.id,
-      eventId: event.id,
-      scheduleId: event.schedules[0]?.id,
+    expect(attendances2).toContainEqual({
+      attendeeId: testUsers[1].id,
+      eventId: event1.id,
+      scheduleId: event0.schedules[0]?.id,
     });
+    await db.removeAttendance(testUsers[0].id, event0.id);
+    await db.removeAttendance(testUsers[1].id, event1.id);
+    const attendances3 = await db.getAttendancesByUserIdMany([testUsers[0].id, testUsers[1].id]);
+    expect(attendances3).toEqual([])
   }, 20000);
 });
 

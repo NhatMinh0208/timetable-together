@@ -1,5 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Database attendances inserts, fetches and deletes an attendance 1`] = `
+[
+  {
+    "attendeeId": "",
+    "event": {
+      "description": "A test case for fetching an event with an exact name",
+      "id": "",
+      "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+      "private": false,
+      "schedules": [
+        {
+          "id": "",
+          "name": "Test Schedule #1",
+          "sessions": [
+            {
+              "endDate": 2024-11-13T00:00:00.000Z,
+              "endTime": 2024-01-01T10:00:00.000Z,
+              "id": "",
+              "interval": 7,
+              "place": "Test Location",
+              "scheduleId": "",
+              "startDate": 2024-07-13T00:00:00.000Z,
+              "startTime": 2024-01-01T01:00:00.000Z,
+              "timeZone": "",
+            },
+          ],
+        },
+      ],
+    },
+    "scheduleId": "",
+  },
+]
+`;
+
 exports[`Database events fetches multiple events from id 1`] = `
 [
   {
