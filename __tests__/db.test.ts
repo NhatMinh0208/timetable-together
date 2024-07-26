@@ -2,13 +2,17 @@ import "@testing-library/jest-dom";
 import * as db from "@/app/lib/db";
 import { Event, Schedule, User } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
-import { ExtendedAttendance, ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
+import {
+  ExtendedAttendance,
+  ExtendedEvent,
+  ExtendedSchedule,
+} from "@/app/lib/types";
 
 // helper functions
 
 function purgeId(
   event:
-    ExtendedEvent
+    | ExtendedEvent
     | (ExtendedEvent & {
         owner: {
           id: string;
@@ -38,12 +42,10 @@ function purgeId(
   }
 }
 
-function purgeIdAttendance(
-  attendance: ExtendedAttendance
-) {
-  attendance.attendeeId = ""
-  purgeId(attendance.event)
-  attendance.scheduleId = ""
+function purgeIdAttendance(attendance: ExtendedAttendance) {
+  attendance.attendeeId = "";
+  purgeId(attendance.event);
+  attendance.scheduleId = "";
 }
 
 export async function createEventStandalone(
@@ -335,25 +337,36 @@ describe("Database events", () => {
   }, 20000);
 
   it("fetches owned events", async () => {
-    const res = await db.getOwnedEvents(testUsers[0].id, 20, 1)
+    const res = await db.getOwnedEvents(testUsers[0].id, 20, 1);
     for (const event of res) {
-      event.id = ""
-      event.ownerId = ""
+      event.id = "";
+      event.ownerId = "";
     }
     expect(res).toMatchSnapshot();
-  })
+  });
 });
 
 describe("Database attendances", () => {
   it("inserts, fetches and deletes an attendance", async () => {
     const event0 = await db.getEventFull(testEvents[0].id);
     const event1 = await db.getEventFull(testEvents[1].id);
-    await db.insertAttendance(testUsers[0].id, event0.id, event0.schedules[0]?.id);
-    await db.insertAttendance(testUsers[1].id, event1.id, event0.schedules[0]?.id);
+    await db.insertAttendance(
+      testUsers[0].id,
+      event0.id,
+      event0.schedules[0]?.id,
+    );
+    await db.insertAttendance(
+      testUsers[1].id,
+      event1.id,
+      event0.schedules[0]?.id,
+    );
     const attendances1 = await db.getAttendancesByUserId(testUsers[0].id);
-    for (const x of attendances1) purgeIdAttendance(x)
+    for (const x of attendances1) purgeIdAttendance(x);
     expect(attendances1).toMatchSnapshot();
-    const attendances2 = await db.getAttendancesByUserIdMany([testUsers[0].id, testUsers[1].id]);
+    const attendances2 = await db.getAttendancesByUserIdMany([
+      testUsers[0].id,
+      testUsers[1].id,
+    ]);
     expect(attendances2).toContainEqual({
       attendeeId: testUsers[0].id,
       eventId: event0.id,
@@ -366,25 +379,34 @@ describe("Database attendances", () => {
     });
     await db.removeAttendance(testUsers[0].id, event0.id);
     await db.removeAttendance(testUsers[1].id, event1.id);
-    const attendances3 = await db.getAttendancesByUserIdMany([testUsers[0].id, testUsers[1].id]);
-    expect(attendances3).toEqual([])
+    const attendances3 = await db.getAttendancesByUserIdMany([
+      testUsers[0].id,
+      testUsers[1].id,
+    ]);
+    expect(attendances3).toEqual([]);
   }, 20000);
 });
 
 describe("Database follows", () => {
   it("inserts, fetches and deletes a follow", async () => {
     await db.insertFollow(testUsers[0].id, testUsers[1].id);
-    const res1 = await db.getFollowsByFollowerId(testUsers[0].id);
-    for (const follow of res1) follow.id = "";
-    expect(res1).toMatchSnapshot();
+    const res1a = await db.getFollowsByFollowerId(testUsers[0].id);
+    const res1b = await db.hasRelationship(testUsers[0].id, testUsers[1].id);
+    for (const follow of res1a) follow.id = "";
+    expect(res1a).toMatchSnapshot();
+    expect(res1b).toEqual(false);
     await db.updateFollowStatus(testUsers[0].id, testUsers[1].id, "active");
-    const res2 = await db.getFollowsByFollowedId(testUsers[1].id);
-    for (const follow of res2) follow.id = "";
-    expect(res2).toMatchSnapshot();
+    const res2a = await db.getFollowsByFollowedId(testUsers[1].id);
+    const res2b = await db.hasRelationship(testUsers[0].id, testUsers[1].id);
+    for (const follow of res2a) follow.id = "";
+    expect(res2a).toMatchSnapshot();
+    expect(res2b).toEqual(true);
     await db.removeFollow(testUsers[0].id, testUsers[1].id);
-    const res3 = await db.getFollowsByFollowerId(testUsers[0].id);
-    for (const follow of res3) follow.id = "";
-    expect(res3).toMatchSnapshot();
+    const res3a = await db.getFollowsByFollowerId(testUsers[0].id);
+    const res3b = await db.hasRelationship(testUsers[0].id, testUsers[1].id);
+    for (const follow of res3a) follow.id = "";
+    expect(res3a).toMatchSnapshot();
+    expect(res3b).toEqual(false);
   }, 20000);
 });
 
