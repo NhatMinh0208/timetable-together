@@ -409,7 +409,7 @@ describe("Database attendances", () => {
     expect(attendances3).toEqual([]);
   }, 20000);
 
-  it("updates attendances", async () => {
+  it("updates an attendance", async () => {
     const event3 = await db.getEventFull(testEvents[3].id);
     await db.insertAttendance(
       testUsers[0].id,
