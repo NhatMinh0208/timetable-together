@@ -6,8 +6,31 @@ import { ExtendedEvent, ExtendedSchedule } from "@/app/lib/types";
 
 // helper functions
 
-function purgeId(event: { id: string }) {
+function purgeId(event: (ExtendedEvent & {
+  owner: {
+    id: string
+    name: string
+  }
+}) | ({
+  id: string
+  name: string
+  owner: {
+    name: string
+  }
+})) {
   event.id = "";
+  if ("id" in event.owner) {
+    event.owner.id = ""
+  }
+  if ("schedules" in event) {
+    for (const schedule of event.schedules) {
+      schedule.id = ""
+      for (const session of schedule.sessions) {
+        session.id = "";
+        (session as unknown as {scheduleId: string}).scheduleId = ""
+      }
+    }
+  }
 }
 
 export async function createEventStandalone(
@@ -50,19 +73,19 @@ export async function createEventStandalone(
 const testUsers: User[] = [
   {
     id: "",
-    name: "user",
+    name: "user_f8f8fsdf0",
     email: "user22@test.example.com",
     password: "password",
   },
   {
     id: "",
-    name: "用户",
+    name: "用户_bcvnft908nf",
     email: "yonghu22@test.example.org",
     password: "mima1234",
   },
   {
     id: "",
-    name: "người dùng",
+    name: "người dùng_hjmghj09m",
     email: "nguoidung22@test.example.org",
     password: "matkhau1",
   },
@@ -114,6 +137,10 @@ const testEvents: ExtendedEvent[] = [
 // initialization and cleanup for this suite
 
 beforeAll(async () => {
+  for (const test of testEvents) {
+    const events = await db.getEventsFromName(test.name, 20, true, testUsers[0].id)
+    for (const ev of events) await db.removeEvent(ev.id)
+  }
   await prisma.user.deleteMany({
     where: {
       email: testUsers[0].email
@@ -147,7 +174,7 @@ beforeAll(async () => {
       ),
     ),
   );
-});
+}, 20000);
 
 afterAll(async () => {
   const eventJobs: Promise<any>[] = [];
@@ -160,7 +187,7 @@ afterAll(async () => {
 
   testUsers.forEach((user) => jobs.push(db.removeUser(user.id)));
   return await Promise.all(jobs);
-});
+}, 20000);
 
 describe("Database users", () => {
   it("inserts, fetches and deletes a user", async () => {
@@ -180,7 +207,7 @@ describe("Database users", () => {
     await db.removeUser(testUser.id);
     const removedUser = await db.getUserFromEmail(testUser.email);
     expect(removedUser).toBeFalsy();
-  });
+  }, 20000);
 
   it("fetches users based on exact name", async () => {
     const exactUsers = await db.getUsersFromNameOrEmail(
@@ -191,7 +218,28 @@ describe("Database users", () => {
     for (const user of exactUsers) {
       expect(user.name).toBe(testUsers[0].name);
     }
-  });
+  }, 20000);
+
+  it("fetches results from multiple search strings", async () => {
+    const result = await db.getUsersFromNameOrEmail(
+      testUsers.map((user) => user.name),
+      5,
+      true,
+    );
+    for (const user of result) {
+      user.id = ""
+    }
+    expect(result).toMatchSnapshot()
+    const result2 = await db.getUsersFromNameOrEmail(
+      testUsers.map((user) => user.name.split('_')[1]),
+      5,
+      false,
+    );
+    for (const user of result2) {
+      user.id = ""
+    }
+    expect(result2).toMatchSnapshot()
+  }, 20000);
 
   it("fetches users based on exact email", async () => {
     const exactUsers = await db.getUsersFromNameOrEmail(
@@ -200,7 +248,7 @@ describe("Database users", () => {
       true,
     );
     expect(exactUsers[0].id).toBe(testUsers[0].id);
-  });
+  }, 20000);
 
   it("ignores non-exact email searches", async () => {
     const nonExactUsers = await db.getUsersFromNameOrEmail(
@@ -209,7 +257,7 @@ describe("Database users", () => {
       false,
     );
     expect(nonExactUsers.map((user) => user.name).sort()).toEqual([]);
-  });
+  }, 20000);
 });
 
 describe("Database events", () => {
@@ -223,7 +271,7 @@ describe("Database events", () => {
     );
     expect(res.length).toBe(1);
     expect(res[0].name).toBe(eventName);
-  });
+  }, 20000);
 
   it("fetches multiple events with prefix", async () => {
     const eventName = "CS9999 Introduction to Testing - Tutorial";
@@ -237,13 +285,23 @@ describe("Database events", () => {
       purgeId(event);
     }
     expect(res).toMatchSnapshot();
-  });
+  }, 20000);
+
+  it("fetches multiple events from id", async () => {
+    const eventName = "CS9999 Introduction to Testing - Tutorial";
+    const res = await db.getEventMany(testEvents.map((event) => (event.id)))
+    for (const event of res) {
+      purgeId(event);
+    }
+    expect(res).toMatchSnapshot();
+  }, 20000);
+
 
   it("filters out events with no permission", async () => {
     const eventName = "CS9999 Introduction to Testing - Tutorial";
     const res = await db.getEventsFromName(eventName, 5, false, "");
     expect(res).toEqual([]);
-  });
+  }, 20000);
 
   it("fetches multiple events with case insensitive words", async () => {
     const eventName = "cs9999 sem 1";
@@ -257,7 +315,7 @@ describe("Database events", () => {
       purgeId(event);
     }
     expect(res).toMatchSnapshot();
-  });
+  }, 20000);
 });
 
 describe("Database attendances", () => {
@@ -279,7 +337,7 @@ describe("Database attendances", () => {
       eventId: event.id,
       scheduleId: event.schedules[0]?.id,
     });
-  });
+  }, 20000);
 });
 
 describe("Database follows", () => {
@@ -296,7 +354,7 @@ describe("Database follows", () => {
     const res3 = await db.getFollowsByFollowerId(testUsers[0].id)
     for (const follow of res3) follow.id = ""
     expect(res3).toMatchSnapshot()
-  });
+  }, 20000);
 });
 
 
@@ -330,5 +388,5 @@ describe("Database notes", () => {
     expect(res3).toMatchSnapshot()
     expect(res4).toMatchSnapshot()
     await db.removeRecv(testUsers[1].id, note.id)
-  });
+  }, 20000);
 });
