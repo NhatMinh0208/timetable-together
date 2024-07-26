@@ -1,19 +1,191 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Database attendances inserts, fetches and deletes an attendance 1`] = `
+[
+  {
+    "attendeeId": "",
+    "event": {
+      "description": "A test case for fetching an event with an exact name",
+      "id": "",
+      "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+      "private": false,
+      "schedules": [
+        {
+          "id": "",
+          "name": "Test Schedule #1",
+          "sessions": [
+            {
+              "endDate": 2024-11-12T17:00:00.000Z,
+              "endTime": 2024-01-01T10:00:00.000Z,
+              "id": "",
+              "interval": 7,
+              "place": "Test Location",
+              "scheduleId": "",
+              "startDate": 2024-07-12T17:00:00.000Z,
+              "startTime": 2024-01-01T01:00:00.000Z,
+              "timeZone": "",
+            },
+          ],
+        },
+      ],
+    },
+    "scheduleId": "",
+  },
+]
+`;
+
+exports[`Database events fetches multiple events from id 1`] = `
+[
+  {
+    "description": "A test case for updating attendance",
+    "id": "",
+    "name": "CS1244 Multi-Schedule test",
+    "owner": {
+      "id": "",
+      "name": "user_f8f8fsdf0",
+    },
+    "private": false,
+    "schedules": [
+      {
+        "id": "",
+        "name": "Test Schedule #1",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+      {
+        "id": "",
+        "name": "Test Schedule #2",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location B",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "description": "A test case for fetching an event with an exact name",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    "owner": {
+      "id": "",
+      "name": "user_f8f8fsdf0",
+    },
+    "private": false,
+    "schedules": [
+      {
+        "id": "",
+        "name": "Test Schedule #1",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "description": "A test case for fetching multiple events with a prefix",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "owner": {
+      "id": "",
+      "name": "user_f8f8fsdf0",
+    },
+    "private": true,
+    "schedules": [
+      {
+        "id": "",
+        "name": "Test Schedule #1",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    "description": "A test case for fetching multiple events with a prefix",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 2)",
+    "owner": {
+      "id": "",
+      "name": "user_f8f8fsdf0",
+    },
+    "private": true,
+    "schedules": [
+      {
+        "id": "",
+        "name": "Test Schedule #1",
+        "sessions": [
+          {
+            "endDate": 2024-11-12T17:00:00.000Z,
+            "endTime": 2024-01-01T10:00:00.000Z,
+            "id": "",
+            "interval": 7,
+            "place": "Test Location",
+            "scheduleId": "",
+            "startDate": 2024-07-12T17:00:00.000Z,
+            "startTime": 2024-01-01T01:00:00.000Z,
+            "timeZone": "",
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
+
 exports[`Database events fetches multiple events with case insensitive words 1`] = `
 [
   {
     "id": "",
     "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
     "owner": {
-      "name": "user",
+      "name": "user_f8f8fsdf0",
     },
   },
   {
     "id": "",
     "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
     "owner": {
-      "name": "user",
+      "name": "user_f8f8fsdf0",
     },
   },
 ]
@@ -25,15 +197,162 @@ exports[`Database events fetches multiple events with prefix 1`] = `
     "id": "",
     "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
     "owner": {
-      "name": "user",
+      "name": "user_f8f8fsdf0",
     },
   },
   {
     "id": "",
     "name": "CS9999 Introduction to Testing - Tutorial (Sem 2)",
     "owner": {
-      "name": "user",
+      "name": "user_f8f8fsdf0",
     },
+  },
+]
+`;
+
+exports[`Database events fetches owned events 1`] = `
+[
+  {
+    "description": "A test case for updating attendance",
+    "id": "",
+    "name": "CS1244 Multi-Schedule test",
+    "ownerId": "",
+    "private": false,
+  },
+  {
+    "description": "A test case for fetching an event with an exact name",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    "ownerId": "",
+    "private": false,
+  },
+  {
+    "description": "A test case for fetching multiple events with a prefix",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "ownerId": "",
+    "private": true,
+  },
+  {
+    "description": "A test case for fetching multiple events with a prefix",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 2)",
+    "ownerId": "",
+    "private": true,
+  },
+]
+`;
+
+exports[`Database follows inserts, fetches and deletes a follow 1`] = `
+[
+  {
+    "email": "yonghu22@test.example.org",
+    "id": "",
+    "name": "用户_bcvnft908nf",
+    "status": "pending",
+  },
+]
+`;
+
+exports[`Database follows inserts, fetches and deletes a follow 2`] = `
+[
+  {
+    "email": "user22@test.example.com",
+    "id": "",
+    "name": "user_f8f8fsdf0",
+    "status": "active",
+  },
+]
+`;
+
+exports[`Database follows inserts, fetches and deletes a follow 3`] = `[]`;
+
+exports[`Database notes inserts, fetches and deletes a note 1`] = `
+[
+  {
+    "note": {
+      "content": "Test note",
+      "id": "",
+      "position": 2024-01-01T05:00:00.000Z,
+      "sender": {
+        "id": "",
+        "name": "user_f8f8fsdf0",
+      },
+      "timeSent": 2024-01-01T04:00:00.000Z,
+    },
+    "read": true,
+  },
+]
+`;
+
+exports[`Database notes inserts, fetches and deletes a note 2`] = `
+[
+  {
+    "note": {
+      "content": "Test note",
+      "id": "",
+      "position": 2024-01-01T05:00:00.000Z,
+      "sender": {
+        "id": "",
+        "name": "user_f8f8fsdf0",
+      },
+      "timeSent": 2024-01-01T04:00:00.000Z,
+    },
+    "read": false,
+  },
+]
+`;
+
+exports[`Database notes inserts, fetches and deletes a note 3`] = `[]`;
+
+exports[`Database notes inserts, fetches and deletes a note 4`] = `
+[
+  {
+    "note": {
+      "content": "Test note",
+      "id": "",
+      "position": 2024-01-01T05:00:00.000Z,
+      "sender": {
+        "id": "",
+        "name": "user_f8f8fsdf0",
+      },
+      "timeSent": 2024-01-01T04:00:00.000Z,
+    },
+    "read": false,
+  },
+]
+`;
+
+exports[`Database users fetches results from multiple search strings 1`] = `
+[
+  {
+    "id": "",
+    "name": "người dùng_hjmghj09m",
+  },
+  {
+    "id": "",
+    "name": "user_f8f8fsdf0",
+  },
+  {
+    "id": "",
+    "name": "用户_bcvnft908nf",
+  },
+]
+`;
+
+exports[`Database users fetches results from multiple search strings 2`] = `
+[
+  {
+    "id": "",
+    "name": "người dùng_hjmghj09m",
+  },
+  {
+    "id": "",
+    "name": "user_f8f8fsdf0",
+  },
+  {
+    "id": "",
+    "name": "用户_bcvnft908nf",
   },
 ]
 `;

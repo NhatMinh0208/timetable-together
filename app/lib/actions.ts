@@ -3,7 +3,6 @@
 import { passwordMatch, saltAndHashPassword } from "@/app/lib/password";
 import * as db from "@/app/lib/db";
 import {
-  EventInput,
   ExtendedAttendance,
   ExtendedEvent,
   FollowStatus,
@@ -15,7 +14,7 @@ import { auth, signIn, signOut } from "@/auth";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { STATUS_ACTIVE, STATUS_PENDING } from "./constants";
-import { convertEventInput, convertSessionInput } from "@/app/lib/input";
+import { convertSessionInput } from "@/app/lib/input";
 import { AuthError } from "next-auth";
 export async function createUser(
   email: string,
@@ -214,7 +213,7 @@ export async function updateUserAttendance(
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    await db.updateAttedance(userId, eventId, scheduleId);
+    await db.updateAttendance(userId, eventId, scheduleId);
     console.log("done");
   } catch (error) {
     console.log(error);
@@ -565,7 +564,7 @@ export async function removeUserNote(noteId: string) {
       throw new Error("User is not logged in");
     }
     const userId = session?.user?.id ? session.user.id : "";
-    const res = await db.removeNote(userId, noteId);
+    const res = await db.removeRecv(userId, noteId);
     revalidatePath("timetable");
     return res;
   } catch (error) {
