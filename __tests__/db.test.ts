@@ -333,6 +333,15 @@ describe("Database events", () => {
     }
     expect(res).toMatchSnapshot();
   }, 20000);
+
+  it("fetches owned events", async () => {
+    const res = await db.getOwnedEvents(testUsers[0].id, 20, 1)
+    for (const event of res) {
+      event.id = ""
+      event.ownerId = ""
+    }
+    expect(res).toMatchSnapshot();
+  })
 });
 
 describe("Database attendances", () => {

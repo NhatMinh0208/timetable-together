@@ -164,6 +164,32 @@ exports[`Database events fetches multiple events with prefix 1`] = `
 ]
 `;
 
+exports[`Database events fetches owned events 1`] = `
+[
+  {
+    "description": "A test case for fetching an event with an exact name",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    "ownerId": "",
+    "private": false,
+  },
+  {
+    "description": "A test case for fetching multiple events with a prefix",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "ownerId": "",
+    "private": true,
+  },
+  {
+    "description": "A test case for fetching multiple events with a prefix",
+    "id": "",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 2)",
+    "ownerId": "",
+    "private": true,
+  },
+]
+`;
+
 exports[`Database follows inserts, fetches and deletes a follow 1`] = `
 [
   {
