@@ -3,14 +3,14 @@
 exports[`Database events fetches multiple events from id 1`] = `
 [
   {
-    "description": "A test case for fetching multiple events with a prefix",
+    "description": "A test case for fetching an event with an exact name",
     "id": "",
-    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
+    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
     "owner": {
       "id": "",
       "name": "user_f8f8fsdf0",
     },
-    "private": true,
+    "private": false,
     "schedules": [
       {
         "id": "",
@@ -32,14 +32,14 @@ exports[`Database events fetches multiple events from id 1`] = `
     ],
   },
   {
-    "description": "A test case for fetching an event with an exact name",
+    "description": "A test case for fetching multiple events with a prefix",
     "id": "",
-    "name": "CS9999 Introduction to Testing - Lecture (Sem 1)",
+    "name": "CS9999 Introduction to Testing - Tutorial (Sem 1)",
     "owner": {
       "id": "",
       "name": "user_f8f8fsdf0",
     },
-    "private": false,
+    "private": true,
     "schedules": [
       {
         "id": "",
@@ -214,11 +214,11 @@ exports[`Database users fetches results from multiple search strings 1`] = `
 [
   {
     "id": "",
-    "name": "user_f8f8fsdf0",
+    "name": "người dùng_hjmghj09m",
   },
   {
     "id": "",
-    "name": "người dùng_hjmghj09m",
+    "name": "user_f8f8fsdf0",
   },
   {
     "id": "",
@@ -231,11 +231,11 @@ exports[`Database users fetches results from multiple search strings 2`] = `
 [
   {
     "id": "",
-    "name": "user_f8f8fsdf0",
+    "name": "người dùng_hjmghj09m",
   },
   {
     "id": "",
-    "name": "người dùng_hjmghj09m",
+    "name": "user_f8f8fsdf0",
   },
   {
     "id": "",

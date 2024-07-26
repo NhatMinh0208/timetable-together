@@ -75,6 +75,9 @@ export async function getUsersFromNameOrEmail(
         id: true,
         name: true,
       },
+      orderBy: {
+        name: "asc",
+      },
       take: limit,
     });
   }
@@ -233,6 +236,9 @@ export async function getEventMany(eventIds: string[]) {
           sessions: true,
         },
       },
+    },
+    orderBy: {
+      name: "asc",
     },
   });
 }
@@ -602,12 +608,11 @@ export async function updateNoteRead(userId: string, noteId: string) {
 export async function removeNote(noteId: string) {
   const res = await prisma.note.delete({
     where: {
-      id: noteId
-    }
-  })
+      id: noteId,
+    },
+  });
   return res;
 }
-
 
 export async function removeRecv(recvId: string, noteId: string) {
   const res = await prisma.recipient.delete({
@@ -620,17 +625,16 @@ export async function removeRecv(recvId: string, noteId: string) {
   });
   const note = await prisma.note.findUnique({
     where: {
-      id: noteId
+      id: noteId,
     },
     select: {
-      recipients: true
-    }
-  })
+      recipients: true,
+    },
+  });
   if (!note) {
-    console.log('Error: Note ' + noteId + 'not found')
-  }
-  else if (note.recipients.length === 0) {
-    await removeNote(noteId)
+    console.log("Error: Note " + noteId + "not found");
+  } else if (note.recipients.length === 0) {
+    await removeNote(noteId);
   }
   return res;
 }
