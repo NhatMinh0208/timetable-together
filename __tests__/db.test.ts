@@ -415,8 +415,8 @@ describe("Database notes", () => {
     const note = await db.insertNote(
       testUsers[0].id,
       "Test note",
-      new Date("2024/01/01 12:00:00"),
-      new Date("2024/01/01 11:00:00"),
+      new Date(1704085200000),
+      new Date(1704081600000),
     );
     await db.insertRecipients(note.id, [testUsers[0].id, testUsers[1].id]);
     const res1 = await db.getRecvNotes(testUsers[0].id);
