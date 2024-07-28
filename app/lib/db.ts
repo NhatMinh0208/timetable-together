@@ -195,6 +195,9 @@ export async function getEventFull(id: string) {
           name: true,
           sessions: true,
         },
+        orderBy: {
+          name: "asc",
+        },
       },
       owner: {
         select: {
@@ -234,6 +237,9 @@ export async function getEventMany(eventIds: string[]) {
           id: true,
           name: true,
           sessions: true,
+        },
+        orderBy: {
+          name: "asc",
         },
       },
     },
@@ -426,6 +432,9 @@ export async function getAttendancesByUserId(
               id: true,
               name: true,
               sessions: true,
+            },
+            orderBy: {
+              name: "asc",
             },
           },
         },
