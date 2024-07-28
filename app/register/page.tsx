@@ -7,6 +7,7 @@ import { CreateEventState, createUser } from "@/app/lib/actions";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import { ZodError } from "zod";
+import { isRedirectError } from "next/dist/client/components/redirect";
 
 async function handleRegister(
   state: CreateEventState,
@@ -36,6 +37,8 @@ async function handleRegister(
       for (const err of e.errors) {
         res.errors.push(err.message);
       }
+    } else if (isRedirectError(e)) {
+      throw e
     } else if (e instanceof Error) {
       res.status = "There was an error while trying to create the account:";
       res.errors.push(e.message);
