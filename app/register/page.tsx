@@ -38,7 +38,7 @@ async function handleRegister(
         res.errors.push(err.message);
       }
     } else if (isRedirectError(e)) {
-      throw e
+      throw e;
     } else if (e instanceof Error) {
       res.status = "There was an error while trying to create the account:";
       res.errors.push(e.message);

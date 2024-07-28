@@ -12,7 +12,7 @@ import {
 import Image from "next/image";
 import LeftArrow from "@/app/static/left-arrow.svg";
 import RightArrow from "@/app/static/right-arrow.svg";
-import NoteUnread from "@/app/static/note-unread.svg"
+import NoteUnread from "@/app/static/note-unread.svg";
 import { TICKS_IN_DAY, TICKS_IN_WEEK } from "@/app/lib/constants";
 import { useCallback, useState } from "react";
 import { TimetableWindow } from "./timetable-window";
@@ -26,7 +26,7 @@ export function TimetableNavbar({
   window: Date;
   handleLeftArrow: () => void;
   handleRightArrow: () => void;
-  hasUnreadNotes: boolean
+  hasUnreadNotes: boolean;
 }) {
   return (
     <div className="flex flex-row flex-none justify-center h-12 w-full rounded-lg text-xl">
@@ -45,17 +45,15 @@ export function TimetableNavbar({
             .match("^[a-zA-Z]* ([a-zA-Z]* [0-9]*) ")?.[1]
         }
       </p>
-      
+
       <p className="w-2"></p>
-      {hasUnreadNotes 
-      ? (<p className="h-full flex-row place-content-center">
-        
-        <Image src={NoteUnread} alt={"Unread notes"}></Image>
-       </p>)
-      : (<p className="h-full flex-row place-content-center">
-      
-       </p>)
-      }
+      {hasUnreadNotes ? (
+        <p className="h-full flex-row place-content-center">
+          <Image src={NoteUnread} alt={"Unread notes"}></Image>
+        </p>
+      ) : (
+        <p className="h-full flex-row place-content-center"></p>
+      )}
       <button
         className="h-full flex-row place-content-center"
         onClick={handleRightArrow}
@@ -233,9 +231,9 @@ export function Timetable({
     );
   });
 
-  let hasUnreadNotesInView = false
+  let hasUnreadNotesInView = false;
 
-  for (const note of notesInView) if (!note.read) hasUnreadNotesInView = true
+  for (const note of notesInView) if (!note.read) hasUnreadNotesInView = true;
   return (
     <div
       className={
