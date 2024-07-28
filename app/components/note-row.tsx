@@ -71,7 +71,7 @@ export function NoteRow({
         <Image
           className="relative"
           src={cellRead[j] ? NoteIcon : NoteIconUnread}
-          alt="Note icon"
+          alt={cellRead[j] ? "Note icon" : "Note icon unread"}
           onClick={() => {
             if (activeCell === j) changeActive(-1);
             else {
