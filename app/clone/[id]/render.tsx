@@ -3,23 +3,25 @@
 // The page component will be for fetching data only.
 "use client";
 import { EventInputElement } from "@/app/components/event-input-element";
-import { EventInput } from "@/app/lib/types";
-const initialInput: EventInput = {
-  name: "",
-  description: "",
-  private: false,
-  schedules: [],
-};
-export default function Render() {
+import { convertEventToInput } from "@/app/lib/input";
+import { ExtendedEvent } from "@/app/lib/types";
+export default function Render({
+  event,
+  ownerName,
+}: {
+  event: ExtendedEvent;
+  ownerName: string;
+}) {
+  const convertedInput = convertEventToInput(event);
   return (
     <main className="flex h-full w-dvw flex-row space-x-2 px-2 py-2">
       <div className="bg-slate-300 w-dvw rounded-md flex flex-row px-2 py-2 space-x-2">
         <div className="h-full w-1/5"> </div>
         <div className="h-full w-3/5 text-xl">
           <div className="text-2xl text-center font-semibold">
-            Create a new event
+            Clone from {event.private ? "private session" : "event"} {event.name}
           </div>
-          <EventInputElement initialInput={initialInput} readOnly={false}/>
+          <EventInputElement initialInput={convertedInput} readOnly={false}/>
         </div>
         <div className="h-full w-1/5"> </div>
       </div>
