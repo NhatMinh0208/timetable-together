@@ -144,7 +144,7 @@ export function TimetableWindow({
               })
             }
             notes={notesByDay[i]}
-            key={i + 100}
+            key={i.toString() + " " + window.getTime().toString()}
           />
         );
       })}
