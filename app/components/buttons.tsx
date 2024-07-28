@@ -113,6 +113,17 @@ export function ViewEvent({ labl, id }: { labl: string; id: string }) {
   );
 }
 
+export function CloneEvent({ labl, id }: { labl: string; id: string }) {
+  return (
+    <Link
+      href={"/clone/" + id}
+      className="flex mx-auto text-center justify-center rounded-md bg-purple-400 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {labl}
+    </Link>
+  );
+}
+
 export function Export({ labl }: { labl: string }) {
   return (
     <Link
