@@ -19,7 +19,7 @@ export default function Render() {
           <div className="text-2xl text-center font-semibold">
             Create a new event
           </div>
-          <EventInputElement initialInput={initialInput} readOnly={false}/>
+          <EventInputElement initialInput={initialInput} readOnly={false} />
         </div>
         <div className="h-full w-1/5"> </div>
       </div>

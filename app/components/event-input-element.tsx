@@ -8,7 +8,7 @@ import { convertEventInput } from "@/app/lib/input";
 
 export function EventInputElement({
   initialInput,
-  readOnly
+  readOnly,
 }: {
   initialInput: EventInput;
   readOnly: boolean;

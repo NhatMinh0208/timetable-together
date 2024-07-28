@@ -19,9 +19,10 @@ export default function Render({
         <div className="h-full w-1/5"> </div>
         <div className="h-full w-3/5 text-xl">
           <div className="text-2xl text-center font-semibold">
-            Clone from {event.private ? "private session" : "event"} {event.name}
+            Clone from {event.private ? "private session" : "event"}{" "}
+            {event.name}
           </div>
-          <EventInputElement initialInput={convertedInput} readOnly={false}/>
+          <EventInputElement initialInput={convertedInput} readOnly={false} />
         </div>
         <div className="h-full w-1/5"> </div>
       </div>
