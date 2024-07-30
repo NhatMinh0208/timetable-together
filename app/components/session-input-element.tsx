@@ -47,7 +47,7 @@ export function SessionInputElement({
   return (
     <div>
       <div
-        className="w-full flex flex-row align-center rounded-md font-semibold bg-purple-300 px-1 h-10"
+        className="flex items-center gap-2 rounded-md bg-purple-300 p-1 font-semibold"
         onClick={(e) => toggleHidden()}
       >
         {hidden ? (
@@ -55,8 +55,7 @@ export function SessionInputElement({
         ) : (
           <Image src={DownArrow} alt="" />
         )}
-        <div className="w-2"></div>
-        <div className="py-1 h-full grow text-left">Session #{index + 1}</div>
+        <div className="grow">Session #{index + 1}</div>
         <button
           onClick={removeSession}
           hidden={readOnly}
