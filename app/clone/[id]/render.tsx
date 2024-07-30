@@ -14,17 +14,15 @@ export default function Render({
 }) {
   const convertedInput = convertEventToInput(event);
   return (
-    <main className="flex h-full w-dvw flex-row space-x-2 px-2 py-2">
-      <div className="bg-slate-300 w-dvw rounded-md flex flex-row px-2 py-2 space-x-2">
-        <div className="h-full w-1/5"> </div>
-        <div className="h-full w-3/5 text-xl">
-          <div className="text-2xl text-center font-semibold">
+    <main className="h-full p-2">
+      <div className="h-full rounded-md bg-slate-300 p-2">
+        <div className="mx-auto max-w-screen-lg text-xl">
+          <h1 className="text-center text-2xl font-semibold">
             Clone from {event.private ? "private session" : "event"}{" "}
             {event.name}
-          </div>
+          </h1>
           <EventInputElement initialInput={convertedInput} readOnly={false} />
         </div>
-        <div className="h-full w-1/5"> </div>
       </div>
     </main>
   );
