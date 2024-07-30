@@ -101,14 +101,10 @@ export function ScheduleInputElement({
   return (
     <div className="space-y-2">
       <div
-        className="flex items-center gap-2 rounded-md bg-blue-300 p-1 font-semibold"
+        className="flex items-center gap-2 rounded-md bg-blue-300 px-2 py-1 font-semibold"
         onClick={(e) => toggleHidden()}
       >
-        {hidden ? (
-          <Image className="py-1" src={RightArrow} alt="" />
-        ) : (
-          <Image src={DownArrow} alt="" />
-        )}
+        <Image src={hidden ? RightArrow : DownArrow} alt="" />
         <div className="grow">
           Schedule {input.name !== "" ? input.name : "#" + (index + 1)}
         </div>

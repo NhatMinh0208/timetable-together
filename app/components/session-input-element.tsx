@@ -47,14 +47,10 @@ export function SessionInputElement({
   return (
     <div>
       <div
-        className="flex items-center gap-2 rounded-md bg-purple-300 p-1 font-semibold"
+        className="flex items-center gap-2 rounded-md bg-purple-300 px-2 py-1 font-semibold"
         onClick={(e) => toggleHidden()}
       >
-        {hidden ? (
-          <Image className="py-1" src={RightArrow} alt="" />
-        ) : (
-          <Image src={DownArrow} alt="" />
-        )}
+        <Image src={hidden ? RightArrow : DownArrow} alt="" />
         <div className="grow">Session #{index + 1}</div>
         <button
           onClick={removeSession}
