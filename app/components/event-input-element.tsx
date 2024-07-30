@@ -110,9 +110,7 @@ export function EventInputElement({
   return (
     <div className="flex h-full flex-col gap-2">
       <div className="h-5 grow-[5] space-y-2 overflow-auto">
-        <label className="font-semibold" htmlFor="name">
-          Event name
-        </label>
+        <div className="font-semibold">Event name</div>
         <TextInputElement
           name="name"
           value={input.name}
@@ -120,9 +118,7 @@ export function EventInputElement({
           handleChange={(e) => changeName(e.target.value)}
           disabled={readOnly}
         />
-        <label className="font-semibold" htmlFor="description">
-          Description
-        </label>
+        <div className="font-semibold">Description</div>
         <TextInputElement
           name="description"
           value={input.description}
