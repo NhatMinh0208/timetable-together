@@ -16,7 +16,7 @@ export function TextInputElement({
   children: React.ReactNode;
 }) {
   return (
-    <label>
+    <label className="block">
       {children}
       <input
         id={name}
