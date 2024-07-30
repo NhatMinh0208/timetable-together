@@ -45,7 +45,7 @@ export function SessionInputElement({
   const [hidden, setHidden] = useState(readOnly);
   const toggleHidden = () => setHidden((hidden) => !hidden);
   return (
-    <div>
+    <div className="space-y-2">
       <div
         className="flex items-center gap-2 rounded-md bg-purple-300 px-2 py-1 font-semibold"
         onClick={(e) => toggleHidden()}
