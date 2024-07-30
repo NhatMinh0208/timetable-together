@@ -108,8 +108,8 @@ export function EventInputElement({
   };
 
   return (
-    <div className="space-y-2">
-      <div className="max-h-[63dvh] space-y-2 overflow-auto">
+    <div className="flex h-full flex-col gap-2">
+      <div className="h-5 grow-[5] space-y-2 overflow-auto">
         <div className="font-semibold">Event name</div>
         <TextInputElement
           name="name"
@@ -158,15 +158,17 @@ export function EventInputElement({
 
       <div>{waiting ? "Creating event..." : state.status}</div>
 
-      <div className="max-h-[12dvh] overflow-auto">
-        <div className="overflow-hidden">
-          {state.errors.map((error, i) => (
-            <div key={i} hidden={waiting}>
-              {error}
-            </div>
-          ))}
+      {state.errors.length > 0 && (
+        <div className="h-1 grow overflow-auto">
+          <div className="overflow-hidden">
+            {state.errors.map((error, i) => (
+              <div key={i} hidden={waiting}>
+                {error}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
