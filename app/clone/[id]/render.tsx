@@ -16,12 +16,14 @@ export default function Render({
   return (
     <main className="h-full p-2">
       <div className="h-full rounded-md bg-slate-300 p-2">
-        <div className="mx-auto max-w-screen-lg text-xl">
+        <div className="mx-auto flex h-full max-w-screen-lg flex-col">
           <h1 className="text-center text-2xl font-semibold">
             Clone from {event.private ? "private session" : "event"}{" "}
             {event.name}
           </h1>
-          <EventInputElement initialInput={convertedInput} readOnly={false} />
+          <div className="grow text-xl">
+            <EventInputElement initialInput={convertedInput} readOnly={false} />
+          </div>
         </div>
       </div>
     </main>
