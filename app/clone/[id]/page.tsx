@@ -16,11 +16,11 @@ export default async function Page({
     return <Render event={res.data} ownerName={res.data.owner.name} />;
   } else {
     return (
-      <main className="flex flex-col place-content-center">
-        <div className="font-semibold text-3xl text-center">
+      <main className="flex h-full flex-col items-center justify-center">
+        <h1 className="text-3xl font-semibold">
           Error while trying to fetch event:
-        </div>
-        <div className="text-2xl text-center">{res.error}</div>
+        </h1>
+        <p className="text-2xl">{res.error}</p>
       </main>
     );
   }
