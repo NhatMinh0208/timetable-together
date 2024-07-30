@@ -118,14 +118,15 @@ export function ScheduleInputElement({
       </div>
 
       <div className="px-6 space-y-2" hidden={hidden}>
-        <div className="font-semibold">Schedule name</div>
         <TextInputElement
           name="name"
           value={input.name}
           placeholder="Enter schedule name..."
           handleChange={(e) => changeName(e.target.value)}
           disabled={readOnly}
-        />
+        >
+          <div className="font-semibold">Schedule name</div>
+        </TextInputElement>
 
         {input.sessions.map((session, i) => (
           <SessionInputElement

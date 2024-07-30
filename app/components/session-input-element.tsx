@@ -62,65 +62,74 @@ export function SessionInputElement({
       </div>
 
       <div className="px-6 space-y-2" hidden={hidden}>
-        <div className="font-semibold">Session location</div>
         <TextInputElement
           name="place"
           value={input.place}
           placeholder="Enter session location..."
           handleChange={(e) => changeField("place", e.target.value)}
           disabled={readOnly}
-        />
-        <div className="font-semibold">Start time</div>
+        >
+          <div className="font-semibold">Session location</div>
+        </TextInputElement>
+
         <TextInputElement
           name="startTime"
           value={input.startTime}
           placeholder="Enter session start time (e.g. 08:00)..."
           handleChange={(e) => changeField("startTime", e.target.value)}
           disabled={readOnly}
-        />
-        <div className="font-semibold">End time</div>
+        >
+          <div className="font-semibold">Start time</div>
+        </TextInputElement>
+
         <TextInputElement
           name="endTime"
           value={input.endTime}
           placeholder="Enter session end time (e.g. 17:00)..."
           handleChange={(e) => changeField("endTime", e.target.value)}
           disabled={readOnly}
-        />
+        >
+          <div className="font-semibold">End time</div>
+        </TextInputElement>
 
-        <div className="font-semibold">Interval</div>
-        <div className="text-sm">
-          There will be a session every this many days.
-        </div>
         <TextInputElement
           name="interval"
           value={input.interval}
           placeholder="Enter session interval (in days)..."
           handleChange={(e) => changeField("interval", e.target.value)}
           disabled={readOnly}
-        />
+        >
+          <div className="font-semibold">Interval</div>
+          <div className="text-sm">
+            There will be a session every this many days.
+          </div>
+        </TextInputElement>
 
-        <div className="font-semibold">Start date</div>
-        <div className="text-sm">
-          First instance of session will be on this date.
-        </div>
         <TextInputElement
           name="startDate"
           value={input.startDate}
           placeholder="Enter session start date in dd/mm/yyyy format (e.g. 13/01/2024)..."
           handleChange={(e) => changeField("startDate", e.target.value)}
           disabled={readOnly}
-        />
-        <div className="font-semibold">End date</div>
-        <div className="text-sm">
-          Session will run until this date (inclusive).
-        </div>
+        >
+          <div className="font-semibold">Start date</div>
+          <div className="text-sm">
+            First instance of session will be on this date.
+          </div>
+        </TextInputElement>
+
         <TextInputElement
           name="endDate"
           value={input.endDate}
           placeholder="Enter session end date in dd/mm/yyyy format (e.g. 13/02/2024)..."
           handleChange={(e) => changeField("endDate", e.target.value)}
           disabled={readOnly}
-        />
+        >
+          <div className="font-semibold">End date</div>
+          <div className="text-sm">
+            Session will run until this date (inclusive).
+          </div>
+        </TextInputElement>
       </div>
     </div>
   );

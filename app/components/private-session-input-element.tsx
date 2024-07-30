@@ -50,22 +50,26 @@ export function PrivateSessionInputElement({
   return (
     <div className="space-y-2">
       <div className="max-h-[63dvh] space-y-2 overflow-auto">
-        <div className="font-semibold">Session name</div>
         <TextInputElement
           name="name"
           value={name}
           placeholder="Enter session name..."
           handleChange={(e) => setName(e.target.value)}
           disabled={readOnly}
-        />
-        <div className="font-semibold">Description</div>
+        >
+          <div className="font-semibold">Session name</div>
+        </TextInputElement>
+
         <TextInputElement
           name="description"
           value={description}
           placeholder="Enter description..."
           handleChange={(e) => setDescription(e.target.value)}
           disabled={readOnly}
-        />
+        >
+          <div className="font-semibold">Description</div>
+        </TextInputElement>
+
         <SessionInputElement
           index={0}
           session={input}

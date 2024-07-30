@@ -40,24 +40,28 @@ export function NoteCard({
       <div className="h-1 mx-12 bg-slate-700"></div>
       <div className="text-center text-xl font-semibold">Create new note</div>
       <div className="space-y-1">
-        <div className="font-semibold text-md">Content</div>
         <TextInputElement
           name="content"
           value={content}
           placeholder="Enter note content"
           handleChange={(e) => setContent(e.target.value)}
           disabled={false}
-        />
-        <div className="font-semibold text-md">
-          Recipients (must be followers or users you&apos;re following)
-        </div>
+        >
+          <div className="text-md font-semibold">Content</div>
+        </TextInputElement>
+
         <TextInputElement
           name="recipientList"
           value={recipientList}
           placeholder="Enter list of recipients, separated by ';'"
           handleChange={(e) => setrecipientList(e.target.value)}
           disabled={false}
-        />
+        >
+          <div className="text-md font-semibold">
+            Recipients (must be followers or users you&apos;re following)
+          </div>
+        </TextInputElement>
+
         <CreateNote
           content={content}
           position={window}

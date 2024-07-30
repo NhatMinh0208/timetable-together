@@ -110,22 +110,26 @@ export function EventInputElement({
   return (
     <div className="flex h-full flex-col gap-2">
       <div className="h-5 grow-[5] space-y-2 overflow-auto">
-        <div className="font-semibold">Event name</div>
         <TextInputElement
           name="name"
           value={input.name}
           placeholder="Enter event name..."
           handleChange={(e) => changeName(e.target.value)}
           disabled={readOnly}
-        />
-        <div className="font-semibold">Description</div>
+        >
+          <div className="font-semibold">Event name</div>
+        </TextInputElement>
+
         <TextInputElement
           name="description"
           value={input.description}
           placeholder="Enter description..."
           handleChange={(e) => changeDescription(e.target.value)}
           disabled={readOnly}
-        />
+        >
+          <div className="font-semibold">Description</div>
+        </TextInputElement>
+
         {input.schedules.map((schedule, i) => (
           <ScheduleInputElement
             key={schedule.id}
